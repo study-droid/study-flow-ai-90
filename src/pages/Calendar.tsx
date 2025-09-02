@@ -466,7 +466,7 @@ const MonthView: React.FC<{
                 onDayClick(day);
               }}
               className={cn(
-                "group relative min-h-[90px] sm:min-h-[110px] p-3 rounded-xl cursor-pointer transition-all duration-200",
+                "group relative min-h-[80px] sm:min-h-[90px] md:min-h-[100px] p-3 rounded-xl cursor-pointer transition-all duration-200",
                 "border-2 border-transparent",
                 isSelected && "border-primary shadow-lg scale-[1.02]",
                 isTodayDate && "bg-gradient-to-br from-primary/20 to-focus/20 border-primary/50",
@@ -601,7 +601,7 @@ const WeekView: React.FC<{
                 return (
                   <div
                     key={`${day.toISOString()}-${hour}`}
-                    className="p-1 min-h-[50px] border-r last:border-r-0 hover:bg-muted transition-colors cursor-pointer"
+                    className="p-1 min-h-[45px] sm:min-h-[50px] border-r last:border-r-0 hover:bg-muted transition-colors cursor-pointer"
                   >
                     {hourEvents.map((event, idx) => (
                       <div
@@ -655,7 +655,7 @@ const DayView: React.FC<{
               <div className="w-20 p-3 text-sm text-muted-foreground border-r bg-muted/20">
                 {format(new Date().setHours(hour, 0, 0, 0), 'ha')}
               </div>
-              <div className="flex-1 p-3 min-h-[60px]">
+              <div className="flex-1 p-3 min-h-[50px] sm:min-h-[60px]">
                 {hourEvents.map((event, idx) => (
                   <div
                     key={idx}
@@ -793,7 +793,7 @@ const DayDetailsDialog: React.FC<{
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+      <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto flex flex-col">
         <DialogHeader>
           <DialogTitle className="text-2xl flex items-center gap-2">
             <CalendarIcon className="h-6 w-6 text-primary" />

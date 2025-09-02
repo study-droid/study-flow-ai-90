@@ -357,7 +357,7 @@ export const Subjects = () => {
                 Add Subject
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+            <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto flex flex-col">
               <DialogHeader>
                 <DialogTitle>
                   {selectedSubject ? 'Edit Subject' : 'Add New Subject'}
@@ -498,7 +498,7 @@ export const Subjects = () => {
         {/* Subject Details Dialog */}
         {selectedSubjectDetails && (
           <Dialog open={!!selectedSubjectDetails} onOpenChange={() => setSelectedSubjectDetails(null)}>
-            <DialogContent className="max-w-4xl max-h-[90vh]">
+            <DialogContent className="max-w-4xl max-h-[85vh] overflow-y-auto flex flex-col">
               <DialogHeader>
                 <div className="flex items-center gap-3">
                   <div

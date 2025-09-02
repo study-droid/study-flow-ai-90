@@ -518,7 +518,7 @@ Content: ${item.content}
             </div>
 
             {/* History Items */}
-            <ScrollArea className="h-[400px] rounded-md border p-4">
+            <ScrollArea className="min-h-[400px] max-h-[50vh] rounded-md border p-4">
               {isLoading ? (
                 <div className="text-center py-8 text-muted-foreground">
                   Loading history...

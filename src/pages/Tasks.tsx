@@ -474,7 +474,7 @@ const Tasks = () => {
 
         {/* Task Form Dialog */}
         <Dialog open={isFormOpen} onOpenChange={handleFormClose}>
-          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto flex flex-col">
             <TaskForm
               onSubmit={editingTask ? handleUpdateTask : handleCreateTask}
               onCancel={handleFormClose}
@@ -487,7 +487,7 @@ const Tasks = () => {
 
         {/* Assignment Form Dialog */}
         <Dialog open={isAssignmentFormOpen} onOpenChange={handleAssignmentFormClose}>
-          <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+          <DialogContent className="max-w-3xl max-h-[85vh] overflow-y-auto flex flex-col">
             <AssignmentForm
               onSubmit={editingAssignment ? handleUpdateAssignment : handleCreateAssignment}
               onCancel={handleAssignmentFormClose}

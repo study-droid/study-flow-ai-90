@@ -2,9 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Alert, AlertDescription } from '@/components/ui/alert';
 import { 
   Send, 
   Brain, 
@@ -18,21 +16,23 @@ import {
   Zap,
   Database,
   CheckCircle,
-  Activity
+  Activity,
+  Menu,
+  X
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { MessageBubble } from './MessageBubble';
 import { ThinkingIndicator } from './ThinkingIndicator';
-import { StudyPlanHistory } from './StudyPlanHistory';
-import { ConceptHistory } from './ConceptHistory';
-import { PracticeHistory } from './PracticeHistory';
+import { ChatHistoryPanel } from './ChatHistoryPanel';
 import { DeepSeekRecommendation } from './DeepSeekRecommendation';
 import { AIHistoryModal } from './AIHistoryModal';
+import { TimeoutPopup } from './TimeoutPopup';
 import { unifiedAIService } from '@/services/unified-ai-service';
 import { responseAnalytics } from '@/services/response-analytics';
 import { responseCache } from '@/services/response-cache';
+import './AITutorEnhanced.css';
 
 interface Message {
   id: string;
@@ -44,6 +44,7 @@ interface Message {
   cached?: boolean;
   optimized?: boolean;
   qualityScore?: number;
+  processingResult?: any; // Will contain ProcessingResult from post-processing pipeline
 }
 
 interface AITutorEnhancedProps {
@@ -60,17 +61,23 @@ export const AITutorEnhanced: React.FC<AITutorEnhancedProps> = ({
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isThinking, setIsThinking] = useState(false);
-  const [activeTab, setActiveTab] = useState('chat');
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [activeChatSession, setActiveChatSession] = useState<any>(null);
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [sessionId, setSessionId] = useState<string>('');
   const [autoScroll, setAutoScroll] = useState(true);
   const [showRecommendation, setShowRecommendation] = useState(false);
   const [cacheStats, setCacheStats] = useState<{ hits: number; hitRate: number }>({ hits: 0, hitRate: 0 });
   const [isOptimizing, setIsOptimizing] = useState(false);
   const [showHistoryModal, setShowHistoryModal] = useState(false);
+  const [showTimeoutPopup, setShowTimeoutPopup] = useState(false);
+  const [timeoutDuration, setTimeoutDuration] = useState(0);
   
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const previousScrollTop = useRef(0);
+  const timeoutTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const durationTimerRef = useRef<NodeJS.Timeout | null>(null);
   
   const { toast } = useToast();
   const aiService = unifiedAIService;
@@ -88,7 +95,10 @@ export const AITutorEnhanced: React.FC<AITutorEnhancedProps> = ({
       setCacheStats({ hits: stats.hits, hitRate: stats.hitRate });
     }, 5000);
     
-    return () => clearInterval(statsInterval);
+    return () => {
+      clearInterval(statsInterval);
+      clearTimeoutTimers(true); // Immediate clear on component unmount
+    };
   }, []);
 
   useEffect(() => {
@@ -173,6 +183,44 @@ export const AITutorEnhanced: React.FC<AITutorEnhancedProps> = ({
     return 'advanced';
   };
 
+  // Timeout popup management
+  const startTimeoutTimer = () => {
+    clearTimeoutTimers();
+    setTimeoutDuration(0);
+    
+    // Start duration counter
+    durationTimerRef.current = setInterval(() => {
+      setTimeoutDuration(prev => prev + 1);
+    }, 1000);
+    
+    // Show popup after 15 seconds
+    timeoutTimerRef.current = setTimeout(() => {
+      setShowTimeoutPopup(true);
+    }, 15000);
+  };
+
+  const clearTimeoutTimers = (immediate = false) => {
+    if (timeoutTimerRef.current) {
+      clearTimeout(timeoutTimerRef.current);
+      timeoutTimerRef.current = null;
+    }
+    if (durationTimerRef.current) {
+      clearInterval(durationTimerRef.current);
+      durationTimerRef.current = null;
+    }
+    
+    // If popup is visible and not immediate clear, wait 6 seconds before hiding
+    if (showTimeoutPopup && !immediate) {
+      setTimeout(() => {
+        setShowTimeoutPopup(false);
+        setTimeoutDuration(0);
+      }, 6000); // 6 seconds delay
+    } else {
+      setShowTimeoutPopup(false);
+      setTimeoutDuration(0);
+    }
+  };
+
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const element = e.currentTarget;
     const scrollTop = element.scrollTop;
@@ -218,6 +266,7 @@ export const AITutorEnhanced: React.FC<AITutorEnhancedProps> = ({
     setMessages(prev => [...prev, userMessage]);
     setInput('');
     setIsThinking(true);
+    startTimeoutTimer();
 
     try {
       // Save user message
@@ -254,7 +303,7 @@ export const AITutorEnhanced: React.FC<AITutorEnhancedProps> = ({
           responseType,
           context: messages.slice(-10).map(m => ({ role: m.role, content: m.content }))
         }
-      );
+      ) as any; // Type assertion to access processingResult
       const responseTime = Date.now() - startTime;
       
       // Track analytics
@@ -279,7 +328,8 @@ export const AITutorEnhanced: React.FC<AITutorEnhancedProps> = ({
         timestamp: new Date(),
         cached: isCached,
         optimized: true,
-        qualityScore: response?.metadata?.qualityScore || 85
+        qualityScore: response?.processingResult?.qualityAssessment?.overallScore || response?.metadata?.qualityScore || 85,
+        processingResult: response?.processingResult
       };
 
       setMessages(prev => [...prev, assistantMessage]);
@@ -307,6 +357,7 @@ export const AITutorEnhanced: React.FC<AITutorEnhancedProps> = ({
       setMessages(prev => [...prev, errorMessage]);
     } finally {
       setIsThinking(false);
+      clearTimeoutTimers();
     }
   };
 
@@ -315,21 +366,60 @@ export const AITutorEnhanced: React.FC<AITutorEnhancedProps> = ({
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      const { error } = await supabase
-        .from('ai_tutor_messages')
-        .insert({
-          user_id: user.id,
-          session_id: sessionId,
-          role: message.role,
-          content: message.content,
-          subject,
-          topic,
-          feedback: message.feedback || null
-        });
+      // Prepare message data with safe fallbacks
+      const messageData: any = {
+        user_id: user.id,
+        session_id: sessionId,
+        role: message.role,
+        content: message.content,
+        subject,
+        topic
+      };
 
-      if (error) throw error;
+      // Add optional fields only if they exist in schema
+      try {
+        // Try inserting with all fields first
+        messageData.feedback = message.feedback || null;
+        messageData.quality_score = message.qualityScore;
+        messageData.cached = message.cached;
+        messageData.optimized = message.optimized;
+        
+        if (message.processingResult) {
+          messageData.processing_result = message.processingResult;
+          messageData.response_type = message.processingResult.formattedResponse?.metadata?.responseType;
+        }
+
+        const { error } = await supabase
+          .from('ai_tutor_messages')
+          .insert(messageData);
+
+        if (error) {
+          // If error due to missing columns, retry with basic data
+          if (error.code === 'PGRST204') {
+            const basicMessageData = {
+              user_id: user.id,
+              session_id: sessionId,
+              role: message.role,
+              content: message.content,
+              subject,
+              topic
+            };
+            
+            const { error: retryError } = await supabase
+              .from('ai_tutor_messages')
+              .insert(basicMessageData);
+              
+            if (retryError) throw retryError;
+          } else {
+            throw error;
+          }
+        }
+      } catch (insertError) {
+        throw insertError;
+      }
     } catch (error) {
       console.error('Error saving message:', error);
+      // Don't rethrow to avoid breaking user experience
     }
   };
 
@@ -539,44 +629,55 @@ export const AITutorEnhanced: React.FC<AITutorEnhancedProps> = ({
             >
               <RefreshCw className="h-4 w-4" />
             </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setActiveTab('settings')}
-              title="Settings"
-            >
-              <Settings className="h-4 w-4" />
-            </Button>
           </div>
         </div>
       </CardHeader>
 
-      <CardContent className="flex-1 flex flex-col p-0">
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col">
-          <TabsList className="mx-4 mb-3">
-            <TabsTrigger value="chat">Chat</TabsTrigger>
-            <TabsTrigger value="study-plans">
-              <History className="h-4 w-4 mr-2" />
-              Study Plans
-            </TabsTrigger>
-            <TabsTrigger value="concepts">
-              <Brain className="h-4 w-4 mr-2" />
-              Concepts
-            </TabsTrigger>
-            <TabsTrigger value="practice">
-              <HelpCircle className="h-4 w-4 mr-2" />
-              Practice
-            </TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="chat" className="flex-1 flex flex-col mt-0 px-4">
+      <CardContent className="flex-1 p-0 relative overflow-hidden">
+        {/* Mobile Menu Toggle */}
+        <button
+          className="mobile-menu-toggle"
+          onClick={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
+        >
+          {isMobileSidebarOpen ? <X className="h-5 w-5 text-white" /> : <Menu className="h-5 w-5 text-white" />}
+        </button>
+        
+        {/* Overlay for mobile */}
+        <div 
+          className={cn('sidebar-overlay', isMobileSidebarOpen && 'active')}
+          onClick={() => setIsMobileSidebarOpen(false)}
+        />
+        
+        <div className="ai-tutor-container">
+        {/* Sidebar */}
+        <ChatHistoryPanel
+          className={cn('chat-history-sidebar', isMobileSidebarOpen && 'mobile-open')}
+          sessions={[]}
+          activeSession={activeChatSession}
+          onSessionSelect={(session) => {
+            setActiveChatSession(session);
+            // Load session messages here when implemented
+          }}
+          onSessionDelete={(sessionId) => {
+            // Handle session deletion when implemented
+            console.log('Delete session:', sessionId);
+          }}
+          onNewSession={() => {
+            clearChat();
+            setActiveChatSession(null);
+          }}
+          isCollapsed={isSidebarCollapsed}
+          onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+        />
+        
+        {/* Main Chat Area */}
+        <div className="chat-content-area px-4">
             {showRecommendation && (
               <DeepSeekRecommendation
                 currentProvider={'deepseek'}
                 onSetupClick={() => {
                   setShowRecommendation(false);
                   localStorage.setItem('deepseek_recommendation_shown', Date.now().toString());
-                  setActiveTab('settings');
                 }}
                 className="mb-3"
               />
@@ -609,9 +710,13 @@ export const AITutorEnhanced: React.FC<AITutorEnhancedProps> = ({
               </div>
             ) : (
               <ScrollArea 
-                className="flex-1 pr-4 chat-scrollbar"
+                className="flex-1 pr-4 chat-scrollbar overflow-y-auto"
                 onScroll={handleScroll}
                 ref={scrollAreaRef}
+                style={{
+                  height: 'calc(100vh - 300px)',
+                  maxHeight: '600px'
+                }}
               >
                 <div className="space-y-4 pb-4">
                   {messages.map((message) => (
@@ -624,6 +729,11 @@ export const AITutorEnhanced: React.FC<AITutorEnhancedProps> = ({
                       cached={message.cached}
                       optimized={message.optimized}
                       qualityScore={message.qualityScore}
+                      processingResult={message.processingResult}
+                      onProgressUpdate={(taskId, completed) => {
+                        // Handle progress tracking for study plans
+                        console.log('Task progress:', taskId, completed);
+                      }}
                     />
                   ))}
                   {isThinking && (
@@ -684,29 +794,8 @@ export const AITutorEnhanced: React.FC<AITutorEnhancedProps> = ({
                 Jump to latest
               </Button>
             )}
-          </TabsContent>
-
-          <TabsContent value="study-plans" className="flex-1 px-4">
-            <StudyPlanHistory />
-          </TabsContent>
-
-          <TabsContent value="concepts" className="flex-1 px-4">
-            <ConceptHistory />
-          </TabsContent>
-
-          <TabsContent value="practice" className="flex-1 px-4">
-            <PracticeHistory />
-          </TabsContent>
-
-          <TabsContent value="settings" className="px-4">
-            <Alert>
-              <Zap className="h-4 w-4" />
-              <AlertDescription>
-                Configure your AI provider in Settings → AI Connections
-              </AlertDescription>
-            </Alert>
-          </TabsContent>
-        </Tabs>
+        </div>
+        </div>
       </CardContent>
     </Card>
       
@@ -714,6 +803,12 @@ export const AITutorEnhanced: React.FC<AITutorEnhancedProps> = ({
       <AIHistoryModal 
         open={showHistoryModal} 
         onOpenChange={setShowHistoryModal}
+      />
+
+      {/* Timeout Popup */}
+      <TimeoutPopup 
+        isVisible={showTimeoutPopup}
+        duration={timeoutDuration}
       />
     </>
   );

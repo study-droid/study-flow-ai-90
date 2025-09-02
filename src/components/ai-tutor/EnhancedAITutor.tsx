@@ -20,6 +20,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { formatDistanceToNow } from 'date-fns';
 import { useSubjects } from '@/hooks/useSubjects';
 import { cn } from '@/lib/utils';
+import { TimeoutPopup } from './TimeoutPopup';
 
 interface StreamingMessage {
   role: 'assistant';
@@ -39,13 +40,21 @@ export function EnhancedAITutor() {
   const [enableTools, setEnableTools] = useState(true);
   const [currentProvider, setCurrentProvider] = useState<AIProvider>('gemini');
   const [availableProviders, setAvailableProviders] = useState<any[]>([]);
+  const [showTimeoutPopup, setShowTimeoutPopup] = useState(false);
+  const [timeoutDuration, setTimeoutDuration] = useState(0);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const timeoutTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const durationTimerRef = useRef<NodeJS.Timeout | null>(null);
   const { toast } = useToast();
   const { subjects } = useSubjects();
 
   useEffect(() => {
     loadSessions();
     loadProviders();
+    
+    return () => {
+      clearTimeoutTimers();
+    };
   }, []);
 
   const loadSessions = async () => {
@@ -65,6 +74,35 @@ export function EnhancedAITutor() {
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  // Timeout popup management
+  const startTimeoutTimer = () => {
+    clearTimeoutTimers();
+    setTimeoutDuration(0);
+    
+    // Start duration counter
+    durationTimerRef.current = setInterval(() => {
+      setTimeoutDuration(prev => prev + 1);
+    }, 1000);
+    
+    // Show popup after 15 seconds
+    timeoutTimerRef.current = setTimeout(() => {
+      setShowTimeoutPopup(true);
+    }, 15000);
+  };
+
+  const clearTimeoutTimers = () => {
+    if (timeoutTimerRef.current) {
+      clearTimeout(timeoutTimerRef.current);
+      timeoutTimerRef.current = null;
+    }
+    if (durationTimerRef.current) {
+      clearInterval(durationTimerRef.current);
+      durationTimerRef.current = null;
+    }
+    setShowTimeoutPopup(false);
+    setTimeoutDuration(0);
   };
 
   useEffect(() => {
@@ -103,6 +141,7 @@ export function EnhancedAITutor() {
     if (!inputMessage.trim() || !currentSession || isLoading) return;
 
     setIsLoading(true);
+    startTimeoutTimer();
     const message = inputMessage;
     setInputMessage('');
 
@@ -176,6 +215,7 @@ export function EnhancedAITutor() {
       setStreamingMessage(null);
     } finally {
       setIsLoading(false);
+      clearTimeoutTimers();
     }
   };
 
@@ -516,6 +556,12 @@ export function EnhancedAITutor() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Timeout Popup */}
+      <TimeoutPopup 
+        isVisible={showTimeoutPopup}
+        duration={timeoutDuration}
+      />
     </div>
   );
 }

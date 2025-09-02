@@ -16,6 +16,7 @@ import { unifiedAIService, type Message, type AISession } from '@/services/unifi
 import { useToast } from '@/components/ui/use-toast';
 import { formatDistanceToNow } from 'date-fns';
 import { useSubjects } from '@/hooks/useSubjects';
+import { TimeoutPopup } from './TimeoutPopup';
 
 export function AITutorLegacy() {
   const [sessions, setSessions] = useState<AISession[]>([]);
@@ -24,7 +25,11 @@ export function AITutorLegacy() {
   const [isLoading, setIsLoading] = useState(false);
   const [deletingSessionId, setDeletingSessionId] = useState<string | null>(null);
   const [selectedSubject, setSelectedSubject] = useState('');
+  const [showTimeoutPopup, setShowTimeoutPopup] = useState(false);
+  const [timeoutDuration, setTimeoutDuration] = useState(0);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const timeoutTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const durationTimerRef = useRef<NodeJS.Timeout | null>(null);
   const { toast } = useToast();
   const { subjects, loading: subjectsLoading } = useSubjects();
 
@@ -62,10 +67,43 @@ export function AITutorLegacy() {
       }
     };
     loadSessions();
+    
+    return () => {
+      clearTimeoutTimers();
+    };
   }, [currentSession]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  // Timeout popup management
+  const startTimeoutTimer = () => {
+    clearTimeoutTimers();
+    setTimeoutDuration(0);
+    
+    // Start duration counter
+    durationTimerRef.current = setInterval(() => {
+      setTimeoutDuration(prev => prev + 1);
+    }, 1000);
+    
+    // Show popup after 15 seconds
+    timeoutTimerRef.current = setTimeout(() => {
+      setShowTimeoutPopup(true);
+    }, 15000);
+  };
+
+  const clearTimeoutTimers = () => {
+    if (timeoutTimerRef.current) {
+      clearTimeout(timeoutTimerRef.current);
+      timeoutTimerRef.current = null;
+    }
+    if (durationTimerRef.current) {
+      clearInterval(durationTimerRef.current);
+      durationTimerRef.current = null;
+    }
+    setShowTimeoutPopup(false);
+    setTimeoutDuration(0);
   };
 
   useEffect(() => {
@@ -104,6 +142,7 @@ export function AITutorLegacy() {
     if (!inputMessage.trim() || !currentSession || isLoading) return;
 
     setIsLoading(true);
+    startTimeoutTimer();
     const message = inputMessage;
     setInputMessage('');
 
@@ -122,6 +161,7 @@ export function AITutorLegacy() {
       });
     } finally {
       setIsLoading(false);
+      clearTimeoutTimers();
     }
   };
 
@@ -194,6 +234,7 @@ export function AITutorLegacy() {
       });
     } finally {
       setIsLoading(false);
+      clearTimeoutTimers();
     }
   };
 
@@ -228,6 +269,7 @@ export function AITutorLegacy() {
       });
     } finally {
       setIsLoading(false);
+      clearTimeoutTimers();
     }
   };
 
@@ -262,6 +304,7 @@ export function AITutorLegacy() {
       });
     } finally {
       setIsLoading(false);
+      clearTimeoutTimers();
     }
   };
 
@@ -681,6 +724,12 @@ export function AITutorLegacy() {
           </Card>
         </TabsContent>
       </Tabs>
+      
+      {/* Timeout Popup */}
+      <TimeoutPopup 
+        isVisible={showTimeoutPopup}
+        duration={timeoutDuration}
+      />
     </div>
   );
 }

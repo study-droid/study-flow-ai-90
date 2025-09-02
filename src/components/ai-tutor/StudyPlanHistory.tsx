@@ -290,7 +290,7 @@ ${plan.plan_content}`;
             <CardTitle className="text-lg">Plans ({filteredPlans.length})</CardTitle>
           </CardHeader>
           <CardContent>
-            <ScrollArea className="h-[500px] pr-4">
+            <ScrollArea className="min-h-[400px] max-h-[60vh] pr-4">
               <div className="space-y-3">
                 {isLoading ? (
                   <div className="text-center py-8 text-muted-foreground">
@@ -387,7 +387,7 @@ ${plan.plan_content}`;
                   )}
                 </div>
 
-                <ScrollArea className="h-[250px] rounded-md border p-4">
+                <ScrollArea className="min-h-[200px] max-h-[40vh] rounded-md border p-4">
                   <div className="whitespace-pre-wrap text-sm">
                     {selectedPlan.plan_content}
                   </div>

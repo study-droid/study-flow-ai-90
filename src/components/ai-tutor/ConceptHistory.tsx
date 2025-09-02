@@ -185,7 +185,7 @@ export const ConceptHistory: React.FC = () => {
             <select
               value={filterLevel}
               onChange={(e) => setFilterLevel(e.target.value)}
-              className="px-3 py-2 rounded-md border"
+              className="px-3 py-2 rounded-md border border-input bg-background"
             >
               <option value="all">All Levels</option>
               <option value="beginner">Beginner</option>
@@ -194,7 +194,7 @@ export const ConceptHistory: React.FC = () => {
             </select>
           </div>
 
-          <ScrollArea className="h-[400px]">
+          <ScrollArea className="min-h-[400px] max-h-[60vh]">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {filteredConcepts.map(concept => (
                 <Card

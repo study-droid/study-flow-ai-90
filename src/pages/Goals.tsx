@@ -27,7 +27,7 @@ export default function Goals() {
         <GoalsList key={refreshKey} onCreateGoal={() => setIsCreateDialogOpen(true)} />
 
         <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
-          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto flex flex-col">
             <DialogHeader>
               <DialogTitle>Create New Study Goal</DialogTitle>
               <DialogDescription>

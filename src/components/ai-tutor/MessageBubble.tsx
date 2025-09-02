@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Bot, User, Copy, Check, ThumbsUp, ThumbsDown, Bookmark, BookmarkCheck, Database, Sparkles, Award } from 'lucide-react';
+import { Bot, User, Copy, Check, ThumbsUp, ThumbsDown, Bookmark, BookmarkCheck, Database, Sparkles, Award, Expand, Minimize } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { formatDistanceToNow } from 'date-fns';
@@ -7,6 +7,8 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { ProfessionalResponseRenderer } from '@/components/deepseek/ProfessionalResponseRenderer';
+import { ProcessingResult } from '@/services/deepseek/post-processing-pipeline';
 
 interface MessageBubbleProps {
   role: 'user' | 'assistant';
@@ -19,6 +21,8 @@ interface MessageBubbleProps {
   cached?: boolean;
   optimized?: boolean;
   qualityScore?: number;
+  processingResult?: ProcessingResult;
+  onProgressUpdate?: (taskId: string, completed: boolean) => void;
 }
 
 export const MessageBubble: React.FC<MessageBubbleProps> = ({
@@ -31,7 +35,9 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
   className,
   cached = false,
   optimized = false,
-  qualityScore
+  qualityScore,
+  processingResult,
+  onProgressUpdate
 }) => {
   // Ensure timestamp is a valid Date object
   const validTimestamp = timestamp instanceof Date && !isNaN(timestamp.getTime()) 
@@ -40,6 +46,12 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
     
   const [copied, setCopied] = useState(false);
   const [feedbackGiven, setFeedbackGiven] = useState<'helpful' | 'not_helpful' | null>(null);
+  const [showProfessionalView, setShowProfessionalView] = useState(false);
+  const [showMetadata, setShowMetadata] = useState(false);
+  
+  // Check if this is a professional response that should use enhanced rendering
+  const isProfessionalResponse = role === 'assistant' && processingResult && 
+    processingResult.qualityAssessment.overallScore >= 70;
 
   const handleCopy = async (text: string) => {
     await navigator.clipboard.writeText(text);
@@ -93,7 +105,7 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
   return (
     <div
       className={cn(
-        'flex gap-3 animate-message-fade-in',
+        'flex gap-3 animate-message-fade-in message-container',
         role === 'assistant' ? '' : 'justify-end',
         className
       )}
@@ -104,41 +116,100 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
         </div>
       )}
       
-      <div className="flex flex-col gap-1 max-w-[70%]">
+      <div className={cn(
+        "flex flex-col gap-1",
+        role === 'assistant' ? 'max-w-[85%]' : 'max-w-[70%] ml-auto'
+      )}>
         <div
           className={cn(
-            'rounded-lg p-4 group relative',
+            'group relative overflow-hidden message-content',
             role === 'assistant'
-              ? 'bg-muted'
-              : 'bg-primary text-primary-foreground'
+              ? 'bg-muted p-5'
+              : 'bg-primary text-primary-foreground p-4'
           )}
+          style={{
+            overflowWrap: 'break-word',
+            wordWrap: 'break-word',
+            wordBreak: 'break-word',
+            borderRadius: role === 'assistant' ? '18px 18px 18px 4px' : '18px 18px 4px 18px',
+            marginBottom: '16px'
+          }}
         >
           {/* Message Content */}
-          <div className="prose prose-sm dark:prose-invert max-w-none">
-            {role === 'assistant' ? (
-              <ReactMarkdown
-                components={{
-                  code: ({ node, inline, className, children, ...props }) => {
-                    const match = /language-(\w+)/.exec(className || '');
-                    return !inline && match ? (
-                      <CodeBlock
-                        language={match[1]}
-                        value={String(children).replace(/\n$/, '')}
-                      />
-                    ) : (
-                      <code className="bg-muted-foreground/10 px-1 py-0.5 rounded text-sm" {...props}>
-                        {children}
-                      </code>
-                    );
-                  }
-                }}
+          {isProfessionalResponse && showProfessionalView && processingResult ? (
+            <ProfessionalResponseRenderer
+              result={processingResult}
+              onProgressUpdate={onProgressUpdate}
+              showMetadata={showMetadata}
+              showQualityMetrics={true}
+              className="-mx-4 -my-2" 
+            />
+          ) : (
+            <div className="prose prose-sm dark:prose-invert max-w-none" style={{
+              overflowWrap: 'break-word',
+              wordWrap: 'break-word',
+              whiteSpace: 'pre-wrap',
+              wordBreak: 'break-word'
+            }}>
+              {role === 'assistant' ? (
+                <ReactMarkdown
+                  components={{
+                    code: ({ node, inline, className, children, ...props }) => {
+                      const match = /language-(\w+)/.exec(className || '');
+                      return !inline && match ? (
+                        <CodeBlock
+                          language={match[1]}
+                          value={String(children).replace(/\n$/, '')}
+                        />
+                      ) : (
+                        <code className="bg-muted-foreground/10 px-1 py-0.5 rounded text-sm" {...props}>
+                          {children}
+                        </code>
+                      );
+                    }
+                  }}
+                >
+                  {content}
+                </ReactMarkdown>
+              ) : (
+                <p className="whitespace-pre-wrap">{content}</p>
+              )}
+            </div>
+          )}
+
+          {/* Professional View Toggle (Assistant only) */}
+          {isProfessionalResponse && (
+            <div className="flex items-center gap-2 mt-3 pt-2 border-t border-border">
+              <Button
+                size="sm"
+                variant={showProfessionalView ? "default" : "outline"}
+                onClick={() => setShowProfessionalView(!showProfessionalView)}
+                className="h-7 text-xs"
               >
-                {content}
-              </ReactMarkdown>
-            ) : (
-              <p className="whitespace-pre-wrap">{content}</p>
-            )}
-          </div>
+                {showProfessionalView ? (
+                  <>
+                    <Minimize className="h-3 w-3 mr-1" />
+                    Simple View
+                  </>
+                ) : (
+                  <>
+                    <Expand className="h-3 w-3 mr-1" />
+                    Professional View
+                  </>
+                )}
+              </Button>
+              {processingResult && (
+                <Button
+                  size="sm"
+                  variant={showMetadata ? "default" : "ghost"}
+                  onClick={() => setShowMetadata(!showMetadata)}
+                  className="h-7 text-xs"
+                >
+                  Quality: {processingResult.qualityAssessment.overallScore}%
+                </Button>
+              )}
+            </div>
+          )}
 
           {/* Action Buttons */}
           <div className="flex items-center gap-1 mt-2 opacity-0 group-hover:opacity-100 transition-opacity">

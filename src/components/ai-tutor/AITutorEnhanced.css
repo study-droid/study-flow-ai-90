@@ -1,0 +1,174 @@
+/* AI Tutor Enhanced Layout Styles */
+
+/* Main container layout */
+.ai-tutor-container {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Sidebar styles */
+.chat-history-sidebar {
+  position: sticky;
+  top: 0;
+  height: 100%;
+  overflow-y: auto;
+  flex-shrink: 0;
+  background: rgba(var(--muted-rgb, 30, 30, 30), 0.95);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Hover states for history items */
+.chat-history-sidebar .session-preview {
+  transition: all 0.2s ease;
+}
+
+.chat-history-sidebar .session-preview:hover {
+  background: rgba(255, 255, 255, 0.05);
+  transform: translateX(2px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Main content area */
+.chat-content-area {
+  min-width: 0; /* Important for text wrapping in grid/flex */
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* Message container constraints */
+.message-container {
+  max-width: 100%;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  white-space: pre-wrap;
+  padding: 0 20px;
+}
+
+/* Prevent message content from overflowing */
+.message-content {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  hyphens: auto;
+  transition: all 0.2s ease;
+}
+
+/* Message hover effects */
+.message-content:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-1px);
+}
+
+/* Message borders */
+.message-content {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Code blocks should not overflow */
+.message-content pre {
+  max-width: 100%;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+}
+
+/* Mobile hamburger menu button */
+.mobile-menu-toggle {
+  display: none;
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 200;
+  background: rgba(var(--primary-rgb, 59, 130, 246), 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(10px);
+}
+
+.mobile-menu-toggle:hover {
+  background: rgba(var(--primary-rgb, 59, 130, 246), 1);
+  transform: scale(1.05);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .mobile-menu-toggle {
+    display: block;
+  }
+  
+  .ai-tutor-container {
+    grid-template-columns: 1fr;
+  }
+  
+  .chat-history-sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100vh;
+    width: 280px;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    z-index: 100;
+  }
+  
+  .chat-history-sidebar.mobile-open {
+    transform: translateX(0);
+  }
+  
+  .chat-content-area {
+    margin-left: 0;
+    width: 100%;
+    padding: 0 10px;
+  }
+  
+  /* Overlay for mobile when sidebar is open */
+  .sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 99;
+  }
+  
+  .sidebar-overlay.active {
+    display: block;
+  }
+}
+
+/* Ensure proper scrolling behavior */
+.chat-scrollbar {
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+}
+
+.chat-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.chat-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.chat-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+}
+
+.chat-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0, 0, 0, 0.3);
+}

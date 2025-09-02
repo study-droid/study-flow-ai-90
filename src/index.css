@@ -608,6 +608,25 @@ All colors are HSL format for maximum flexibility and theming support
     .custom-scrollbar {
       -webkit-overflow-scrolling: touch;
     }
+
+    /* Enhanced mobile scroll momentum */
+    * {
+      scroll-behavior: smooth;
+    }
+
+    /* Better scroll momentum on iOS */
+    body, html {
+      -webkit-overflow-scrolling: touch;
+      scroll-behavior: smooth;
+    }
+
+    /* Smooth scrolling containers */
+    .overflow-auto,
+    .overflow-y-auto,
+    [data-radix-scroll-area-viewport] {
+      -webkit-overflow-scrolling: touch;
+      scroll-behavior: smooth;
+    }
   }
 
   /* Tablet-specific adjustments */

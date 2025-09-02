@@ -15,7 +15,7 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <Header onMenuClick={() => setSidebarOpen(true)} />
-      <div className="flex min-h-0 flex-1">
+      <div className="flex flex-1 min-h-0">
         {/* Desktop Sidebar */}
         <div className="hidden lg:block flex-shrink-0">
           <Sidebar />
@@ -32,8 +32,8 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
           </SheetContent>
         </Sheet>
         
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 custom-scrollbar overflow-auto max-h-[calc(100vh-3.5rem)] sm:max-h-[calc(100vh-4rem)] min-w-0">
-          <div className="w-full max-w-full mx-auto">
+        <main className="flex-1 min-h-0 overflow-y-auto custom-scrollbar">
+          <div className="p-4 sm:p-6 lg:p-8 w-full max-w-full mx-auto min-h-full">
             {children}
           </div>
         </main>

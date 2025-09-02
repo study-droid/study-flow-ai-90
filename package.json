@@ -26,6 +26,8 @@
     "security:deploy": "scripts/deploy-security.bat",
     "deploy": "npm run build:prod && vercel --prod",
     "deploy:preview": "npm run build && vercel",
+    "deploy:functions": "SUPABASE_ACCESS_TOKEN=sbp_54f8d71cc6d9e97da88468ad29eb250ffb3e555d npx supabase functions deploy --project-ref uuebhjidsaswvuexdcbb",
+    "deploy:ai-function": "SUPABASE_ACCESS_TOKEN=sbp_54f8d71cc6d9e97da88468ad29eb250ffb3e555d npx supabase functions deploy deepseek-ai-professional --project-ref uuebhjidsaswvuexdcbb",
     "vercel:env": "vercel env pull .env.local",
     "vercel:link": "vercel link",
     "vercel:logs": "vercel logs"
@@ -119,6 +121,7 @@
     "globals": "^15.15.0",
     "jsdom": "^26.1.0",
     "postcss": "^8.5.6",
+    "supabase": "^2.39.2",
     "tailwindcss": "^3.4.17",
     "terser": "^5.43.1",
     "typescript": "^5.9.2",
