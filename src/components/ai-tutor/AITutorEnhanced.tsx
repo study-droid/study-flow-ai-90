@@ -72,6 +72,7 @@ export const AITutorEnhanced: React.FC<AITutorEnhancedProps> = ({
   const [showHistoryModal, setShowHistoryModal] = useState(false);
   const [showTimeoutPopup, setShowTimeoutPopup] = useState(false);
   const [timeoutDuration, setTimeoutDuration] = useState(0);
+  const [sessions, setSessions] = useState<any[]>([]);
   
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -634,25 +635,17 @@ export const AITutorEnhanced: React.FC<AITutorEnhancedProps> = ({
       </CardHeader>
 
       <CardContent className="flex-1 p-0 relative overflow-hidden">
-        {/* Mobile Menu Toggle */}
-        <button
-          className="mobile-menu-toggle"
-          onClick={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
-        >
-          {isMobileSidebarOpen ? <X className="h-5 w-5 text-white" /> : <Menu className="h-5 w-5 text-white" />}
-        </button>
-        
-        {/* Overlay for mobile */}
-        <div 
-          className={cn('sidebar-overlay', isMobileSidebarOpen && 'active')}
-          onClick={() => setIsMobileSidebarOpen(false)}
-        />
         
         <div className="ai-tutor-container">
-        {/* Sidebar */}
-        <ChatHistoryPanel
-          className={cn('chat-history-sidebar', isMobileSidebarOpen && 'mobile-open')}
-          sessions={[]}
+          <div className="chat-main-layout">
+            {/* Sidebar */}
+            <ChatHistoryPanel
+          className={cn(
+            'chat-history-sidebar', 
+            isMobileSidebarOpen && 'mobile-open',
+            sessions.length === 0 && 'sidebar-empty'
+          )}
+          sessions={sessions}
           activeSession={activeChatSession}
           onSessionSelect={(session) => {
             setActiveChatSession(session);
@@ -660,7 +653,7 @@ export const AITutorEnhanced: React.FC<AITutorEnhancedProps> = ({
           }}
           onSessionDelete={(sessionId) => {
             // Handle session deletion when implemented
-            console.log('Delete session:', sessionId);
+            setSessions(prev => prev.filter(s => s.id !== sessionId));
           }}
           onNewSession={() => {
             clearChat();
@@ -668,10 +661,18 @@ export const AITutorEnhanced: React.FC<AITutorEnhancedProps> = ({
           }}
           isCollapsed={isSidebarCollapsed}
           onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-        />
-        
-        {/* Main Chat Area */}
-        <div className="chat-content-area px-4">
+            />
+            
+            {/* Messages Area */}
+            <div className="chat-messages-wrapper">
+            {/* Mobile Overlay - Properly positioned */}
+            <div 
+              className={cn(
+                "sidebar-overlay",
+                isMobileSidebarOpen && "active"
+              )}
+              onClick={() => setIsMobileSidebarOpen(false)}
+            />
             {showRecommendation && (
               <DeepSeekRecommendation
                 currentProvider={'deepseek'}
@@ -684,41 +685,43 @@ export const AITutorEnhanced: React.FC<AITutorEnhancedProps> = ({
             )}
 
             {messages.length === 0 ? (
-              <div className="flex-1 flex flex-col items-center justify-center p-8">
-                <Brain className="h-12 w-12 text-muted-foreground mb-4" />
-                <h3 className="text-lg font-semibold mb-2">Start Learning with AI</h3>
-                <p className="text-sm text-muted-foreground text-center mb-6">
-                  Ask questions, get explanations, and practice with your personal AI tutor
-                </p>
-                <div className="grid grid-cols-2 gap-2 w-full max-w-md">
-                  {quickActions.map((action, index) => (
-                    <Button
-                      key={index}
-                      variant="outline"
-                      className="justify-start"
-                      onClick={async () => {
-                        setInput(action.prompt);
-                        // Don't call sendMessage immediately, let user click Send
-                        // This prevents session errors
-                      }}
-                    >
-                      <action.icon className="h-4 w-4 mr-2" />
-                      {action.label}
-                    </Button>
-                  ))}
+              <div className="flex-1 flex items-center justify-center p-8 overflow-hidden">
+                <div className="w-full max-w-4xl mx-auto">
+                  <div className="welcome-content-container">
+                    <div className="flex flex-col items-center text-center">
+                      <Brain className="h-12 w-12 text-muted-foreground mb-6" />
+                      <h3 className="text-lg font-semibold mb-4">Start Learning with AI</h3>
+                      <p className="text-sm text-muted-foreground text-center mb-10 max-w-2xl">
+                        Ask questions, get explanations, and practice with your personal AI tutor
+                      </p>
+                      <div className="quick-action-buttons">
+                        {quickActions.map((action, index) => (
+                          <Button
+                            key={index}
+                            variant="outline"
+                            className="quick-action-button"
+                            onClick={async () => {
+                              setInput(action.prompt);
+                              // Don't call sendMessage immediately, let user click Send
+                              // This prevents session errors
+                            }}
+                          >
+                            <action.icon className="h-4 w-4 icon" />
+                            <span className="text">{action.label}</span>
+                          </Button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             ) : (
               <ScrollArea 
-                className="flex-1 pr-4 chat-scrollbar overflow-y-auto"
+                className="flex-1 chat-messages-container"
                 onScroll={handleScroll}
                 ref={scrollAreaRef}
-                style={{
-                  height: 'calc(100vh - 300px)',
-                  maxHeight: '600px'
-                }}
               >
-                <div className="space-y-4 pb-4">
+                <div className="chat-messages">
                   {messages.map((message) => (
                     <MessageBubble
                       key={message.id}
@@ -755,8 +758,11 @@ export const AITutorEnhanced: React.FC<AITutorEnhancedProps> = ({
                 </div>
               </ScrollArea>
             )}
-
-            <div className="mt-4 flex gap-2">
+            </div>
+          </div>
+          
+          {/* Input Container - Now outside for proper alignment */}
+          <div className="chat-input-container flex gap-2">
               <Input
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
@@ -779,9 +785,9 @@ export const AITutorEnhanced: React.FC<AITutorEnhancedProps> = ({
                   </>
                 )}
               </Button>
-            </div>
+          </div>
 
-            {!autoScroll && (
+          {!autoScroll && (
               <Button
                 variant="secondary"
                 size="sm"
@@ -793,8 +799,7 @@ export const AITutorEnhanced: React.FC<AITutorEnhancedProps> = ({
               >
                 Jump to latest
               </Button>
-            )}
-        </div>
+          )}
         </div>
       </CardContent>
     </Card>

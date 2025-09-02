@@ -66,7 +66,7 @@ export default function Index() {
           <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-3 sm:gap-4">
             <div className="flex-1">
               <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold mb-2 sm:mb-3">
-                Welcome back, <span className="study-flow-gradient bg-clip-text text-transparent">{displayName}!</span>
+                Welcome back, <span className="study-flow-gradient-yellow bg-clip-text text-transparent">{displayName}!</span>
               </h1>
               <p className="text-sm sm:text-base lg:text-lg text-muted-foreground">
                 Ready to crush your study goals today? You have {pendingTasks} tasks pending.

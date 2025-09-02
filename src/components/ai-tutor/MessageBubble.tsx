@@ -105,36 +105,28 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
   return (
     <div
       className={cn(
-        'flex gap-3 animate-message-fade-in message-container',
-        role === 'assistant' ? '' : 'justify-end',
+        'animate-message-fade-in',
+        role === 'assistant' ? 'message-bubble-assistant' : 'message-bubble-user',
         className
       )}
     >
-      {role === 'assistant' && (
-        <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-          <Bot className="h-4 w-4 text-primary" />
-        </div>
-      )}
-      
-      <div className={cn(
-        "flex flex-col gap-1",
-        role === 'assistant' ? 'max-w-[85%]' : 'max-w-[70%] ml-auto'
-      )}>
-        <div
-          className={cn(
-            'group relative overflow-hidden message-content',
-            role === 'assistant'
-              ? 'bg-muted p-5'
-              : 'bg-primary text-primary-foreground p-4'
-          )}
-          style={{
-            overflowWrap: 'break-word',
-            wordWrap: 'break-word',
-            wordBreak: 'break-word',
-            borderRadius: role === 'assistant' ? '18px 18px 18px 4px' : '18px 18px 4px 18px',
-            marginBottom: '16px'
-          }}
-        >
+      <div className="flex gap-3">
+        {role === 'assistant' && (
+          <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+            <Bot className="h-4 w-4 text-primary" />
+          </div>
+        )}
+        
+        <div className="flex flex-col gap-1 flex-1">
+          <div
+            className={cn(
+              'group relative overflow-hidden message-content',
+              role === 'assistant' ? 'message-content-assistant' : 'message-content-user'
+            )}
+            style={{
+              borderRadius: role === 'assistant' ? '18px 18px 18px 4px' : '18px 18px 4px 18px'
+            }}
+          >
           {/* Message Content */}
           {isProfessionalResponse && showProfessionalView && processingResult ? (
             <ProfessionalResponseRenderer
@@ -379,6 +371,7 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
               )}
             </div>
           )}
+          </div>
         </div>
       </div>
 

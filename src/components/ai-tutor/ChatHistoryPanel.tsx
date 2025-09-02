@@ -5,9 +5,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { 
   Search, 
-  Plus, 
-  ChevronLeft, 
-  ChevronRight,
+  Plus,
   MessageSquare,
   History
 } from 'lucide-react';
@@ -81,15 +79,6 @@ export const ChatHistoryPanel: React.FC<ChatHistoryPanelProps> = ({
         <Button
           variant="ghost"
           size="sm"
-          onClick={onToggleCollapse}
-          className="mb-4 h-8 w-8 p-0"
-        >
-          <ChevronRight className="h-4 w-4" />
-        </Button>
-        
-        <Button
-          variant="ghost"
-          size="sm"
           onClick={onNewSession}
           className="h-8 w-8 p-0 mb-2"
           title="New Chat"
@@ -123,9 +112,12 @@ export const ChatHistoryPanel: React.FC<ChatHistoryPanelProps> = ({
     );
   }
 
+  const isEmpty = sessions.length === 0 && !searchTerm;
+  
   return (
     <div className={cn(
-      'flex flex-col h-full w-80 border-r bg-muted/20 flex-shrink-0',
+      'flex flex-col h-full w-64 border-r bg-muted/20 flex-shrink-0 transition-all duration-300',
+      isEmpty && 'sidebar-empty',
       className
     )}
     style={{
@@ -134,54 +126,65 @@ export const ChatHistoryPanel: React.FC<ChatHistoryPanelProps> = ({
       height: '100%',
       overflowY: 'hidden'
     }}>
-      {/* Header */}
+      {/* Header - Outside sidebar-content for proper display */}
       <div className="flex items-center justify-between p-4 border-b">
-        <div className="flex items-center gap-2">
-          <History className="h-4 w-4" />
-          <h2 className="font-semibold text-sm">Chat History</h2>
+        <div className="flex items-center gap-2 min-w-0">
+          <History className="h-4 w-4 flex-shrink-0" />
+          <h2 className={cn(
+            "font-semibold text-sm whitespace-nowrap transition-opacity duration-300",
+            isEmpty && "sidebar-empty-text"
+          )}>
+            Chat History
+          </h2>
         </div>
-        {onToggleCollapse && (
+      </div>
+      
+      <div className="sidebar-content flex-1 overflow-hidden">
+
+        {/* New Chat Button */}
+        <div className="p-4 pb-2">
           <Button
-            variant="ghost"
+            onClick={onNewSession}
+            className={cn(
+              "w-full justify-start gap-2",
+              isEmpty && "sidebar-empty-button"
+            )}
             size="sm"
-            onClick={onToggleCollapse}
-            className="h-6 w-6 p-0"
+            title="New Chat"
           >
-            <ChevronLeft className="h-3 w-3" />
+            <Plus className="h-4 w-4 flex-shrink-0" />
+            <span className={cn(
+              "whitespace-nowrap",
+              isEmpty && "sidebar-empty-text"
+            )}>New Chat</span>
           </Button>
-        )}
-      </div>
-
-      {/* New Chat Button */}
-      <div className="p-4 pb-2">
-        <Button
-          onClick={onNewSession}
-          className="w-full justify-start gap-2"
-          size="sm"
-        >
-          <Plus className="h-4 w-4" />
-          New Chat
-        </Button>
-      </div>
-
-      {/* Search */}
-      <div className="px-4 pb-4">
-        <div className="relative">
-          <Search className="absolute left-2 top-1/2 h-3 w-3 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            placeholder="Search conversations..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-7 h-8 text-sm"
-          />
         </div>
-      </div>
 
-      {/* Sessions List */}
-      <ScrollArea className="flex-1">
-        <div className="px-2">
+        {/* Search */}
+        <div className={cn(
+          "px-4 pb-4",
+          isEmpty && "sidebar-empty-search"
+        )}>
+          <div className="relative">
+            <Search className="absolute left-2 top-1/2 h-3 w-3 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              placeholder={isEmpty ? "" : "Search conversations..."}
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-7 h-8 text-sm"
+              title="Search conversations"
+            />
+          </div>
+        </div>
+
+        {/* Sessions List */}
+        <ScrollArea className="flex-1">
+          <div className="px-2">
           {filteredSessions.length === 0 ? (
-            <div className="p-4 text-center text-sm text-muted-foreground">
+            <div className={cn(
+              "p-4 text-center text-sm text-muted-foreground",
+              isEmpty && "sidebar-empty-text"
+            )}>
               {searchTerm ? 'No conversations found' : 'No conversations yet'}
             </div>
           ) : (
@@ -216,16 +219,20 @@ export const ChatHistoryPanel: React.FC<ChatHistoryPanelProps> = ({
               })}
             </div>
           )}
-        </div>
-      </ScrollArea>
+          </div>
+        </ScrollArea>
 
-      {/* Footer Stats */}
-      <div className="p-4 border-t">
-        <div className="text-xs text-muted-foreground text-center">
-          {sessions.length} conversation{sessions.length !== 1 ? 's' : ''}
-          {searchTerm && filteredSessions.length !== sessions.length && (
-            <span> • {filteredSessions.length} shown</span>
-          )}
+        {/* Footer Stats */}
+        <div className="p-4 border-t">
+          <div className={cn(
+            "text-xs text-muted-foreground text-center whitespace-nowrap",
+            isEmpty && "sidebar-empty-text"
+          )}>
+            {sessions.length} conversation{sessions.length !== 1 ? 's' : ''}
+            {searchTerm && filteredSessions.length !== sessions.length && (
+              <span> • {filteredSessions.length} shown</span>
+            )}
+          </div>
         </div>
       </div>
     </div>
