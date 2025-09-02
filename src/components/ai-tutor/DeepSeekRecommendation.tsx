@@ -57,15 +57,8 @@ export const DeepSeekRecommendation: React.FC<DeepSeekRecommendationProps> = ({
   ];
 
   if (isUsingDeepSeek) {
-    return (
-      <Alert className={cn('border-green-500 bg-green-50 dark:bg-green-950', className)}>
-        <CheckCircle className="h-4 w-4 text-green-600" />
-        <AlertTitle>You're using DeepSeek AI</AlertTitle>
-        <AlertDescription>
-          You're already experiencing the best AI tutoring performance with DeepSeek.
-        </AlertDescription>
-      </Alert>
-    );
+    // Don't show recommendation if already using DeepSeek
+    return null;
   }
 
   return (
