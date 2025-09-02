@@ -4,7 +4,8 @@ import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import { validateInput, profileSchema, sanitizeInput } from '@/lib/validation';
 import { validateFile, sanitizeFilename } from '@/lib/file-validation';
-import defaultAvatarImage from '@/assets/avatar_profile.png';
+// Default avatar as data URI to avoid missing file issues
+const defaultAvatarImage = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTYiIGN5PSIxNiIgcj0iMTYiIGZpbGw9IiNGNEY0RjUiLz4KPHBhdGggZD0iTTEwLjUgMjQuNUMxMC41IDIwLjA4MTcgMTMuNTgxNyAxNy41IDE4IDE3LjVDMjIuNDE4MyAxNy41IDI1LjUgMjAuMDgxNyAyNS41IDI0LjVIMTAuNVoiIGZpbGw9IiM5Q0EzQUYiLz4KPGNpcmNsZSBjeD0iMTgiIGN5PSIxMS41IiByPSI0LjUiIGZpbGw9IiM5Q0EzQUYiLz4KPC9zdmc+';
 import { logger } from '@/services/logging/logger';
 
 interface Profile {
@@ -101,12 +102,13 @@ export const useProfile = () => {
         setProfile(data);
       }
     } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "An unexpected error occurred";
       if (import.meta.env.DEV) {
-        logger.error('Profile load error:', { message: error.message }, 'UseProfile');
+        logger.error('Profile load error:', { message: errorMessage }, 'UseProfile');
       }
       toast({
         title: "Error loading profile",
-        description: error.message,
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {

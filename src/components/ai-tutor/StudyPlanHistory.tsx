@@ -58,7 +58,14 @@ export const StudyPlanHistory: React.FC = () => {
     setIsLoading(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      if (!user) {
+        toast({
+          title: 'Authentication Required',
+          description: 'Please sign in to view your study plans',
+          variant: 'destructive'
+        });
+        return;
+      }
 
       const { data, error } = await supabase
         .from('ai_tutor_study_plans')
@@ -66,16 +73,48 @@ export const StudyPlanHistory: React.FC = () => {
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error loading study plans:', error);
+        
+        // Check if table doesn't exist
+        if (error.code === '42P01' || error.message?.includes('relation') || error.message?.includes('does not exist')) {
+          toast({
+            title: 'Setup Required',
+            description: 'Study plans feature is being set up. Please try again in a moment.',
+            variant: 'destructive'
+          });
+          
+          // Initialize empty state to prevent errors
+          setStudyPlans([]);
+        } else {
+          toast({
+            title: 'Error Loading Study Plans',
+            description: error.message || 'Failed to load study plans. Please try again.',
+            variant: 'destructive'
+          });
+        }
+        return;
+      }
 
-      setStudyPlans(data || []);
-    } catch (error) {
+      // Ensure data is properly formatted
+      const formattedData = (data || []).map(plan => ({
+        ...plan,
+        topics: Array.isArray(plan.topics) ? plan.topics : [],
+        duration_days: plan.duration_days || plan.duration_weeks * 7 || 0,
+        progress_percentage: plan.progress_percentage || 0,
+        is_active: plan.is_active ?? true,
+        is_bookmarked: plan.is_bookmarked ?? false
+      }));
+
+      setStudyPlans(formattedData);
+    } catch (error: any) {
       console.error('Error loading study plans:', error);
       toast({
         title: 'Error',
-        description: 'Failed to load study plans',
+        description: error?.message || 'Failed to load study plans',
         variant: 'destructive'
       });
+      setStudyPlans([]);
     } finally {
       setIsLoading(false);
     }

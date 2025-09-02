@@ -26,7 +26,7 @@ export function AITutorLegacy() {
   const [selectedSubject, setSelectedSubject] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
-  const { subjects } = useSubjects();
+  const { subjects, loading: subjectsLoading } = useSubjects();
 
   const [studyPlanForm, setStudyPlanForm] = useState({
     subject: '',
@@ -306,19 +306,25 @@ export function AITutorLegacy() {
               </CardHeader>
               <CardContent className="space-y-2">
                 <div className="flex gap-2">
-                  <Select value={selectedSubject} onValueChange={setSelectedSubject}>
+                  <Select value={selectedSubject} onValueChange={setSelectedSubject} disabled={subjectsLoading}>
                     <SelectTrigger className="flex-1">
-                      <SelectValue placeholder="Select subject" />
+                      <SelectValue placeholder={subjectsLoading ? "Loading subjects..." : "Select subject"} />
                     </SelectTrigger>
                     <SelectContent>
-                      {subjects.map(subject => (
-                        <SelectItem key={subject.id} value={subject.name}>
-                          {subject.name}
+                      {subjects.length === 0 && !subjectsLoading ? (
+                        <SelectItem value="general" disabled>
+                          No subjects found. Add subjects in the Subjects page.
                         </SelectItem>
-                      ))}
+                      ) : (
+                        subjects.map(subject => (
+                          <SelectItem key={subject.id} value={subject.name}>
+                            {subject.name}
+                          </SelectItem>
+                        ))
+                      )}
                     </SelectContent>
                   </Select>
-                  <Button onClick={handleCreateSession} size="icon">
+                  <Button onClick={handleCreateSession} size="icon" disabled={subjectsLoading || subjects.length === 0}>
                     <Plus className="h-4 w-4" />
                   </Button>
                 </div>
@@ -457,16 +463,23 @@ export function AITutorLegacy() {
                 <Select
                   value={studyPlanForm.subject}
                   onValueChange={(value) => setStudyPlanForm({ ...studyPlanForm, subject: value })}
+                  disabled={subjectsLoading}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Select subject" />
+                    <SelectValue placeholder={subjectsLoading ? "Loading subjects..." : subjects.length === 0 ? "No subjects available" : "Select subject"} />
                   </SelectTrigger>
                   <SelectContent>
-                    {subjects.map(subject => (
-                      <SelectItem key={subject.id} value={subject.name}>
-                        {subject.name}
+                    {subjects.length === 0 && !subjectsLoading ? (
+                      <SelectItem value="general" disabled>
+                        No subjects found. Add subjects in the Subjects page.
                       </SelectItem>
-                    ))}
+                    ) : (
+                      subjects.map(subject => (
+                        <SelectItem key={subject.id} value={subject.name}>
+                          {subject.name}
+                        </SelectItem>
+                      ))
+                    )}
                   </SelectContent>
                 </Select>
 
@@ -517,16 +530,23 @@ export function AITutorLegacy() {
                 <Select
                   value={conceptForm.subject}
                   onValueChange={(value) => setConceptForm({ ...conceptForm, subject: value })}
+                  disabled={subjectsLoading}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Select subject" />
+                    <SelectValue placeholder={subjectsLoading ? "Loading subjects..." : subjects.length === 0 ? "No subjects available" : "Select subject"} />
                   </SelectTrigger>
                   <SelectContent>
-                    {subjects.map(subject => (
-                      <SelectItem key={subject.id} value={subject.name}>
-                        {subject.name}
+                    {subjects.length === 0 && !subjectsLoading ? (
+                      <SelectItem value="general" disabled>
+                        No subjects found. Add subjects in the Subjects page.
                       </SelectItem>
-                    ))}
+                    ) : (
+                      subjects.map(subject => (
+                        <SelectItem key={subject.id} value={subject.name}>
+                          {subject.name}
+                        </SelectItem>
+                      ))
+                    )}
                   </SelectContent>
                 </Select>
 
@@ -586,16 +606,23 @@ export function AITutorLegacy() {
                 <Select
                   value={practiceForm.subject}
                   onValueChange={(value) => setPracticeForm({ ...practiceForm, subject: value })}
+                  disabled={subjectsLoading}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Select subject" />
+                    <SelectValue placeholder={subjectsLoading ? "Loading subjects..." : subjects.length === 0 ? "No subjects available" : "Select subject"} />
                   </SelectTrigger>
                   <SelectContent>
-                    {subjects.map(subject => (
-                      <SelectItem key={subject.id} value={subject.name}>
-                        {subject.name}
+                    {subjects.length === 0 && !subjectsLoading ? (
+                      <SelectItem value="general" disabled>
+                        No subjects found. Add subjects in the Subjects page.
                       </SelectItem>
-                    ))}
+                    ) : (
+                      subjects.map(subject => (
+                        <SelectItem key={subject.id} value={subject.name}>
+                          {subject.name}
+                        </SelectItem>
+                      ))
+                    )}
                   </SelectContent>
                 </Select>
 

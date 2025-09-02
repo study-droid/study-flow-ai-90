@@ -33,13 +33,8 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
 
       // Redirect new users to onboarding (except if already there)
       if (location.pathname !== '/onboarding' && !hasSeenOnboarding) {
-        
         navigate('/onboarding');
-      } else {
-        
       }
-    } else {
-      
     }
   }, [user, profile, authLoading, profileLoading, navigate, location.pathname]);
 

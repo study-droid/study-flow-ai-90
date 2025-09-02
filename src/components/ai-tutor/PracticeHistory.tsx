@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/components/ui/use-toast';
 
 interface PracticeQuestion {
   id: string;
@@ -25,6 +26,7 @@ interface PracticeQuestion {
 export const PracticeHistory: React.FC = () => {
   const [questions, setQuestions] = useState<PracticeQuestion[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const { toast } = useToast();
 
   useEffect(() => {
     loadQuestions();
@@ -34,7 +36,14 @@ export const PracticeHistory: React.FC = () => {
     setIsLoading(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      if (!user) {
+        toast({
+          title: 'Authentication Required',
+          description: 'Please sign in to view your practice questions',
+          variant: 'destructive'
+        });
+        return;
+      }
 
       const { data, error } = await supabase
         .from('ai_tutor_practice_questions')
@@ -43,11 +52,36 @@ export const PracticeHistory: React.FC = () => {
         .order('created_at', { ascending: false })
         .limit(50);
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error loading practice questions:', error);
+        
+        // Check if table doesn't exist
+        if (error.code === '42P01' || error.message?.includes('relation') || error.message?.includes('does not exist')) {
+          toast({
+            title: 'Setup Required',
+            description: 'Practice questions feature is being set up. Please try again in a moment.',
+            variant: 'destructive'
+          });
+          setQuestions([]);
+        } else {
+          toast({
+            title: 'Error Loading Practice Questions',
+            description: error.message || 'Failed to load practice questions. Please try again.',
+            variant: 'destructive'
+          });
+        }
+        return;
+      }
 
       setQuestions(data || []);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error loading practice questions:', error);
+      toast({
+        title: 'Error',
+        description: error?.message || 'Failed to load practice questions',
+        variant: 'destructive'
+      });
+      setQuestions([]);
     } finally {
       setIsLoading(false);
     }

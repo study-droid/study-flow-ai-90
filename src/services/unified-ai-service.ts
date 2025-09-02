@@ -6,6 +6,8 @@
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/services/logging/logger';
 import { deepSeekOptimizer } from './deepseek-response-optimizer';
+import { responseCache } from './response-cache';
+import { aiResponseFilter } from './ai-response-filter';
 
 export type AIProvider = 'openai' | 'gemini' | 'claude' | 'deepseek';
 
@@ -129,6 +131,34 @@ class UnifiedAIService {
     session.messages.push(userMessage);
 
     try {
+      // Generate cache key
+      const cacheKey = await responseCache.generateCacheKey(content, {
+        subject: subject || session.subject,
+        topic: context?.topic,
+        userLevel: context?.userLevel,
+        responseType: context?.responseType
+      });
+
+      // Check cache first
+      const cachedResponse = await responseCache.get(cacheKey);
+      if (cachedResponse && this.isOptimizationEnabled()) {
+        logger.info('Cache hit for response', 'UnifiedAIService', { cacheKey });
+        
+        // Create assistant message from cached response
+        const assistantMessage: Message = {
+          role: 'assistant',
+          content: cachedResponse.content || cachedResponse,
+          timestamp: new Date()
+        };
+        session.messages.push(assistantMessage);
+        session.lastActive = new Date();
+        
+        // Save to database
+        await this.saveMessages(sessionId, userMessage, assistantMessage);
+        
+        return assistantMessage;
+      }
+
       // Get auth token
       const { data: { session: authSession } } = await supabase.auth.getSession();
       if (!authSession) {
@@ -232,6 +262,22 @@ class UnifiedAIService {
       };
       session.messages.push(assistantMessage);
       session.lastActive = new Date();
+
+      // Cache the optimized response
+      if (this.isOptimizationEnabled()) {
+        await responseCache.set(
+          cacheKey,
+          optimizedResponse,
+          context?.responseType === 'study_plan' ? 3600000 : 300000, // 1 hour for study plans, 5 min for others
+          {
+            subject: subject || session.subject,
+            topic: context?.topic,
+            userLevel: context?.userLevel,
+            qualityScore: optimizedResponse.metadata?.qualityScore
+          }
+        );
+        logger.debug('Response cached', 'UnifiedAIService', { cacheKey });
+      }
 
       // Save messages to database
       await this.saveMessages(sessionId, userMessage, assistantMessage);

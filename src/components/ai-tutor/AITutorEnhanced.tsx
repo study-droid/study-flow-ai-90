@@ -15,7 +15,10 @@ import {
   Settings,
   Sparkles,
   RefreshCw,
-  Zap
+  Zap,
+  Database,
+  CheckCircle,
+  Activity
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/components/ui/use-toast';
@@ -26,7 +29,10 @@ import { StudyPlanHistory } from './StudyPlanHistory';
 import { ConceptHistory } from './ConceptHistory';
 import { PracticeHistory } from './PracticeHistory';
 import { DeepSeekRecommendation } from './DeepSeekRecommendation';
+import { AIHistoryModal } from './AIHistoryModal';
 import { unifiedAIService } from '@/services/unified-ai-service';
+import { responseAnalytics } from '@/services/response-analytics';
+import { responseCache } from '@/services/response-cache';
 
 interface Message {
   id: string;
@@ -35,6 +41,9 @@ interface Message {
   timestamp: Date;
   isError?: boolean;
   feedback?: 'helpful' | 'not_helpful' | null;
+  cached?: boolean;
+  optimized?: boolean;
+  qualityScore?: number;
 }
 
 interface AITutorEnhancedProps {
@@ -55,6 +64,9 @@ export const AITutorEnhanced: React.FC<AITutorEnhancedProps> = ({
   const [sessionId, setSessionId] = useState<string>('');
   const [autoScroll, setAutoScroll] = useState(true);
   const [showRecommendation, setShowRecommendation] = useState(false);
+  const [cacheStats, setCacheStats] = useState<{ hits: number; hitRate: number }>({ hits: 0, hitRate: 0 });
+  const [isOptimizing, setIsOptimizing] = useState(false);
+  const [showHistoryModal, setShowHistoryModal] = useState(false);
   
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -69,6 +81,14 @@ export const AITutorEnhanced: React.FC<AITutorEnhancedProps> = ({
     
     // Check if should show recommendation
     checkRecommendationStatus();
+    
+    // Update cache stats periodically
+    const statsInterval = setInterval(() => {
+      const stats = responseCache.getStats();
+      setCacheStats({ hits: stats.hits, hitRate: stats.hitRate });
+    }, 5000);
+    
+    return () => clearInterval(statsInterval);
   }, []);
 
   useEffect(() => {
@@ -205,9 +225,25 @@ export const AITutorEnhanced: React.FC<AITutorEnhancedProps> = ({
 
       // Detect response type from input
       const responseType = detectResponseType(input);
-      const userLevel = getUserLevel(); // Can be enhanced to track user progress
+      const userLevel = getUserLevel();
+      
+      // Show optimization indicator
+      setIsOptimizing(true);
+      
+      // Generate cache key for tracking
+      const cacheKey = await responseCache.generateCacheKey(input, {
+        subject,
+        topic,
+        userLevel,
+        responseType
+      });
+      
+      // Check if response will be cached
+      const cachedResponse = await responseCache.get(cacheKey);
+      const isCached = !!cachedResponse;
       
       // Get AI response with optimization context
+      const startTime = Date.now();
       const response = await aiService.sendMessage(
         sessionId,
         input,
@@ -219,15 +255,35 @@ export const AITutorEnhanced: React.FC<AITutorEnhancedProps> = ({
           context: messages.slice(-10).map(m => ({ role: m.role, content: m.content }))
         }
       );
+      const responseTime = Date.now() - startTime;
+      
+      // Track analytics
+      responseAnalytics.trackResponseGeneration(sessionId, responseType, {
+        subject,
+        topic,
+        userLevel,
+        qualityScore: response?.metadata?.qualityScore || 85,
+        optimizationTime: responseTime,
+        responseLength: response?.content?.length || 0,
+        enhancementsApplied: response?.metadata?.enhancementsApplied || []
+      });
+      
+      if (isCached) {
+        responseAnalytics.trackCacheHit(sessionId, responseType, true);
+      }
 
       const assistantMessage: Message = {
         id: `msg_${Date.now()}_ai`,
         role: 'assistant',
         content: response?.content || 'I apologize, but I encountered an error. Please try again.',
-        timestamp: new Date()
+        timestamp: new Date(),
+        cached: isCached,
+        optimized: true,
+        qualityScore: response?.metadata?.qualityScore || 85
       };
 
       setMessages(prev => [...prev, assistantMessage]);
+      setIsOptimizing(false);
       
       // Save assistant message
       await saveMessage(assistantMessage);
@@ -403,6 +459,9 @@ export const AITutorEnhanced: React.FC<AITutorEnhancedProps> = ({
         )
       );
 
+      // Track in analytics
+      responseAnalytics.trackUserFeedback(sessionId, feedback);
+
       // Update in database
       const { error } = await supabase
         .from('ai_tutor_message_feedback')
@@ -440,15 +499,38 @@ export const AITutorEnhanced: React.FC<AITutorEnhancedProps> = ({
   ];
 
   return (
+    <>
     <Card className={cn('h-full flex flex-col', className)}>
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center gap-2">
-            <Sparkles className="h-5 w-5 text-primary" />
-            AI Tutor
-            {subject && <span className="text-sm font-normal text-muted-foreground">• {subject}</span>}
-          </CardTitle>
+          <div className="flex items-center gap-2">
+            <CardTitle className="flex items-center gap-2">
+              <Sparkles className="h-5 w-5 text-primary" />
+              AI Tutor
+              {subject && <span className="text-sm font-normal text-muted-foreground">• {subject}</span>}
+            </CardTitle>
+            <div className="flex items-center gap-2 ml-4">
+              <div className="px-2 py-1 bg-primary/10 rounded-full text-xs font-medium flex items-center gap-1">
+                <Activity className="h-3 w-3" />
+                Powered by AI
+              </div>
+              {cacheStats.hitRate > 0 && (
+                <div className="px-2 py-1 bg-green-500/10 rounded-full text-xs font-medium text-green-600 flex items-center gap-1">
+                  <Database className="h-3 w-3" />
+                  {Math.round(cacheStats.hitRate)}% cached
+                </div>
+              )}
+            </div>
+          </div>
           <div className="flex gap-2">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setShowHistoryModal(true)}
+              title="View history"
+            >
+              <History className="h-4 w-4" />
+            </Button>
             <Button
               variant="ghost"
               size="icon"
@@ -539,12 +621,23 @@ export const AITutorEnhanced: React.FC<AITutorEnhancedProps> = ({
                       content={message.content}
                       timestamp={message.timestamp}
                       onFeedback={(type) => handleFeedback(message.id, type)}
+                      cached={message.cached}
+                      optimized={message.optimized}
+                      qualityScore={message.qualityScore}
                     />
                   ))}
                   {isThinking && (
                     <div className="flex justify-start">
                       <div className="bg-muted rounded-lg p-3">
-                        <ThinkingIndicator variant="dots" />
+                        <div className="flex items-center gap-2">
+                          <ThinkingIndicator variant="dots" />
+                          {isOptimizing && (
+                            <span className="text-xs text-muted-foreground flex items-center gap-1">
+                              <CheckCircle className="h-3 w-3 animate-pulse" />
+                              Optimizing response...
+                            </span>
+                          )}
+                        </div>
                       </div>
                     </div>
                   )}
@@ -616,5 +709,12 @@ export const AITutorEnhanced: React.FC<AITutorEnhancedProps> = ({
         </Tabs>
       </CardContent>
     </Card>
+      
+      {/* History Modal */}
+      <AIHistoryModal 
+        open={showHistoryModal} 
+        onOpenChange={setShowHistoryModal}
+      />
+    </>
   );
 };

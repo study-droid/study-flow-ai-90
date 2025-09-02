@@ -53,7 +53,14 @@ export const ConceptHistory: React.FC = () => {
     setIsLoading(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      if (!user) {
+        toast({
+          title: 'Authentication Required',
+          description: 'Please sign in to view your concepts',
+          variant: 'destructive'
+        });
+        return;
+      }
 
       const { data, error } = await supabase
         .from('ai_tutor_concepts')
@@ -61,11 +68,44 @@ export const ConceptHistory: React.FC = () => {
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error loading concepts:', error);
+        
+        // Check if table doesn't exist
+        if (error.code === '42P01' || error.message?.includes('relation') || error.message?.includes('does not exist')) {
+          toast({
+            title: 'Setup Required',
+            description: 'Concepts feature is being set up. Please try again in a moment.',
+            variant: 'destructive'
+          });
+          setConcepts([]);
+        } else {
+          toast({
+            title: 'Error Loading Concepts',
+            description: error.message || 'Failed to load concepts. Please try again.',
+            variant: 'destructive'
+          });
+        }
+        return;
+      }
 
-      setConcepts(data || []);
-    } catch (error) {
+      // Ensure data is properly formatted
+      const formattedData = (data || []).map(concept => ({
+        ...concept,
+        examples: Array.isArray(concept.examples) ? concept.examples : [],
+        review_count: concept.review_count || 0,
+        is_bookmarked: concept.is_bookmarked ?? false
+      }));
+
+      setConcepts(formattedData);
+    } catch (error: any) {
       console.error('Error loading concepts:', error);
+      toast({
+        title: 'Error',
+        description: error?.message || 'Failed to load concepts',
+        variant: 'destructive'
+      });
+      setConcepts([]);
     } finally {
       setIsLoading(false);
     }

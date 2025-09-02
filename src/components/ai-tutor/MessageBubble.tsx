@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Bot, User, Copy, Check, ThumbsUp, ThumbsDown, Bookmark, BookmarkCheck } from 'lucide-react';
+import { Bot, User, Copy, Check, ThumbsUp, ThumbsDown, Bookmark, BookmarkCheck, Database, Sparkles, Award } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { formatDistanceToNow } from 'date-fns';
@@ -16,6 +16,9 @@ interface MessageBubbleProps {
   onBookmark?: () => void;
   onFeedback?: (type: 'helpful' | 'not_helpful') => void;
   className?: string;
+  cached?: boolean;
+  optimized?: boolean;
+  qualityScore?: number;
 }
 
 export const MessageBubble: React.FC<MessageBubbleProps> = ({
@@ -25,7 +28,10 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
   isBookmarked = false,
   onBookmark,
   onFeedback,
-  className
+  className,
+  cached = false,
+  optimized = false,
+  qualityScore
 }) => {
   // Ensure timestamp is a valid Date object
   const validTimestamp = timestamp instanceof Date && !isNaN(timestamp.getTime()) 
@@ -235,22 +241,74 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
           </div>
         </div>
 
-        {/* Timestamp */}
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <span className={cn(
-                'text-xs text-muted-foreground px-2',
-                role === 'user' && 'text-right'
-              )}>
-                {formatDistanceToNow(validTimestamp, { addSuffix: true })}
-              </span>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>{validTimestamp.toLocaleString()}</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+        {/* Timestamp and Indicators */}
+        <div className={cn(
+          'flex items-center gap-2 px-2',
+          role === 'user' && 'justify-end'
+        )}>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span className="text-xs text-muted-foreground">
+                  {formatDistanceToNow(validTimestamp, { addSuffix: true })}
+                </span>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>{validTimestamp.toLocaleString()}</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+          
+          {/* Status Indicators for Assistant Messages */}
+          {role === 'assistant' && (
+            <div className="flex items-center gap-1">
+              {cached && (
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="text-green-600">
+                        <Database className="h-3 w-3" />
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Response served from cache</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              )}
+              
+              {optimized && (
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="text-primary">
+                        <Sparkles className="h-3 w-3" />
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Response optimized by AI</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              )}
+              
+              {qualityScore && qualityScore >= 85 && (
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="text-yellow-600">
+                        <Award className="h-3 w-3" />
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>High quality response (Score: {qualityScore})</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              )}
+            </div>
+          )}
+        </div>
       </div>
 
       {role === 'user' && (

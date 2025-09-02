@@ -1,11 +1,13 @@
 /**
- * DeepSeek Response Optimizer
+ * AI Response Optimizer
  * 
- * This service acts as a filter/middleware for all DeepSeek API responses,
+ * This service acts as a filter/middleware for all AI API responses,
  * optimizing them for better quality, relevance, and educational value.
  */
 
 import { logger } from './logging/logger';
+import { aiResponseFilter } from './ai-response-filter';
+import { responseConfig, getResponseTemplate, validateResponseQuality } from '@/config/response-config';
 
 interface OptimizationConfig {
   maxTokens?: number;
@@ -54,7 +56,7 @@ export class DeepSeekResponseOptimizer {
   }
 
   /**
-   * Main optimization method - processes DeepSeek responses
+   * Main optimization method - processes AI responses
    */
   async optimizeResponse(
     response: string,
@@ -74,6 +76,18 @@ export class DeepSeekResponseOptimizer {
     const originalLength = response.length;
 
     try {
+      // Step 0: Apply AI Response Filter FIRST (brand filtering)
+      const filterResult = await aiResponseFilter.filterResponse(optimizedContent, {
+        responseType: context?.responseType,
+        subject: context?.subject,
+        preserveFormatting: false
+      });
+      optimizedContent = filterResult.filtered;
+      if (filterResult.brandMentionsRemoved > 0) {
+        enhancementsApplied.push('brand_filtering');
+        logger.info(`Removed ${filterResult.brandMentionsRemoved} brand mentions`, 'ResponseOptimizer');
+      }
+
       // Step 1: Clean and normalize the response
       optimizedContent = this.cleanResponse(optimizedContent);
       enhancementsApplied.push('cleaned');
@@ -132,9 +146,26 @@ export class DeepSeekResponseOptimizer {
         enhancementsApplied
       );
 
+      // Step 9: Final brand check - ensure no model references remain
+      const finalFilterResult = await aiResponseFilter.filterResponse(optimizedContent, {
+        responseType: context?.responseType,
+        subject: context?.subject,
+        preserveFormatting: true
+      });
+      if (finalFilterResult.brandMentionsRemoved > 0) {
+        optimizedContent = finalFilterResult.filtered;
+        enhancementsApplied.push('final_brand_check');
+      }
+
+      // Step 10: Validate response quality
+      const validationResult = validateResponseQuality(optimizedContent, qualityScore);
+      if (!validationResult.isValid) {
+        logger.warn('Response quality validation issues', 'ResponseOptimizer', validationResult.issues);
+      }
+
       const optimizationTime = Date.now() - startTime;
 
-      logger.info('Response optimized successfully', 'DeepSeekResponseOptimizer', {
+      logger.info('Response optimized successfully', 'ResponseOptimizer', {
         originalLength,
         optimizedLength: optimizedContent.length,
         optimizationTime,
@@ -155,7 +186,7 @@ export class DeepSeekResponseOptimizer {
         relatedTopics
       };
     } catch (error) {
-      logger.error('Error optimizing response', 'DeepSeekResponseOptimizer', error);
+      logger.error('Error optimizing response', 'ResponseOptimizer', error);
       // Return original response if optimization fails
       return {
         content: response,

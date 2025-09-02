@@ -74,6 +74,25 @@ const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
     return null
   }
 
+  // Sanitize CSS by only allowing valid hex colors and alphanumeric keys
+  const sanitizeColor = (color: string): string => {
+    // Only allow hex colors, rgb(), rgba(), hsl(), hsla() and CSS color names
+    if (/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(color) ||
+        /^rgb\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*\)$/.test(color) ||
+        /^rgba\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*,\s*[\d.]+\s*\)$/.test(color) ||
+        /^hsl\(\s*\d+\s*,\s*\d+%\s*,\s*\d+%\s*\)$/.test(color) ||
+        /^hsla\(\s*\d+\s*,\s*\d+%\s*,\s*\d+%\s*,\s*[\d.]+\s*\)$/.test(color) ||
+        /^[a-z]+$/i.test(color)) {
+      return color;
+    }
+    return 'transparent'; // fallback for invalid colors
+  };
+
+  const sanitizeKey = (key: string): string => {
+    // Only allow alphanumeric characters and hyphens
+    return key.replace(/[^a-zA-Z0-9-]/g, '');
+  };
+
   return (
     <style
       dangerouslySetInnerHTML={{
@@ -86,7 +105,9 @@ ${colorConfig
     const color =
       itemConfig.theme?.[theme as keyof typeof itemConfig.theme] ||
       itemConfig.color
-    return color ? `  --color-${key}: ${color};` : null
+    const sanitizedColor = color ? sanitizeColor(color) : null;
+    const sanitizedKey = sanitizeKey(key);
+    return sanitizedColor ? `  --color-${sanitizedKey}: ${sanitizedColor};` : null
   })
   .join("\n")}
 }

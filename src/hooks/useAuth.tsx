@@ -248,12 +248,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       return { error: error?.message };
     } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "An unexpected error occurred";
       toast({
         title: "Google sign in failed",
-        description: "An unexpected error occurred",
+        description: errorMessage,
         variant: "destructive",
       });
-      return { error: error.message };
+      return { error: errorMessage };
     }
   };
 
@@ -269,9 +270,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         description: "You have been successfully signed out.",
       });
     } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "An unexpected error occurred";
       toast({
         title: "Sign out failed",
-        description: error.message,
+        description: errorMessage,
         variant: "destructive",
       });
     }
@@ -299,12 +301,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       return { success: true };
     } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "An unexpected error occurred";
       toast({
         title: "Password reset failed",
-        description: "An unexpected error occurred",
+        description: errorMessage,
         variant: "destructive",
       });
-      return { error: error.message };
+      return { error: errorMessage };
     }
   };
 
