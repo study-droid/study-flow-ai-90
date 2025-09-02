@@ -65,10 +65,7 @@ export const AITutorEnhanced: React.FC<AITutorEnhancedProps> = ({
 
   useEffect(() => {
     // Initialize session
-    setSessionId(`session_${Date.now()}`);
-    
-    // Load previous messages if any
-    loadPreviousMessages();
+    initializeSession();
     
     // Check if should show recommendation
     checkRecommendationStatus();
@@ -105,6 +102,21 @@ export const AITutorEnhanced: React.FC<AITutorEnhancedProps> = ({
       }
     } catch (error) {
       console.error('Error loading previous messages:', error);
+    }
+  };
+
+  const initializeSession = async () => {
+    try {
+      // Create a new session in the AI service
+      const session = await aiService.createSession(subject || 'General');
+      setSessionId(session.id);
+      
+      // Load previous messages if any
+      await loadPreviousMessages();
+    } catch (error) {
+      console.error('Failed to initialize AI session:', error);
+      // Fallback to local session ID
+      setSessionId(`session_${Date.now()}`);
     }
   };
 
@@ -162,6 +174,19 @@ export const AITutorEnhanced: React.FC<AITutorEnhancedProps> = ({
 
   const sendMessage = async () => {
     if (!input.trim() || isThinking) return;
+
+    // Ensure we have a session
+    if (!sessionId) {
+      await initializeSession();
+      if (!sessionId) {
+        toast({
+          title: 'Session Error',
+          description: 'Failed to initialize chat session. Please refresh the page.',
+          variant: 'destructive'
+        });
+        return;
+      }
+    }
 
     const userMessage: Message = {
       id: `msg_${Date.now()}`,
@@ -488,9 +513,10 @@ export const AITutorEnhanced: React.FC<AITutorEnhancedProps> = ({
                       key={index}
                       variant="outline"
                       className="justify-start"
-                      onClick={() => {
+                      onClick={async () => {
                         setInput(action.prompt);
-                        sendMessage();
+                        // Don't call sendMessage immediately, let user click Send
+                        // This prevents session errors
                       }}
                     >
                       <action.icon className="h-4 w-4 mr-2" />
