@@ -1,0 +1,108 @@
+# Dependencies
+node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Development files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.test
+.env.gemini
+
+# Build outputs
+dist
+build
+.vite
+.next
+
+# IDE files
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+logs
+*.log
+
+# Temporary files
+tmp
+temp
+.tmp
+.temp
+
+# Testing
+coverage
+.nyc_output
+
+# Documentation (exclude from deployment)
+*.md
+docs/
+DEPLOYMENT_GUIDE.md
+MANUAL_DB_FIX.md
+FLASHCARD_*.md
+EDGE_FUNCTION_*.md
+GEMINI_*.md
+SUPABASE_*.md
+DEV_*.md
+ENHANCED_*.md
+AI_*.md
+DEBUG_*.md
+PROJECT_*.md
+TESTING_*.md
+UPDATE_*.md
+FIXED_*.md
+
+# Scripts and SQL files
+scripts/
+*.sql
+COMPLETE_FLASHCARD_DIAGNOSIS.sql
+DIFFICULTY_TYPE_FIX.sql
+QUICK_CONSTRAINT_FIX.sql
+SIMPLE_DECK_FIX.sql
+TEST_FLASHCARD_INSERT.sql
+
+# Git
+.git
+.gitignore
+
+# Supabase development files
+supabase/.branches/
+supabase/.temp/
+supabase/config.toml
+
+# Test files
+public/test-csp.html
+test-server.js
+test-*.html
+src/test/
+src/**/*.test.ts
+src/**/*.test.tsx
+**/__tests__/
+
+# Deployment scripts
+deploy-*.js
+deploy-*.bat
+deploy-*.sh
+setup-*.bat
+setup-*.sh
+start-*.bat
+start-*.sh
+vercel-deploy.bat
+vercel-deploy.sh
+UPDATE_*.bat
+UPDATE_*.sh
+FIX_*.js
+
+# Temporary and misc files
+nul
+tmp/
+temp/

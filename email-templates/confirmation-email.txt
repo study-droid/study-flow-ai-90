@@ -1,0 +1,35 @@
+Welcome to Study-Flow! 📚
+
+Hi there, future Study-Flow champion! 🎓
+
+We're thrilled you've decided to join Study-Flow, your AI-powered study companion. You're just one click away from unlocking a world of smart studying, personalized learning paths, and achieving your academic goals!
+
+CONFIRM YOUR EMAIL ADDRESS
+👆 Click the link below to activate your account:
+{{ .ConfirmationURL }}
+
+⏰ IMPORTANT: This link expires in 10 minutes for your security.
+
+Here's what awaits you:
+
+🧠 AI-Powered Study Sessions
+Get personalized study recommendations and adaptive learning paths tailored to your needs
+
+🎯 Smart Goal Tracking  
+Set goals, track progress, and celebrate achievements with detailed analytics
+
+⚡ Focus Mode & Pomodoro Timer
+Enhance concentration with ambient sounds and proven study techniques
+
+Having trouble with the link? Copy and paste this URL into your browser:
+{{ .ConfirmationURL }}
+
+---
+
+Need help? We're here for you!
+📧 support@study-flow.net
+
+If you didn't create an account with Study-Flow, please ignore this email. Your email address won't be used without confirmation.
+
+© 2024 Study-Flow. All rights reserved.
+Empowering students to achieve more, stress less, and study smart.

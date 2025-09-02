@@ -1,0 +1,18 @@
+# Supabase Project Configuration
+project_id = "uuebhjidsaswvuexdcbb"
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public", "storage", "graphql_public"]
+
+[auth]
+enabled = true
+site_url = "http://localhost:8080"
+additional_redirect_urls = ["https://localhost:8080"]
+
+[studio]
+enabled = true
+port = 54323
+
+# Functions configuration removed to fix parsing error

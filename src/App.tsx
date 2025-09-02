@@ -1,0 +1,77 @@
+import { Toaster } from "@/components/ui/toaster";
+import { Toaster as Sonner } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "@/hooks/useAuth";
+import { SecurityProvider } from "@/hooks/useSecurity";
+import { ProtectedRoute } from "@/components/layout/ProtectedRoute";
+import { ErrorBoundary } from "@/components/error/ErrorBoundary";
+import { Suspense, lazy } from "react";
+import { FloatingTimer } from "@/components/timer/FloatingTimer";
+import { EmbeddedAmbientPlayer } from "@/components/audio/EmbeddedAmbientPlayer";
+import { PageLoader } from "@/components/ui/page-loader";
+
+const Index = lazy(() => import("./pages/Index"));
+const Tasks = lazy(() => import("./pages/Tasks"));
+const Study = lazy(() => import("./pages/Study"));
+const Calendar = lazy(() => import("./pages/Calendar"));
+const Analytics = lazy(() => import("./pages/Analytics"));
+const Flashcards = lazy(() => import("./pages/Flashcards"));
+const Goals = lazy(() => import("./pages/Goals"));
+const Settings = lazy(() => import("./pages/Settings"));
+const Subjects = lazy(() => import("./pages/Subjects").then(m => ({ default: m.Subjects })));
+const Timetable = lazy(() => import("./pages/Timetable").then(m => ({ default: m.Timetable })));
+const Security = lazy(() => import("./pages/Security").then(m => ({ default: m.Security })));
+const Performance = lazy(() => import("./pages/Performance").then(m => ({ default: m.Performance })));
+const Achievements = lazy(() => import("./pages/Achievements").then(m => ({ default: m.Achievements })));
+const AIRecommendations = lazy(() => import("./pages/AIRecommendations").then(m => ({ default: m.AIRecommendations })));
+const AITutor = lazy(() => import("./pages/AITutor"));
+const Auth = lazy(() => import("./pages/Auth"));
+const Onboarding = lazy(() => import("./pages/Onboarding"));
+const NotFound = lazy(() => import("./pages/NotFound"));
+
+const queryClient = new QueryClient();
+
+const App = () => (
+  <ErrorBoundary>
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <SecurityProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+              <FloatingTimer />
+              <EmbeddedAmbientPlayer />
+              <Suspense fallback={<PageLoader message="Preparing your study environment..." />}> 
+                <Routes>
+                  <Route path="/auth" element={<Auth />} />
+                  <Route path="/onboarding" element={<ProtectedRoute><Onboarding /></ProtectedRoute>} />
+                  <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
+                  <Route path="/tasks" element={<ProtectedRoute><Tasks /></ProtectedRoute>} />
+                  <Route path="/study" element={<ProtectedRoute><Study /></ProtectedRoute>} />
+                  <Route path="/calendar" element={<ProtectedRoute><Calendar /></ProtectedRoute>} />
+                  <Route path="/flashcards" element={<ProtectedRoute><Flashcards /></ProtectedRoute>} />
+                  <Route path="/goals" element={<ProtectedRoute><Goals /></ProtectedRoute>} />
+                  <Route path="/subjects" element={<ProtectedRoute><Subjects /></ProtectedRoute>} />
+                  <Route path="/timetable" element={<ProtectedRoute><Timetable /></ProtectedRoute>} />
+                  <Route path="/analytics" element={<ProtectedRoute><Analytics /></ProtectedRoute>} />
+                  <Route path="/security" element={<ProtectedRoute><Security /></ProtectedRoute>} />
+                  <Route path="/performance" element={<ProtectedRoute><Performance /></ProtectedRoute>} />
+                  <Route path="/achievements" element={<ProtectedRoute><Achievements /></ProtectedRoute>} />
+                  <Route path="/ai-recommendations" element={<ProtectedRoute><AIRecommendations /></ProtectedRoute>} />
+                  <Route path="/ai-tutor" element={<ProtectedRoute><AITutor /></ProtectedRoute>} />
+                  <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </Suspense>
+            </BrowserRouter>
+          </TooltipProvider>
+        </SecurityProvider>
+      </AuthProvider>
+    </QueryClientProvider>
+  </ErrorBoundary>
+);
+
+export default App;
