@@ -9,11 +9,11 @@ interface AIRequest {
   messages?: Array<{ role: string; content: string }>;
 }
 
-// CORS headers
+// CORS headers - Production ready with all required headers
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-  'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
+  'Access-Control-Allow-Headers': 'Authorization, authorization, X-Client-Info, x-client-info, apikey, Content-Type, content-type, X-Signature, x-signature, X-Timestamp, x-timestamp, X-Nonce, x-nonce',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
   'Access-Control-Max-Age': '86400',
 };
 
@@ -21,8 +21,7 @@ const corsHeaders = {
 const API_KEY_CONFIG = {
   deepseek: {
     primary: 'DEEPSEEK_API_KEY',
-    fallback: 'VITE_DEEPSEEK_API_KEY',
-    hardcoded: 'sk-e4f1da719783415d84e3eee0e669b829' // Fallback for immediate use
+    fallback: 'VITE_DEEPSEEK_API_KEY'
   },
   gemini: {
     primary: 'GEMINI_API_KEY',
@@ -263,12 +262,6 @@ async function getApiKey(provider: string): Promise<string | null> {
     }
   }
 
-  // For DeepSeek, use hardcoded key as last resort
-  if (provider === 'deepseek' && config.hardcoded) {
-    console.log('Using hardcoded DeepSeek API key');
-    return config.hardcoded;
-  }
-
   console.log(`No valid API key found for ${provider}`);
   return null;
 }
@@ -467,8 +460,8 @@ async function callDeepSeek(
   maxTokens: number,
   messages?: Array<{ role: string; content: string }>
 ): Promise<any> {
-  // Use hardcoded API key if needed
-  const finalApiKey = apiKey || 'sk-e4f1da719783415d84e3eee0e669b829';
+  // Use provided API key
+  const finalApiKey = apiKey;
   
   // Validate model
   const validModels = ['deepseek-chat', 'deepseek-reasoner'];

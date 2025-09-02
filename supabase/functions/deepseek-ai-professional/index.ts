@@ -39,7 +39,7 @@ interface ProfessionalResponse {
 // Enhanced CORS headers for production
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-session-id',
+  'Access-Control-Allow-Headers': 'Authorization, authorization, X-Client-Info, x-client-info, apikey, Content-Type, content-type, X-Signature, x-signature, X-Timestamp, x-timestamp, X-Nonce, x-nonce, X-Session-Id, x-session-id',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
   'Access-Control-Max-Age': '86400',
   'Cache-Control': 'no-cache',

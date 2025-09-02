@@ -54,6 +54,10 @@ const aiFeatures: NavItem[] = [
   { title: "AI Tutor", icon: GraduationCap, href: "/ai-tutor", color: "primary" },
 ];
 
+const bottomNavItems: NavItem[] = [
+  { title: "Settings", icon: Settings, href: "/settings" },
+];
+
 export const Sidebar = ({ className, onNavigate, isMobileSheet = false }: SidebarProps) => {
   const [isCollapsed, setIsCollapsed] = useState(() => {
     // Never collapse if in mobile sheet, otherwise check screen size
@@ -198,30 +202,17 @@ export const Sidebar = ({ className, onNavigate, isMobileSheet = false }: Sideba
             ))}
           </div>
 
+          <Separator className="my-3 sm:my-4" />
+
+          {/* Settings */}
+          <div className="space-y-1">
+            {bottomNavItems.map((item) => (
+              <NavButton key={item.href} item={item} />
+            ))}
+          </div>
+
         </div>
       </ScrollArea>
-
-      {/* Bottom Section */}
-      <div className="border-t p-3">
-        <Button
-          variant="ghost"
-          className={cn(
-            "w-full justify-start text-sm min-h-[44px] touch-manipulation",
-            !showFullNav && "px-2 justify-center"
-          )}
-          onClick={() => {
-            navigate('/settings');
-            onNavigate?.();
-          }}
-          title={!showFullNav ? "Settings" : undefined}
-        >
-          <Settings className={cn(
-            "h-5 w-5 flex-shrink-0",
-            showFullNav && "mr-3"
-          )} />
-          {showFullNav && <span className="truncate font-medium">Settings</span>}
-        </Button>
-      </div>
     </div>
   );
 };

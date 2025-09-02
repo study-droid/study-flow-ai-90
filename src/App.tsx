@@ -27,6 +27,7 @@ const Performance = lazy(() => import("./pages/Performance").then(m => ({ defaul
 const Achievements = lazy(() => import("./pages/Achievements").then(m => ({ default: m.Achievements })));
 const AIRecommendations = lazy(() => import("./pages/AIRecommendations").then(m => ({ default: m.AIRecommendations })));
 const AITutor = lazy(() => import("./pages/AITutor"));
+const AIInsights = lazy(() => import("./pages/AIInsights"));
 const Auth = lazy(() => import("./pages/Auth"));
 const Onboarding = lazy(() => import("./pages/Onboarding"));
 const NotFound = lazy(() => import("./pages/NotFound"));
@@ -62,6 +63,7 @@ const App = () => (
                   <Route path="/achievements" element={<ProtectedRoute><Achievements /></ProtectedRoute>} />
                   <Route path="/ai-recommendations" element={<ProtectedRoute><AIRecommendations /></ProtectedRoute>} />
                   <Route path="/ai-tutor" element={<ProtectedRoute><AITutor /></ProtectedRoute>} />
+                  <Route path="/ai-insights" element={<ProtectedRoute><AIInsights /></ProtectedRoute>} />
                   <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>

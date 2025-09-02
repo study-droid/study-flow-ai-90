@@ -44,14 +44,14 @@ class AIProxyClient {
         request
       );
 
-      // Call the edge function with signature headers
+      // Call the edge function with signature headers (lowercase for CORS)
       const { data, error } = await supabase.functions.invoke('ai-proxy-secure', {
         body: request,
         headers: {
-          Authorization: `Bearer ${session.access_token}`,
-          'X-Signature': signature,
-          'X-Timestamp': timestamp.toString(),
-          'X-Nonce': nonce
+          'authorization': `Bearer ${session.access_token}`,
+          'x-signature': signature,
+          'x-timestamp': timestamp.toString(),
+          'x-nonce': nonce
         }
       });
 
