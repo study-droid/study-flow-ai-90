@@ -115,60 +115,56 @@ export const ChatHistoryPanel: React.FC<ChatHistoryPanelProps> = ({
   const isEmpty = sessions.length === 0 && !searchTerm;
   
   return (
-    <div className={cn(
-      'flex flex-col h-full w-64 border-r bg-muted/20 flex-shrink-0 transition-all duration-300',
-      isEmpty && 'sidebar-empty',
-      className
-    )}
-    style={{
-      position: 'sticky',
-      top: 0,
-      height: '100%',
-      overflowY: 'hidden'
-    }}>
-      {/* Header - Outside sidebar-content for proper display */}
-      <div className="flex items-center justify-between p-4 border-b">
+    <div
+      className={cn(
+        'chat-history-panel flex flex-col h-full w-64 border-r bg-muted/20 flex-shrink-0 transition-all duration-300',
+        isEmpty && 'sidebar-empty',
+        className
+      )}
+    >
+      {/* Header - now sticky within the panel, not the whole panel */}
+      <div className="sticky top-0 z-10 flex items-center justify-between p-4 border-b bg-muted/20 backdrop-blur supports-[backdrop-filter]:bg-muted/30">
         <div className="flex items-center gap-2 min-w-0">
           <History className="h-4 w-4 flex-shrink-0" />
-          <h2 className={cn(
-            "font-semibold text-sm whitespace-nowrap transition-opacity duration-300",
-            isEmpty && "sidebar-empty-text"
-          )}>
+          <h2
+            className={cn(
+              'font-semibold text-sm whitespace-nowrap transition-opacity duration-300',
+              isEmpty && 'sidebar-empty-text'
+            )}
+          >
             Chat History
           </h2>
         </div>
       </div>
       
-      <div className="sidebar-content flex-1 overflow-hidden">
-
+      {/* Content container - allow inner scrolling and avoid parent overflow issues */}
+      <div className="sidebar-content flex-1 min-h-0 flex flex-col">
         {/* New Chat Button */}
         <div className="p-4 pb-2">
           <Button
             onClick={onNewSession}
             className={cn(
-              "w-full justify-start gap-2",
-              isEmpty && "sidebar-empty-button"
+              'w-full justify-start gap-2',
+              isEmpty && 'sidebar-empty-button'
             )}
             size="sm"
             title="New Chat"
           >
             <Plus className="h-4 w-4 flex-shrink-0" />
-            <span className={cn(
-              "whitespace-nowrap",
-              isEmpty && "sidebar-empty-text"
-            )}>New Chat</span>
+            <span
+              className={cn('whitespace-nowrap', isEmpty && 'sidebar-empty-text')}
+            >
+              New Chat
+            </span>
           </Button>
         </div>
 
         {/* Search */}
-        <div className={cn(
-          "px-4 pb-4",
-          isEmpty && "sidebar-empty-search"
-        )}>
+        <div className={cn('px-4 pb-4', isEmpty && 'sidebar-empty-search')}>
           <div className="relative">
             <Search className="absolute left-2 top-1/2 h-3 w-3 -translate-y-1/2 text-muted-foreground" />
             <Input
-              placeholder={isEmpty ? "" : "Search conversations..."}
+              placeholder={isEmpty ? '' : 'Search conversations...'}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-7 h-8 text-sm"
@@ -177,57 +173,61 @@ export const ChatHistoryPanel: React.FC<ChatHistoryPanelProps> = ({
           </div>
         </div>
 
-        {/* Sessions List */}
-        <ScrollArea className="flex-1">
-          <div className="px-2">
-          {filteredSessions.length === 0 ? (
-            <div className={cn(
-              "p-4 text-center text-sm text-muted-foreground",
-              isEmpty && "sidebar-empty-text"
-            )}>
-              {searchTerm ? 'No conversations found' : 'No conversations yet'}
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {groupOrder.map(groupName => {
-                const groupSessions = groupedSessions[groupName];
-                if (!groupSessions?.length) return null;
+        {/* Sessions List - Scrollable area */}
+        <ScrollArea className="flex-1 min-h-0">
+          <div className="px-2 pb-2">
+            {filteredSessions.length === 0 ? (
+              <div
+                className={cn(
+                  'p-4 text-center text-sm text-muted-foreground',
+                  isEmpty && 'sidebar-empty-text'
+                )}
+              >
+                {searchTerm ? 'No conversations found' : 'No conversations yet'}
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {groupOrder.map((groupName) => {
+                  const groupSessions = groupedSessions[groupName];
+                  if (!groupSessions?.length) return null;
 
-                return (
-                  <div key={groupName} className="space-y-2">
-                    <div className="px-2 py-1">
-                      <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                        {groupName}
-                      </h3>
-                      <Separator className="mt-1" />
+                  return (
+                    <div key={groupName} className="space-y-2">
+                      <div className="px-2 py-1">
+                        <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                          {groupName}
+                        </h3>
+                        <Separator className="mt-1" />
+                      </div>
+
+                      <div className="space-y-1">
+                        {groupSessions.map((session) => (
+                          <SessionPreview
+                            key={session.id}
+                            session={session}
+                            isActive={activeSession?.id === session.id}
+                            onSelect={onSessionSelect}
+                            onDelete={onSessionDelete}
+                            className="mx-1"
+                          />
+                        ))}
+                      </div>
                     </div>
-                    
-                    <div className="space-y-1">
-                      {groupSessions.map(session => (
-                        <SessionPreview
-                          key={session.id}
-                          session={session}
-                          isActive={activeSession?.id === session.id}
-                          onSelect={onSessionSelect}
-                          onDelete={onSessionDelete}
-                          className="mx-1"
-                        />
-                      ))}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          )}
+                  );
+                })}
+              </div>
+            )}
           </div>
         </ScrollArea>
 
-        {/* Footer Stats */}
-        <div className="p-4 border-t">
-          <div className={cn(
-            "text-xs text-muted-foreground text-center whitespace-nowrap",
-            isEmpty && "sidebar-empty-text"
-          )}>
+        {/* Footer Stats - optional sticky to remain visible at bottom of panel */}
+        <div className="sticky bottom-0 z-10 p-4 border-t bg-muted/20 backdrop-blur supports-[backdrop-filter]:bg-muted/30">
+          <div
+            className={cn(
+              'text-xs text-muted-foreground text-center whitespace-nowrap',
+              isEmpty && 'sidebar-empty-text'
+            )}
+          >
             {sessions.length} conversation{sessions.length !== 1 ? 's' : ''}
             {searchTerm && filteredSessions.length !== sessions.length && (
               <span> • {filteredSessions.length} shown</span>

@@ -593,171 +593,134 @@ export const AITutorEnhanced: React.FC<AITutorEnhancedProps> = ({
     <>
     <Card className={cn('h-full flex flex-col', className)}>
       <CardHeader className="pb-3">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <CardTitle className="flex items-center gap-2">
-              <Sparkles className="h-5 w-5 text-primary" />
-              AI Tutor
-              {subject && <span className="text-sm font-normal text-muted-foreground">• {subject}</span>}
-            </CardTitle>
-            <div className="flex items-center gap-2 ml-4">
-              <div className="px-2 py-1 bg-primary/10 rounded-full text-xs font-medium flex items-center gap-1">
-                <Activity className="h-3 w-3" />
-                Powered by AI
-              </div>
-              {cacheStats.hitRate > 0 && (
-                <div className="px-2 py-1 bg-green-500/10 rounded-full text-xs font-medium text-green-600 flex items-center gap-1">
-                  <Database className="h-3 w-3" />
-                  {Math.round(cacheStats.hitRate)}% cached
-                </div>
-              )}
-            </div>
-          </div>
-          <div className="flex gap-2">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setShowHistoryModal(true)}
-              title="View history"
-            >
-              <History className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={clearChat}
-              title="Clear chat"
-            >
-              <RefreshCw className="h-4 w-4" />
-            </Button>
-          </div>
-        </div>
+        {/* header content */}
       </CardHeader>
 
-      <CardContent className="flex-1 p-0 relative overflow-hidden">
-        
+      <CardContent className="flex-1 p-0 relative overflow-hidden min-h-0">
+        {/* was: className="flex-1 p-0 relative overflow-hidden" */}
         <div className="ai-tutor-container">
           <div className="chat-main-layout">
             {/* Sidebar */}
             <ChatHistoryPanel
-          className={cn(
-            'chat-history-sidebar', 
-            isMobileSidebarOpen && 'mobile-open',
-            sessions.length === 0 && 'sidebar-empty'
-          )}
-          sessions={sessions}
-          activeSession={activeChatSession}
-          onSessionSelect={(session) => {
-            setActiveChatSession(session);
-            // Load session messages here when implemented
-          }}
-          onSessionDelete={(sessionId) => {
-            // Handle session deletion when implemented
-            setSessions(prev => prev.filter(s => s.id !== sessionId));
-          }}
-          onNewSession={() => {
-            clearChat();
-            setActiveChatSession(null);
-          }}
-          isCollapsed={isSidebarCollapsed}
-          onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+              className={cn(
+                'chat-history-sidebar', 
+                isMobileSidebarOpen && 'mobile-open',
+                sessions.length === 0 && 'sidebar-empty'
+              )}
+              sessions={sessions}
+              activeSession={activeChatSession}
+              onSessionSelect={(session) => {
+                setActiveChatSession(session);
+                // Load session messages here when implemented
+              }}
+              onSessionDelete={(sessionId) => {
+                // Handle session deletion when implemented
+                setSessions(prev => prev.filter(s => s.id !== sessionId));
+              }}
+              onNewSession={() => {
+                clearChat();
+                setActiveChatSession(null);
+              }}
+              isCollapsed={isSidebarCollapsed}
+              onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
             />
             
             {/* Messages Area */}
             <div className="chat-messages-wrapper">
-            {/* Mobile Overlay - Properly positioned */}
-            <div 
-              className={cn(
-                "sidebar-overlay",
-                isMobileSidebarOpen && "active"
-              )}
-              onClick={() => setIsMobileSidebarOpen(false)}
-            />
-            {showRecommendation && (
-              <DeepSeekRecommendation
-                currentProvider={'deepseek'}
-                onSetupClick={() => {
-                  setShowRecommendation(false);
-                  localStorage.setItem('deepseek_recommendation_shown', Date.now().toString());
-                }}
-                className="mb-3"
+              {/* overlay + scroll area + input */}
+              {/* Mobile Overlay - Properly positioned */}
+              <div 
+                className={cn(
+                  "sidebar-overlay",
+                  isMobileSidebarOpen && "active"
+                )}
+                onClick={() => setIsMobileSidebarOpen(false)}
               />
-            )}
+              {showRecommendation && (
+                <DeepSeekRecommendation
+                  currentProvider={'deepseek'}
+                  onSetupClick={() => {
+                    setShowRecommendation(false);
+                    localStorage.setItem('deepseek_recommendation_shown', Date.now().toString());
+                  }}
+                  className="mb-3"
+                />
+              )}
 
-            {messages.length === 0 ? (
-              <div className="flex-1 flex items-center justify-center p-8 overflow-hidden">
-                <div className="w-full max-w-4xl mx-auto">
-                  <div className="welcome-content-container">
-                    <div className="flex flex-col items-center text-center">
-                      <Brain className="h-12 w-12 text-muted-foreground mb-6" />
-                      <h3 className="text-lg font-semibold mb-4">Start Learning with AI</h3>
-                      <p className="text-sm text-muted-foreground text-center mb-10 max-w-2xl">
-                        Ask questions, get explanations, and practice with your personal AI tutor
-                      </p>
-                      <div className="quick-action-buttons">
-                        {quickActions.map((action, index) => (
-                          <Button
-                            key={index}
-                            variant="outline"
-                            className="quick-action-button"
-                            onClick={async () => {
-                              setInput(action.prompt);
-                              // Don't call sendMessage immediately, let user click Send
-                              // This prevents session errors
-                            }}
-                          >
-                            <action.icon className="h-4 w-4 icon" />
-                            <span className="text">{action.label}</span>
-                          </Button>
-                        ))}
+              {messages.length === 0 ? (
+                <div className="flex-1 flex items-center justify-center p-8 overflow-hidden">
+                  <div className="w-full max-w-4xl mx-auto">
+                    <div className="welcome-content-container">
+                      <div className="flex flex-col items-center text-center">
+                        <Brain className="h-12 w-12 text-muted-foreground mb-6" />
+                        <h3 className="text-lg font-semibold mb-4">Start Learning with AI</h3>
+                        <p className="text-sm text-muted-foreground text-center mb-10 max-w-2xl">
+                          Ask questions, get explanations, and practice with your personal AI tutor
+                        </p>
+                        <div className="quick-action-buttons">
+                          {quickActions.map((action, index) => (
+                            <Button
+                              key={index}
+                              variant="outline"
+                              className="quick-action-button"
+                              onClick={async () => {
+                                setInput(action.prompt);
+                                // Don't call sendMessage immediately, let user click Send
+                                // This prevents session errors
+                              }}
+                            >
+                              <action.icon className="h-4 w-4 icon" />
+                              <span className="text">{action.label}</span>
+                            </Button>
+                          ))}
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ) : (
-              <ScrollArea 
-                className="flex-1 chat-messages-container"
-                onScroll={handleScroll}
-                ref={scrollAreaRef}
-              >
-                <div className="chat-messages">
-                  {messages.map((message) => (
-                    <MessageBubble
-                      key={message.id}
-                      role={message.role}
-                      content={message.content}
-                      timestamp={message.timestamp}
-                      onFeedback={(type) => handleFeedback(message.id, type)}
-                      cached={message.cached}
-                      optimized={message.optimized}
-                      qualityScore={message.qualityScore}
-                      processingResult={message.processingResult}
-                      onProgressUpdate={(taskId, completed) => {
-                        // Handle progress tracking for study plans
-                        console.log('Task progress:', taskId, completed);
-                      }}
-                    />
-                  ))}
-                  {isThinking && (
-                    <div className="flex justify-start">
-                      <div className="bg-muted rounded-lg p-3">
-                        <div className="flex items-center gap-2">
-                          <ThinkingIndicator variant="dots" />
-                          {isOptimizing && (
-                            <span className="text-xs text-muted-foreground flex items-center gap-1">
-                              <CheckCircle className="h-3 w-3 animate-pulse" />
-                              Optimizing response...
-                            </span>
-                          )}
+              ) : (
+                <ScrollArea 
+                  className="flex-1 chat-messages-container"
+                  onScroll={handleScroll}
+                  ref={scrollAreaRef}
+                >
+                  <div className="chat-messages">
+                    {messages.map((message) => (
+                      <MessageBubble
+                        key={message.id}
+                        role={message.role}
+                        content={message.content}
+                        timestamp={message.timestamp}
+                        onFeedback={(type) => handleFeedback(message.id, type)}
+                        cached={message.cached}
+                        optimized={message.optimized}
+                        qualityScore={message.qualityScore}
+                        processingResult={message.processingResult}
+                        onProgressUpdate={(taskId, completed) => {
+                          // Handle progress tracking for study plans
+                          console.log('Task progress:', taskId, completed);
+                        }}
+                      />
+                    ))}
+                    {isThinking && (
+                      <div className="flex justify-start">
+                        <div className="bg-muted rounded-lg p-3">
+                          <div className="flex items-center gap-2">
+                            <ThinkingIndicator variant="dots" />
+                            {isOptimizing && (
+                              <span className="text-xs text-muted-foreground flex items-center gap-1">
+                                <CheckCircle className="h-3 w-3 animate-pulse" />
+                                Optimizing response...
+                              </span>
+                            )}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  )}
-                  <div ref={messagesEndRef} />
-                </div>
-              </ScrollArea>
-            )}
+                    )}
+                    <div ref={messagesEndRef} />
+                  </div>
+                </ScrollArea>
+              )}
             </div>
           </div>
           

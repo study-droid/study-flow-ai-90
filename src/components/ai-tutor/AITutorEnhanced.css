@@ -28,6 +28,7 @@
   -webkit-backdrop-filter: blur(10px);
   border-right: 1px solid hsl(var(--border));
   transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  /* remove overly high global z-index to avoid header interference */
   z-index: 1010;
 }
 
@@ -322,19 +323,21 @@
   /* Container already in column direction */
   
   .chat-history-sidebar {
-    position: fixed;
+    /* previously: position: fixed; top: 0; height: 100vh; */
+    position: absolute;
     left: 0;
     top: 0;
-    height: 100vh;
+    bottom: 0;           /* fill the chat area below the header */
+    height: auto;        /* rely on container height */
     width: 250px;
     transform: translateX(-100%);
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    z-index: 1010;
     box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
   }
   
   .chat-history-sidebar.mobile-open {
     transform: translateX(0);
+    z-index: 1001;       /* above overlay (1000), within chat area */
   }
   
   .chat-messages-wrapper {

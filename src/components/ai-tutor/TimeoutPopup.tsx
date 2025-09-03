@@ -33,18 +33,67 @@ export const TimeoutPopup: React.FC<TimeoutPopupProps> = ({
     }
   ];
 
+  // AI-generated fact state (DeepSeek-powered with graceful fallback)
+  const [interestingFact, setInterestingFact] = useState<string>('');
+  const [isLoadingFact, setIsLoadingFact] = useState<boolean>(false);
+  const [factError, setFactError] = useState<string | null>(null);
+
+  // Local fallback facts (shown if DeepSeek not configured or fails)
+  const fallbackFacts = [
+    "Spaced repetition can double long-term retention compared to cramming.",
+    "Interleaving topics (mixing subjects) improves transfer of learning and problem-solving.",
+    "Active recall beats passive review: testing yourself strengthens memory pathways.",
+    "Short, focused sessions (25–40 minutes) with breaks reduce cognitive fatigue.",
+    "Teaching a concept to someone else is one of the fastest ways to learn it deeply."
+  ];
+
   useEffect(() => {
     if (!isVisible) {
       setCurrentMessage(0);
+      // Reset fact state when popup hides so each response feels fresh
+      setInterestingFact('');
+      setIsLoadingFact(false);
+      setFactError(null);
       return;
     }
-
     // Update message based on duration
     const messageIndex = messages.findLastIndex(msg => duration >= msg.threshold);
     if (messageIndex >= 0 && messageIndex !== currentMessage) {
       setCurrentMessage(messageIndex);
     }
   }, [duration, isVisible, currentMessage]);
+
+  // Fetch a concise, interesting fact when popup appears (once per visibility cycle)
+  useEffect(() => {
+    const fetchFact = async () => {
+      // Avoid refetching if already present or currently loading
+      if (!isVisible || interestingFact || isLoadingFact) return;
+      setIsLoadingFact(true);
+      setFactError(null);
+      try {
+        const { DeepSeekClient } = await import('@/lib/llm/deepseek');
+        const client = new DeepSeekClient({
+          // Uses env defaults inside DeepSeekClient if these are undefined
+          apiKey: import.meta.env.VITE_DEEPSEEK_API_KEY,
+          model: import.meta.env.VITE_DEEPSEEK_MODEL
+        } as any);
+
+        const prompt =
+          "Generate one short, engaging, study-related fact in 1-2 sentences. " +
+          "Keep it technically accurate and concise. No preamble or formatting.";
+        const fact = await client.complete(prompt);
+        setInterestingFact((fact || '').trim());
+      } catch (err) {
+        setFactError('unavailable');
+        // Graceful fallback to a local fact
+        const random = fallbackFacts[Math.floor(Math.random() * fallbackFacts.length)];
+        setInterestingFact(random);
+      } finally {
+        setIsLoadingFact(false);
+      }
+    };
+    fetchFact();
+  }, [isVisible, interestingFact, isLoadingFact]);
 
   if (!isVisible) return null;
 
@@ -105,6 +154,9 @@ export const TimeoutPopup: React.FC<TimeoutPopupProps> = ({
                 {duration}s
               </span>
             </div>
+
+            {/* Removed: detailed explanation and interesting fact sections */}
+            {/* Previously rendered “How your answer is generated” and “Interesting fact” divs are removed to keep the message concise and provider-agnostic. */}
           </div>
         </div>
       </div>
