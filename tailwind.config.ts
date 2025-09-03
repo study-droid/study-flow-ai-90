@@ -62,28 +62,58 @@ export default {
 					DEFAULT: 'hsl(var(--achievement))',
 					foreground: 'hsl(var(--achievement-foreground))'
 				},
+				// Progress indicators with psychology
 				progress: {
-					DEFAULT: 'hsl(var(--progress))',
-					foreground: 'hsl(var(--progress-foreground))'
+					DEFAULT: 'hsl(var(--progress))',         // Legacy support
+					foreground: 'hsl(var(--progress-foreground))',
+					excellent: 'hsl(var(--progress-excellent))', // 90-100% - Green
+					good: 'hsl(var(--progress-good))',       // 70-89% - Light Green
+					needswork: 'hsl(var(--progress-needs-work))', // 50-69% - Orange
+					urgent: 'hsl(var(--progress-urgent))'    // 0-49% - Red
 				},
 				deadline: {
 					DEFAULT: 'hsl(var(--deadline))',
 					foreground: 'hsl(var(--deadline-foreground))'
 				},
+				// Status colors with psychology
+				success: {
+					DEFAULT: 'hsl(var(--success))',
+					foreground: 'hsl(var(--success-foreground))'
+				},
 				warning: {
 					DEFAULT: 'hsl(var(--warning))',
 					foreground: 'hsl(var(--warning-foreground))'
 				},
+				
+				// Learning environment zones
+				learning: {
+					focus: 'hsl(var(--learning-focus))',     // Blue - Analytical thinking
+					creative: 'hsl(var(--learning-creative))', // Magenta - Creativity
+					premium: 'hsl(var(--learning-premium))', // Royal Blue - Authority
+					innovation: 'hsl(var(--learning-innovation))' // Olive Green - Balance
+				},
+				
+				// Subject categorization
+				subject: {
+					math: 'hsl(var(--subject-math))',        // Blue - Logic & Analysis
+					science: 'hsl(var(--subject-science))',  // Green - Growth & Discovery
+					language: 'hsl(var(--subject-language))', // Purple - Communication
+					history: 'hsl(var(--subject-history))',  // Brown - Stability & Wisdom
+					arts: 'hsl(var(--subject-arts))',        // Magenta - Creativity
+					other: 'hsl(var(--subject-other))'       // Grey - Neutral
+				},
+				
+				// Legacy colors (maintained for compatibility)
 				yellow: {
-					light: 'hsl(var(--yellow-light))',
-					warm: 'hsl(var(--yellow-warm))',
-					DEFAULT: 'hsl(var(--amber-light))'
+					light: 'hsl(var(--secondary))',    // Now maps to warm cream
+					warm: 'hsl(var(--secondary))',     // Now maps to warm cream
+					DEFAULT: 'hsl(var(--secondary))'   // Now maps to warm cream
 				},
 				amber: {
-					light: 'hsl(var(--amber-light))',
-					DEFAULT: 'hsl(var(--golden-glow))'
+					light: 'hsl(var(--secondary))',    // Now maps to warm cream
+					DEFAULT: 'hsl(var(--warning))'     // Now maps to energy orange
 				},
-				'golden-glow': 'hsl(var(--golden-glow))',
+				'golden-glow': 'hsl(var(--warning))',   // Now maps to energy orange
 				'primary-glow': 'hsl(var(--primary-glow))',
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',

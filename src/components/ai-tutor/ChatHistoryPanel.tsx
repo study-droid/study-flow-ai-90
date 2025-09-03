@@ -1,240 +1,183 @@
-import React, { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Separator } from '@/components/ui/separator';
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { 
-  Search, 
-  Plus,
-  MessageSquare,
-  History
-} from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { AISession } from '@/services/unified-ai-service';
-import { SessionPreview } from './SessionPreview';
+  Home, 
+  Calendar, 
+  BookOpen, 
+  Clock, 
+  Target, 
+  Brain,
+  Settings,
+  User,
+  TrendingUp,
+  Bell,
+  Menu,
+  X
+} from "lucide-react";
 
-interface ChatHistoryPanelProps {
-  sessions: AISession[];
-  activeSession?: AISession | null;
-  onSessionSelect: (session: AISession) => void;
-  onSessionDelete?: (sessionId: string) => void;
-  onNewSession: () => void;
-  isCollapsed?: boolean;
-  onToggleCollapse?: () => void;
-  className?: string;
+interface SidebarProps {
+  activeTab: string;
+  onTabChange: (tab: string) => void;
 }
 
-export const ChatHistoryPanel: React.FC<ChatHistoryPanelProps> = ({
-  sessions,
-  activeSession,
-  onSessionSelect,
-  onSessionDelete,
-  onNewSession,
-  isCollapsed = false,
-  onToggleCollapse,
-  className
-}) => {
-  const [searchTerm, setSearchTerm] = useState('');
+const Sidebar = ({ activeTab, onTabChange }: SidebarProps) => {
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
 
-  const filteredSessions = sessions.filter(session => {
-    const searchLower = searchTerm.toLowerCase();
-    const hasMatchingMessage = session.messages.some(msg => 
-      msg.content.toLowerCase().includes(searchLower)
-    );
-    const hasMatchingSubject = session.subject.toLowerCase().includes(searchLower);
-    return hasMatchingMessage || hasMatchingSubject;
-  });
+  const navigationItems = [
+    { id: 'dashboard', label: 'Dashboard', icon: Home, badge: null },
+    { id: 'calendar', label: 'Calendar', icon: Calendar, badge: null },
+    { id: 'tasks', label: 'Tasks', icon: BookOpen, badge: '3' },
+    { id: 'timer', label: 'Study Timer', icon: Clock, badge: null },
+    { id: 'goals', label: 'Goals', icon: Target, badge: null },
+    { id: 'ai-tutor', label: 'AI Tutor', icon: Brain, badge: 'NEW' },
+    { id: 'analytics', label: 'Analytics', icon: TrendingUp, badge: null },
+  ];
 
-  const groupedSessions = filteredSessions.reduce((acc, session) => {
-    const now = new Date();
-    const sessionDate = new Date(session.lastActive);
-    const diffInDays = Math.floor((now.getTime() - sessionDate.getTime()) / (1000 * 60 * 60 * 24));
-    
-    let group: string;
-    if (diffInDays === 0) {
-      group = 'Today';
-    } else if (diffInDays === 1) {
-      group = 'Yesterday';
-    } else if (diffInDays <= 7) {
-      group = 'This Week';
-    } else if (diffInDays <= 30) {
-      group = 'This Month';
-    } else {
-      group = 'Older';
-    }
+  const bottomItems = [
+    { id: 'notifications', label: 'Notifications', icon: Bell },
+    { id: 'settings', label: 'Settings', icon: Settings },
+    { id: 'profile', label: 'Profile', icon: User },
+  ];
 
-    if (!acc[group]) acc[group] = [];
-    acc[group].push(session);
-    return acc;
-  }, {} as Record<string, AISession[]>);
-
-  const groupOrder = ['Today', 'Yesterday', 'This Week', 'This Month', 'Older'];
-
-  if (isCollapsed) {
-    return (
-      <div className={cn(
-        'flex flex-col items-center p-2 border-r bg-muted/20',
-        className
-      )}>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={onNewSession}
-          className="h-8 w-8 p-0 mb-2"
-          title="New Chat"
-        >
-          <Plus className="h-4 w-4" />
-        </Button>
-
-        <div className="flex flex-col gap-1">
-          {sessions.slice(0, 5).map(session => (
-            <Button
-              key={session.id}
-              variant="ghost"
-              size="sm"
-              onClick={() => onSessionSelect(session)}
-              className={cn(
-                'h-8 w-8 p-0 relative',
-                activeSession?.id === session.id && 'bg-primary/10 text-primary'
-              )}
-              title={session.subject}
-            >
-              <MessageSquare className="h-3 w-3" />
-              {session.messages.length > 0 && (
-                <span className="absolute -top-1 -right-1 h-4 w-4 text-[10px] bg-primary text-primary-foreground rounded-full flex items-center justify-center">
-                  {session.messages.length}
-                </span>
-              )}
-            </Button>
-          ))}
-        </div>
-      </div>
-    );
-  }
-
-  const isEmpty = sessions.length === 0 && !searchTerm;
-  
   return (
-    <div
-      className={cn(
-        'chat-history-panel flex flex-col h-full w-64 border-r bg-muted/20 flex-shrink-0 transition-all duration-300',
-        isEmpty && 'sidebar-empty',
-        className
+    <>
+      {/* Mobile Menu Button */}
+      <Button 
+        variant="ghost" 
+        size="sm"
+        className="fixed top-4 left-4 z-50 md:hidden"
+        onClick={() => setIsMobileOpen(!isMobileOpen)}
+      >
+        {isMobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+      </Button>
+
+      {/* Mobile Overlay */}
+      {isMobileOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-40 md:hidden"
+          onClick={() => setIsMobileOpen(false)}
+        />
       )}
-    >
-      {/* Header - now sticky within the panel, not the whole panel */}
-      <div className="sticky top-0 z-10 flex items-center justify-between p-4 border-b bg-muted/20 backdrop-blur supports-[backdrop-filter]:bg-muted/30">
-        <div className="flex items-center gap-2 min-w-0">
-          <History className="h-4 w-4 flex-shrink-0" />
-          <h2
-            className={cn(
-              'font-semibold text-sm whitespace-nowrap transition-opacity duration-300',
-              isEmpty && 'sidebar-empty-text'
-            )}
-          >
-            Chat History
-          </h2>
-        </div>
-      </div>
-      
-      {/* Content container - allow inner scrolling and avoid parent overflow issues */}
-      <div className="sidebar-content flex-1 min-h-0 flex flex-col">
-        {/* New Chat Button */}
-        <div className="p-4 pb-2">
-          <Button
-            onClick={onNewSession}
-            className={cn(
-              'w-full justify-start gap-2',
-              isEmpty && 'sidebar-empty-button'
-            )}
-            size="sm"
-            title="New Chat"
-          >
-            <Plus className="h-4 w-4 flex-shrink-0" />
-            <span
-              className={cn('whitespace-nowrap', isEmpty && 'sidebar-empty-text')}
-            >
-              New Chat
-            </span>
-          </Button>
-        </div>
 
-        {/* Search */}
-        <div className={cn('px-4 pb-4', isEmpty && 'sidebar-empty-search')}>
-          <div className="relative">
-            <Search className="absolute left-2 top-1/2 h-3 w-3 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              placeholder={isEmpty ? '' : 'Search conversations...'}
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-7 h-8 text-sm"
-              title="Search conversations"
-            />
-          </div>
-        </div>
-
-        {/* Sessions List - Scrollable area */}
-        <ScrollArea className="flex-1 min-h-0">
-          <div className="px-2 pb-2">
-            {filteredSessions.length === 0 ? (
-              <div
-                className={cn(
-                  'p-4 text-center text-sm text-muted-foreground',
-                  isEmpty && 'sidebar-empty-text'
-                )}
+      {/* Sidebar */}
+      <div className={`
+        fixed left-0 top-0 h-full bg-card border-r border-border z-50 transition-all duration-300
+        ${isCollapsed ? 'w-16' : 'w-64'}
+        ${isMobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+        md:relative md:translate-x-0
+      `}>
+        <div className="flex flex-col h-full">
+          {/* Header */}
+          <div className="p-4 border-b border-border">
+            <div className="flex items-center justify-between">
+              {!isCollapsed && (
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
+                    <Brain className="w-5 h-5 text-primary-foreground" />
+                  </div>
+                  <div>
+                    <h2 className="font-bold text-foreground">StudyFlow</h2>
+                    <p className="text-xs text-muted-foreground">AI Study Planner</p>
+                  </div>
+                </div>
+              )}
+              <Button 
+                variant="ghost" 
+                size="sm"
+                className="hidden md:flex h-8 w-8 p-0"
+                onClick={() => setIsCollapsed(!isCollapsed)}
               >
-                {searchTerm ? 'No conversations found' : 'No conversations yet'}
-              </div>
-            ) : (
-              <div className="space-y-4">
-                {groupOrder.map((groupName) => {
-                  const groupSessions = groupedSessions[groupName];
-                  if (!groupSessions?.length) return null;
-
-                  return (
-                    <div key={groupName} className="space-y-2">
-                      <div className="px-2 py-1">
-                        <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                          {groupName}
-                        </h3>
-                        <Separator className="mt-1" />
-                      </div>
-
-                      <div className="space-y-1">
-                        {groupSessions.map((session) => (
-                          <SessionPreview
-                            key={session.id}
-                            session={session}
-                            isActive={activeSession?.id === session.id}
-                            onSelect={onSessionSelect}
-                            onDelete={onSessionDelete}
-                            className="mx-1"
-                          />
-                        ))}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
+                <Menu className="w-4 h-4" />
+              </Button>
+            </div>
           </div>
-        </ScrollArea>
 
-        {/* Footer Stats - optional sticky to remain visible at bottom of panel */}
-        <div className="sticky bottom-0 z-10 p-4 border-t bg-muted/20 backdrop-blur supports-[backdrop-filter]:bg-muted/30">
-          <div
-            className={cn(
-              'text-xs text-muted-foreground text-center whitespace-nowrap',
-              isEmpty && 'sidebar-empty-text'
+          {/* Navigation */}
+          <div className="flex-1 px-3 py-4">
+            <nav className="space-y-2">
+              {navigationItems.map((item) => {
+                const Icon = item.icon;
+                const isActive = activeTab === item.id;
+                
+                return (
+                  <Button
+                    key={item.id}
+                    variant={isActive ? "default" : "ghost"}
+                    className={`
+                      w-full justify-start gap-3 h-10
+                      ${isActive ? 'bg-primary text-primary-foreground shadow-soft' : 'hover:bg-muted'}
+                      ${isCollapsed ? 'px-2' : 'px-3'}
+                    `}
+                    onClick={() => {
+                      onTabChange(item.id);
+                      setIsMobileOpen(false);
+                    }}
+                  >
+                    <Icon className="w-5 h-5 flex-shrink-0" />
+                    {!isCollapsed && (
+                      <>
+                        <span className="flex-1 text-left">{item.label}</span>
+                        {item.badge && (
+                          <Badge 
+                            variant={item.badge === 'NEW' ? 'default' : 'secondary'} 
+                            className="text-xs h-5"
+                          >
+                            {item.badge}
+                          </Badge>
+                        )}
+                      </>
+                    )}
+                  </Button>
+                );
+              })}
+            </nav>
+          </div>
+
+          {/* User Section */}
+          <div className="p-3 border-t border-border">
+            {!isCollapsed && (
+              <div className="mb-3 p-3 rounded-lg bg-muted/50">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-gradient-success rounded-full flex items-center justify-center">
+                    <span className="text-success-foreground font-medium">A</span>
+                  </div>
+                  <div>
+                    <p className="font-medium text-foreground">Alex Chen</p>
+                    <p className="text-xs text-muted-foreground">7-day streak! 🔥</p>
+                  </div>
+                </div>
+              </div>
             )}
-          >
-            {sessions.length} conversation{sessions.length !== 1 ? 's' : ''}
-            {searchTerm && filteredSessions.length !== sessions.length && (
-              <span> • {filteredSessions.length} shown</span>
-            )}
+            
+            <div className="space-y-1">
+              {bottomItems.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <Button
+                    key={item.id}
+                    variant="ghost"
+                    className={`
+                      w-full justify-start gap-3 h-9 text-muted-foreground hover:text-foreground
+                      ${isCollapsed ? 'px-2' : 'px-3'}
+                    `}
+                    onClick={() => {
+                      onTabChange(item.id);
+                      setIsMobileOpen(false);
+                    }}
+                  >
+                    <Icon className="w-4 h-4 flex-shrink-0" />
+                    {!isCollapsed && <span>{item.label}</span>}
+                  </Button>
+                );
+              })}
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
+
+export default Sidebar;

@@ -2,74 +2,100 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Study-Flow Design System - Production-Ready Color Palette
-All colors are HSL format for maximum flexibility and theming support
+/* Mindscape Planner Color System - Evidence-Based Learning Environment Colors
+Designed for enhanced focus, motivation, and cognitive performance
+All colors use HSL format for maximum flexibility and theming support
 */
 
 @layer base {
   :root {
-    /* Core System Colors */
-    --background: 220 15% 98%;
-    --foreground: 215 25% 12%;
+    /* Core System Colors - Mindscape Foundation */
+    --background: 0 0% 96%;                    /* Light Grey - Clean, minimalist */
+    --foreground: 0 0% 13%;                    /* Primary Text - High contrast */
 
     /* Surface Colors */
-    --card: 0 0% 100%;
-    --card-foreground: 215 25% 12%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 215 25% 12%;
+    --card: 0 0% 100%;                         /* White Cards */
+    --card-foreground: 0 0% 13%;               /* Primary Text */
+    --popover: 0 0% 100%;                      /* White Popovers */
+    --popover-foreground: 0 0% 13%;            /* Primary Text */
 
-    /* Brand Colors - Study-Flow Gradient Theme */
-    --primary: 259 83% 67%;        /* Deep Purple */
-    --primary-foreground: 0 0% 100%;
-    --primary-glow: 275 100% 84%;   /* Light Purple Glow */
+    /* Primary Colors - Trust, Focus, Stability */
+    --primary: 207 71% 37%;                    /* Primary Blue #1976D2 - Focus & Trust */
+    --primary-foreground: 0 0% 98%;            /* White text on primary */
+    --primary-glow: 210 100% 20%;              /* Royal Blue #003366 - Premium/Authority */
     
-    --secondary: 220 13% 91%;
-    --secondary-foreground: 215 25% 12%;
+    /* Secondary Colors - Warmth, Comfort */
+    --secondary: 48 100% 93%;                  /* Warm Cream #FFF9C4 - Content areas */
+    --secondary-foreground: 0 0% 13%;          /* Primary text on secondary */
 
-    /* Yellowish Light Colors */
-    --yellow-light: 48 100% 88%;    /* Soft Yellow Light */
-    --yellow-warm: 45 96% 82%;      /* Warm Yellow */
-    --amber-light: 43 100% 85%;     /* Light Amber */
-    --golden-glow: 42 87% 75%;      /* Golden Glow */
+    /* Learning Psychology Colors */
+    --success: 122 39% 39%;                    /* Secondary Green #388E3C - Growth & Achievement */
+    --success-foreground: 0 0% 100%;           /* White text on success */
+    --warning: 36 100% 50%;                    /* Accent Orange #FF9800 - Energy & Motivation */
+    --warning-foreground: 0 0% 100%;           /* White text on warning */
+    --accent: 36 100% 50%;                     /* Accent Orange - CTAs & Highlights */
+    --accent-foreground: 0 0% 100%;            /* White text on accent */
 
-    /* Accent Colors */
-    --accent: 142 76% 36%;          /* Success Green */
-    --accent-foreground: 0 0% 100%;
-    --warning: 38 92% 50%;          /* Warning Orange */
-    --warning-foreground: 0 0% 100%;
+    /* Status & State Colors */
+    --destructive: 4 70% 50%;                  /* Alert Red #D32F2F - Urgency & Attention */
+    --destructive-foreground: 0 0% 100%;       /* White text on destructive */
 
-    /* Muted Colors */
-    --muted: 220 13% 95%;
-    --muted-foreground: 215 13% 45%;
+    /* Muted & Neutral Colors */
+    --muted: 210 40% 96%;                      /* Muted backgrounds */
+    --muted-foreground: 0 0% 46%;              /* Secondary Text #757575 - Readable hierarchy */
 
-    /* Destructive */
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 100%;
+    /* Form & Interactive Elements */
+    --input: 210 40% 88%;                      /* Input backgrounds */
+    --border: 210 40% 88%;                     /* Border color */
+    --ring: 207 71% 37%;                       /* Focus rings - Primary Blue */
 
-    /* Borders & Inputs */
-    --border: 220 13% 88%;
-    --input: 220 13% 88%;
-    --ring: 259 83% 67%;
+    /* Learning Zone Colors - Enhanced Focus & Creativity */
+    --learning-focus: 207 71% 37%;             /* Primary Blue - Focus zone */
+    --learning-creative: 302 59% 65%;          /* Soft Magenta #DA70D6 - Creativity */
+    --learning-premium: 210 100% 20%;          /* Royal Blue - Premium features */
+    --learning-innovation: 70 56% 34%;         /* Olive Green #6B8E23 - Innovation */
 
-    /* Study-Flow Specific Colors */
-    --focus-primary: 218 89% 61%;   /* Focus Blue */
-    --achievement: 45 93% 58%;      /* Achievement Gold */
-    --progress: 159 64% 52%;        /* Progress Teal */
-    --deadline: 348 83% 47%;        /* Deadline Red */
+    /* Subject Categorization Colors */
+    --subject-math: 221 83% 53%;               /* Blue - Logic & Analysis */
+    --subject-science: 122 39% 39%;            /* Green - Growth & Discovery */
+    --subject-language: 271 76% 53%;           /* Purple - Communication */
+    --subject-history: 25 76% 48%;             /* Brown - Stability & Wisdom */
+    --subject-arts: 302 59% 65%;               /* Magenta - Creativity */
+    --subject-other: 0 0% 46%;                 /* Grey - Neutral */
 
-    /* Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
-    --gradient-focus: linear-gradient(135deg, hsl(var(--focus-primary)), hsl(var(--primary)));
-    --gradient-achievement: linear-gradient(135deg, hsl(var(--achievement)), hsl(var(--warning)));
-    --gradient-progress: linear-gradient(135deg, hsl(var(--progress)), hsl(var(--accent)));
-    --gradient-yellow: linear-gradient(135deg, hsl(var(--yellow-light)), hsl(var(--golden-glow)));
-    --gradient-warm: linear-gradient(135deg, hsl(var(--amber-light)), hsl(var(--yellow-warm)));
+    /* Progress Indicator Colors */
+    --progress-excellent: 122 39% 39%;         /* 90-100% - Green */
+    --progress-good: 122 39% 49%;              /* 70-89% - Light Green */
+    --progress-needs-work: 36 100% 50%;        /* 50-69% - Orange */
+    --progress-urgent: 4 70% 50%;              /* 0-49% - Red */
 
-    /* Shadows */
+    /* Legacy Support - Maintain existing functionality */
+    --focus-primary: 207 71% 37%;              /* Focus Blue - same as primary */
+    --achievement: 36 100% 50%;                /* Achievement Orange - motivation */
+    --progress: 122 39% 39%;                   /* Progress Green - growth */
+    --deadline: 4 70% 50%;                     /* Deadline Red - urgency */
+
+    /* Learning-Optimized Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));      /* Trust & Authority */
+    --gradient-focus: linear-gradient(135deg, hsl(var(--learning-focus)), hsl(var(--primary)));      /* Enhanced Focus */
+    --gradient-creative: linear-gradient(135deg, hsl(var(--learning-creative)), hsl(var(--primary))); /* Creativity Boost */
+    --gradient-progress: linear-gradient(135deg, hsl(var(--progress-good)), hsl(var(--success)));     /* Growth & Achievement */
+    --gradient-warm: linear-gradient(135deg, hsl(var(--secondary)), hsl(var(--warning) / 0.8));      /* Comfort & Energy */
+    --gradient-premium: linear-gradient(135deg, hsl(var(--learning-premium)), hsl(var(--primary)));
+    
+    /* Subject-Specific Gradients */
+    --gradient-math: linear-gradient(135deg, hsl(var(--subject-math)), hsl(var(--primary)));
+    --gradient-science: linear-gradient(135deg, hsl(var(--subject-science)), hsl(var(--success)));
+    --gradient-language: linear-gradient(135deg, hsl(var(--subject-language)), hsl(var(--learning-creative)));
+    --gradient-arts: linear-gradient(135deg, hsl(var(--subject-arts)), hsl(var(--learning-creative)));
+
+    /* Learning-Environment Shadows */
     --shadow-soft: 0 2px 8px -2px hsl(var(--primary) / 0.1);
     --shadow-medium: 0 4px 16px -4px hsl(var(--primary) / 0.15);
     --shadow-strong: 0 8px 32px -8px hsl(var(--primary) / 0.2);
-    --shadow-glow: 0 0 32px hsl(var(--primary-glow) / 0.3);
+    --shadow-focus: 0 0 24px hsl(var(--learning-focus) / 0.2);
+    --shadow-creative: 0 0 24px hsl(var(--learning-creative) / 0.2);
+    --shadow-success: 0 0 16px hsl(var(--success) / 0.3);
 
     /* Animation Variables */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -95,48 +121,69 @@ All colors are HSL format for maximum flexibility and theming support
   }
 
   .dark {
-    /* Core System Colors - Dark Mode */
-    --background: 215 28% 8%;
-    --foreground: 220 15% 95%;
+    /* Core System Colors - Dark Mode Mindscape */
+    --background: 222.2 84% 4.9%;              /* Dark background */
+    --foreground: 210 40% 98%;                 /* Light text */
 
-    /* Surface Colors */
-    --card: 215 25% 12%;
-    --card-foreground: 220 15% 95%;
-    --popover: 215 25% 12%;
-    --popover-foreground: 220 15% 95%;
+    /* Surface Colors - Dark Mode */
+    --card: 222.2 84% 4.9%;                    /* Dark cards */
+    --card-foreground: 210 40% 98%;            /* Light text on cards */
+    --popover: 222.2 84% 4.9%;                 /* Dark popovers */
+    --popover-foreground: 210 40% 98%;         /* Light text on popovers */
 
-    /* Brand Colors - Dark Mode Adjusted */
-    --primary: 275 100% 84%;        /* Light Purple for dark mode */
-    --primary-foreground: 215 28% 8%;
-    --primary-glow: 259 83% 67%;    /* Deep Purple Glow */
+    /* Primary Colors - Dark Mode Adjusted */
+    --primary: 210 40% 98%;                    /* Inverted primary - light for dark mode */
+    --primary-foreground: 222.2 84% 4.9%;      /* Dark text on primary */
+    --primary-glow: 207 71% 37%;               /* Original blue as glow */
 
-    --secondary: 215 25% 16%;
-    --secondary-foreground: 220 15% 95%;
+    /* Secondary & Learning Colors - Dark Mode */
+    --secondary: 217.2 32.6% 17.5%;            /* Dark secondary */
+    --secondary-foreground: 210 40% 98%;       /* Light text */
 
-    /* Accent Colors - Dark Mode */
-    --accent: 159 64% 52%;          /* Success Green */
-    --accent-foreground: 215 28% 8%;
-    --warning: 38 92% 50%;          /* Warning Orange */
-    --warning-foreground: 215 28% 8%;
+    /* Status Colors - Maintained for visibility */
+    --success: 122 39% 39%;                    /* Keep green for consistency */
+    --success-foreground: 0 0% 100%;
+    --warning: 36 100% 50%;                    /* Keep orange for visibility */
+    --warning-foreground: 0 0% 100%;
+    --accent: 36 100% 50%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 4 70% 50%;
+    --destructive-foreground: 0 0% 100%;
 
-    /* Muted Colors */
-    --muted: 215 25% 16%;
-    --muted-foreground: 215 13% 65%;
+    /* Muted Colors - Dark Mode */
+    --muted: 217.2 32.6% 17.5%;                /* Dark muted */
+    --muted-foreground: 215 20.2% 65.1%;       /* Muted light text */
 
-    /* Destructive */
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 220 15% 95%;
+    /* Form Elements - Dark Mode */
+    --border: 217.2 32.6% 17.5%;               /* Dark borders */
+    --input: 217.2 32.6% 17.5%;                /* Dark inputs */
+    --ring: 210 40% 98%;                       /* Light focus rings */
 
-    /* Borders & Inputs */
-    --border: 215 25% 20%;
-    --input: 215 25% 20%;
-    --ring: 275 100% 84%;
+    /* Learning Zones - Dark Mode Adapted */
+    --learning-focus: 207 71% 50%;             /* Slightly lighter blue */
+    --learning-creative: 302 59% 70%;          /* Slightly lighter magenta */
+    --learning-premium: 210 100% 30%;          /* Lighter royal blue */
+    --learning-innovation: 70 56% 44%;         /* Lighter olive green */
 
-    /* Study-Flow Specific Colors - Dark Mode */
-    --focus-primary: 218 89% 61%;   
-    --achievement: 45 93% 58%;      
-    --progress: 159 64% 52%;        
-    --deadline: 348 83% 47%;        
+    /* Subject Colors - Dark Mode Enhanced Visibility */
+    --subject-math: 221 83% 63%;               /* Lighter blue */
+    --subject-science: 122 39% 49%;            /* Lighter green */
+    --subject-language: 271 76% 63%;           /* Lighter purple */
+    --subject-history: 25 76% 58%;             /* Lighter brown */
+    --subject-arts: 302 59% 70%;               /* Lighter magenta */
+    --subject-other: 0 0% 56%;                 /* Lighter grey */
+
+    /* Progress Colors - Maintained for clarity */
+    --progress-excellent: 122 39% 49%;
+    --progress-good: 122 39% 59%;
+    --progress-needs-work: 36 100% 60%;
+    --progress-urgent: 4 70% 60%;
+
+    /* Legacy Support - Dark Mode */
+    --focus-primary: 207 71% 50%;
+    --achievement: 36 100% 60%;
+    --progress: 122 39% 49%;
+    --deadline: 4 70% 60%;        
 
     /* Sidebar */
     --sidebar-background: 215 28% 10%;
@@ -160,52 +207,77 @@ All colors are HSL format for maximum flexibility and theming support
     font-feature-settings: "kern", "liga", "calt", "clig";
   }
 
-  /* Study-Flow Custom Classes */
-  .study-flow-gradient {
+  /* Mindscape Learning Environment Classes */
+  .mindscape-gradient {
     background: var(--gradient-primary);
   }
 
-  .study-flow-gradient-focus {
+  .mindscape-gradient-focus {
     background: var(--gradient-focus);
   }
 
-  .study-flow-gradient-achievement {
-    background: var(--gradient-achievement);
+  .mindscape-gradient-creative {
+    background: var(--gradient-creative);
   }
 
-  .study-flow-gradient-progress {
+  .mindscape-gradient-progress {
     background: var(--gradient-progress);
   }
 
-  .study-flow-gradient-yellow {
-    background: var(--gradient-yellow);
-  }
-
-  .study-flow-gradient-warm {
+  .mindscape-gradient-warm {
     background: var(--gradient-warm);
   }
 
-  .study-flow-shadow-soft {
+  .mindscape-gradient-premium {
+    background: var(--gradient-premium);
+  }
+
+  /* Subject-Specific Learning Gradients */
+  .subject-gradient-math {
+    background: var(--gradient-math);
+  }
+
+  .subject-gradient-science {
+    background: var(--gradient-science);
+  }
+
+  .subject-gradient-language {
+    background: var(--gradient-language);
+  }
+
+  .subject-gradient-arts {
+    background: var(--gradient-arts);
+  }
+
+  .mindscape-shadow-soft {
     box-shadow: var(--shadow-soft);
   }
 
-  .study-flow-shadow-medium {
+  .mindscape-shadow-medium {
     box-shadow: var(--shadow-medium);
   }
 
-  .study-flow-shadow-strong {
+  .mindscape-shadow-strong {
     box-shadow: var(--shadow-strong);
   }
 
-  .study-flow-shadow-glow {
-    box-shadow: var(--shadow-glow);
+  .mindscape-shadow-focus {
+    box-shadow: var(--shadow-focus);
   }
 
-  .study-flow-transition {
+  .mindscape-shadow-creative {
+    box-shadow: var(--shadow-creative);
+  }
+
+  .mindscape-shadow-success {
+    box-shadow: var(--shadow-success);
+  }
+
+  .mindscape-transition {
     transition: var(--transition-smooth);
   }
 
-  .study-flow-transition-bounce {
+  .mindscape-transition-bounce {
     transition: var(--transition-bounce);
   }
 
@@ -467,9 +539,9 @@ All colors are HSL format for maximum flexibility and theming support
     animation: smooth-scroll 0.3s ease-out;
   }
 
-  /* Enhanced Notification Styles */
+  /* Learning-Environment Notification Styles */
   .notification-success {
-    @apply border-l-4 border-l-accent bg-accent/10;
+    @apply border-l-4 border-l-success bg-success/10;
   }
 
   .notification-error {
@@ -481,57 +553,90 @@ All colors are HSL format for maximum flexibility and theming support
   }
 
   .notification-info {
-    @apply border-l-4 border-l-focus bg-focus/10;
-  }
-
-  .notification-focus {
     @apply border-l-4 border-l-primary bg-primary/10;
   }
 
-  .notification-achievement {
-    @apply border-l-4 border-l-[hsl(var(--achievement))] bg-[hsl(var(--achievement))]/10;
+  .notification-focus {
+    @apply border-l-4 border-l-[hsl(var(--learning-focus))] bg-[hsl(var(--learning-focus))]/10;
   }
 
-  /* Enhanced Card Styles with Yellow Accents */
+  .notification-creative {
+    @apply border-l-4 border-l-[hsl(var(--learning-creative))] bg-[hsl(var(--learning-creative))]/10;
+  }
+
+  .notification-achievement {
+    @apply border-l-4 border-l-warning bg-warning/10;
+  }
+
+  /* Subject-Specific Notifications */
+  .notification-math {
+    @apply border-l-4 border-l-[hsl(var(--subject-math))] bg-[hsl(var(--subject-math))]/10;
+  }
+
+  .notification-science {
+    @apply border-l-4 border-l-[hsl(var(--subject-science))] bg-[hsl(var(--subject-science))]/10;
+  }
+
+  .notification-language {
+    @apply border-l-4 border-l-[hsl(var(--subject-language))] bg-[hsl(var(--subject-language))]/10;
+  }
+
+  .notification-arts {
+    @apply border-l-4 border-l-[hsl(var(--subject-arts))] bg-[hsl(var(--subject-arts))]/10;
+  }
+
+  /* Learning-Optimized Card Styles */
   .card-enhanced {
-    @apply bg-gradient-to-br from-background to-yellow-light/20 border-yellow-warm/30 shadow-lg backdrop-blur-sm;
+    @apply bg-gradient-to-br from-background to-secondary/30 border-border shadow-lg backdrop-blur-sm;
   }
 
   .dark .card-enhanced {
-    @apply from-card to-yellow-light/5 border-yellow-warm/20;
+    @apply from-card to-secondary/10 border-border;
   }
 
   .card-warm {
-    @apply bg-gradient-to-br from-amber-light/10 to-yellow-warm/20 border-amber-light/40;
+    @apply bg-gradient-to-br from-secondary/20 to-warning/10 border-warning/20;
   }
 
   .dark .card-warm {
-    @apply from-amber-light/5 to-yellow-warm/10 border-amber-light/20;
+    @apply from-secondary/10 to-warning/5 border-warning/15;
   }
 
   .card-focus {
-    @apply bg-gradient-to-br from-focus/10 to-primary/20 border-focus/30 hover:border-focus/50 transition-all duration-300;
+    @apply bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20 hover:border-primary/40 transition-all duration-300;
   }
 
   .dark .card-focus {
-    @apply from-focus/5 to-primary/10 border-focus/20 hover:border-focus/30;
+    @apply from-primary/5 to-primary/10 border-primary/20 hover:border-primary/30;
   }
 
-  /* Button Enhanced Styles */
+  .card-creative {
+    @apply bg-gradient-to-br from-[hsl(var(--learning-creative))]/5 to-[hsl(var(--learning-creative))]/10 border-[hsl(var(--learning-creative))]/20 hover:border-[hsl(var(--learning-creative))]/40 transition-all duration-300;
+  }
+
+  .card-success {
+    @apply bg-gradient-to-br from-success/5 to-success/10 border-success/20 hover:border-success/40 transition-all duration-300;
+  }
+
+  /* Learning-Optimized Button Styles */
   .btn-warm {
-    @apply bg-gradient-to-r from-amber-light to-yellow-warm text-foreground hover:from-golden-glow hover:to-amber-light transition-all duration-300 shadow-md hover:shadow-lg;
+    @apply bg-gradient-to-r from-secondary to-warning text-foreground hover:from-warning hover:to-secondary transition-all duration-300 shadow-md hover:shadow-lg;
   }
 
   .dark .btn-warm {
-    @apply from-amber-light/80 to-yellow-warm/80 text-background;
-  }
-
-  .btn-glow {
-    @apply bg-gradient-to-r from-primary to-primary-glow hover:shadow-lg hover:shadow-primary-glow/50 transition-all duration-300;
+    @apply from-secondary/80 to-warning/80 text-foreground;
   }
 
   .btn-focus {
-    @apply bg-gradient-to-r from-focus to-primary text-white hover:from-focus/90 hover:to-primary/90 shadow-md hover:shadow-focus/50 transition-all duration-300;
+    @apply bg-gradient-to-r from-primary to-primary-glow text-primary-foreground hover:from-primary/90 hover:to-primary-glow/90 shadow-md hover:shadow-focus transition-all duration-300;
+  }
+
+  .btn-creative {
+    @apply bg-gradient-to-r from-[hsl(var(--learning-creative))] to-primary text-white hover:from-[hsl(var(--learning-creative))]/90 hover:to-primary/90 shadow-md hover:shadow-creative transition-all duration-300;
+  }
+
+  .btn-success {
+    @apply bg-gradient-to-r from-success to-success/80 text-success-foreground hover:from-success/90 hover:to-success/70 shadow-md hover:shadow-success transition-all duration-300;
   }
 
   .btn-pulse {
