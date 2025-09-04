@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { materialsService } from '@/services/subjects/materials-service';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
+import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
@@ -19,10 +20,11 @@ import {
 } from 'lucide-react';
 import { useSubjects, Subject } from '@/hooks/useSubjects';
 import { SubjectForm } from '@/components/subjects/SubjectForm';
-import { useToast } from '@/components/ui/use-toast';
+import { useToast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
 import { logger } from '@/services/logging/logger';
+import { useAuth } from '@/hooks/useAuth';
 
 interface StudyMaterial {
   id: string;
@@ -71,6 +73,7 @@ export const Subjects = () => {
   const { subjects, loading, submitting, createSubject, updateSubject, deleteSubject } = useSubjects();
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const [newMaterial, setNewMaterial] = useState({
     title: '',
