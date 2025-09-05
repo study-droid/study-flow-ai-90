@@ -1,10 +1,12 @@
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
-import { AITutor } from "@/components/ai-tutor/AITutor";
+import { AITutorEnhanced } from "@/features/ai-tutor";
 
 export default function AITutorPage() {
   return (
     <DashboardLayout>
-      <AITutor />
+      <div className="h-full flex flex-col min-h-0">
+        <AITutorEnhanced />
+      </div>
     </DashboardLayout>
   );
 }

@@ -123,7 +123,7 @@ export const TableDemo: React.FC = () => {
             AI-Powered Table System Demo
           </h1>
           <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-            Experience intelligent table creation with DeepSeek AI integration. 
+            Experience intelligent table creation with AI Tutor integration. 
             Choose from examples or describe your own table requirements.
           </p>
         </div>
@@ -290,7 +290,7 @@ export const TableDemo: React.FC = () => {
                 <div className="bg-white p-6 rounded-lg border border-gray-200">
                   <h3 className="font-semibold text-gray-900 mb-2">AI Integration</h3>
                   <p className="text-sm text-gray-600">
-                    Powered by DeepSeek AI for intelligent table structure and data generation
+                    Powered by AI Tutor for intelligent table structure and data generation
                   </p>
                 </div>
                 

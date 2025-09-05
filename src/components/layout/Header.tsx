@@ -119,11 +119,15 @@ export const Header = ({ onMenuClick }: HeaderProps = {}) => {
           </Button>
           
           <div className="flex items-center gap-2 flex-shrink-0">
-            <div className="h-6 w-6 sm:h-8 sm:w-8 study-flow-gradient rounded-lg flex items-center justify-center">
-              <BookOpen className="h-3 w-3 sm:h-5 sm:w-5 text-white" />
+            <div className="h-6 w-6 sm:h-8 sm:w-8 flex items-center justify-center">
+              <img 
+                src="/main_logo.png" 
+                alt="StudyFlow Logo" 
+                className="h-6 w-6 sm:h-8 sm:w-8 object-contain" 
+              />
             </div>
             <h1 className="text-sm sm:text-lg lg:text-xl font-bold bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent whitespace-nowrap">
-              <span className="hidden sm:inline">Study-Flow</span>
+              <span className="hidden sm:inline">StudyFlow</span>
               <span className="sm:hidden">SF</span>
             </h1>
           </div>
@@ -132,13 +136,13 @@ export const Header = ({ onMenuClick }: HeaderProps = {}) => {
           {/* Focus Mode Button - Desktop Only */}
           <Button
             onClick={() => navigate('/study')}
-            className="hidden xl:flex items-center gap-2 px-3 py-2 rounded-full bg-gradient-to-r from-focus/20 to-primary/20 border border-focus/30 hover:bg-yellow-200 hover:border-yellow-400 hover:scale-105 transition-all duration-300 group ml-4"
+            className="hidden xl:flex items-center gap-2 px-3 py-2 rounded-full bg-gradient-to-r from-focus/20 to-primary/20 border border-focus/30 hover:bg-orange-hover/20 hover:border-orange-hover/50 hover:scale-105 transition-all duration-300 group ml-24"
             variant="ghost"
             size="sm"
           >
-            <Timer className="h-4 w-4 text-focus group-hover:text-black transition-colors duration-300 group-hover:rotate-12" />
-            <span className="text-sm font-medium bg-gradient-to-r from-focus to-primary bg-clip-text text-transparent group-hover:text-black group-hover:font-bold group-hover:bg-none whitespace-nowrap transition-all duration-300">Focus Mode</span>
-            <div className="h-2 w-2 bg-focus group-hover:bg-black rounded-full animate-pulse group-hover:animate-bounce transition-colors" />
+            <Timer className="h-4 w-4 text-focus group-hover:text-orange-hover transition-colors duration-300 group-hover:rotate-12" />
+            <span className="text-sm font-medium bg-gradient-to-r from-focus to-primary bg-clip-text text-transparent group-hover:text-orange-hover group-hover:font-bold group-hover:bg-none whitespace-nowrap transition-all duration-300">Focus Mode</span>
+            <div className="h-2 w-2 bg-focus group-hover:bg-orange-hover rounded-full animate-pulse group-hover:animate-bounce transition-colors" />
           </Button>
         </div>
 

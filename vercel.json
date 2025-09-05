@@ -41,7 +41,7 @@
         },
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://vercel.live; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https: blob:; connect-src 'self' https://*.supabase.co wss://*.supabase.co wss://uuebhjidsaswvuexdcbb.supabase.co https://generativelanguage.googleapis.com https://*.googleapis.com https://ai.google.dev https://cdn.freesound.org https://vercel.live wss://ws-us3.pusher.com; media-src 'self' https://cdn.freesound.org https: blob:; object-src 'none'; frame-src 'self' https://vercel.live; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests"
+          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://vercel.live; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https: blob:; connect-src 'self' https://*.supabase.co wss://*.supabase.co wss://uuebhjidsaswvuexdcbb.supabase.co https://generativelanguage.googleapis.com https://*.googleapis.com https://ai.google.dev https://cdn.freesound.org https://api.deepseek.com https://vercel.live wss://ws-us3.pusher.com; media-src 'self' https://cdn.freesound.org https: blob:; object-src 'none'; frame-src 'self' https://vercel.live; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests"
         },
         {
           "key": "X-Permitted-Cross-Domain-Policies",

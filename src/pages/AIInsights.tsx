@@ -179,7 +179,7 @@ export default function AIInsights() {
         5. Confidence level in the analysis (0-100%)`;
 
       const response = await aiProxyClient.sendRequest({
-        provider: 'deepseek',
+        provider: 'ai-tutor',
         prompt,
         temperature: 0.7,
         max_tokens: 1000

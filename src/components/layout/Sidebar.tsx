@@ -22,6 +22,12 @@ import {
   BookMarked,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { AITutorAvatar } from "@/components/ai-tutor/AITutorAvatar";
+
+// Wrapper component for navigation
+const AITutorIcon: React.FC<{ className?: string }> = ({ className }) => (
+  <AITutorAvatar size="md" className={className} />
+);
 
 interface SidebarProps {
   className?: string;
@@ -51,7 +57,7 @@ const mainNavItems: NavItem[] = [
 const aiFeatures: NavItem[] = [
   { title: "Focus Timer", icon: Clock, href: "/study", color: "progress" },
   { title: "AI Insights", icon: Brain, href: "/ai-recommendations", color: "primary" },
-  { title: "AI Tutor", icon: GraduationCap, href: "/ai-tutor", color: "primary" },
+  { title: "AI Tutor", icon: AITutorIcon, href: "/ai-tutor", color: "primary" },
 ];
 
 const bottomNavItems: NavItem[] = [
@@ -103,7 +109,7 @@ export const Sidebar = ({ className, onNavigate, isMobileSheet = false }: Sideba
           "w-full justify-start study-flow-transition min-h-[44px] touch-manipulation",
           !showFullNav && "px-2 justify-center",
           location.pathname === item.href && "bg-primary/10 text-primary border-l-4 border-primary",
-          isMobileSheet && "hover:bg-accent/50" // Better mobile hover state
+          isMobileSheet && "hover:bg-primary/10" // Consistent mobile hover state
         )}
         onClick={() => {
           navigate(item.href);

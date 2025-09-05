@@ -307,41 +307,4 @@ export const ResponsiveGrid: React.FC<ResponsiveGridProps> = ({
 };
 
 // Mobile-specific breakpoint hook
-export const useMobile = () => {
-  const [isMobile, setIsMobile] = React.useState(false);
-
-  React.useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
-
-  return isMobile;
-};
-
-// Orientation hook
-export const useOrientation = () => {
-  const [orientation, setOrientation] = React.useState<'portrait' | 'landscape'>('portrait');
-
-  React.useEffect(() => {
-    const checkOrientation = () => {
-      setOrientation(window.innerHeight > window.innerWidth ? 'portrait' : 'landscape');
-    };
-
-    checkOrientation();
-    window.addEventListener('resize', checkOrientation);
-    window.addEventListener('orientationchange', checkOrientation);
-    
-    return () => {
-      window.removeEventListener('resize', checkOrientation);
-      window.removeEventListener('orientationchange', checkOrientation);
-    };
-  }, []);
-
-  return orientation;
-};
+// Hooks moved to './mobile-hooks'

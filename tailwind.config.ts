@@ -84,6 +84,11 @@ export default {
 					DEFAULT: 'hsl(var(--warning))',
 					foreground: 'hsl(var(--warning-foreground))'
 				},
+				// Orange hover system
+				'orange-hover': {
+					DEFAULT: 'hsl(var(--orange-hover))',
+					foreground: 'hsl(var(--orange-hover-foreground))'
+				},
 				
 				// Learning environment zones
 				learning: {
@@ -196,6 +201,11 @@ export default {
 				'glow-pulse': 'glow-pulse 2s ease-in-out infinite',
 				'enter': 'fade-in 0.3s ease-out, scale-in 0.2s ease-out',
 				'exit': 'fade-out 0.3s ease-out, scale-out 0.2s ease-out'
+			},
+			transitionDuration: {
+				'1500': '1500ms',
+				'2000': '2000ms',
+				'2500': '2500ms'
 			}
 		}
 	},

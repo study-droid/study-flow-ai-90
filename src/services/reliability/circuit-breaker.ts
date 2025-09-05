@@ -48,10 +48,17 @@ export class CircuitBreaker {
     private readonly name: string,
     private readonly config: CircuitBreakerConfig
   ) {
+    // Ensure config has required properties with defaults
+    this.config = {
+      failureThreshold: config.failureThreshold ?? 5,
+      timeout: config.timeout ?? 30000,
+      successThreshold: config.successThreshold ?? 3
+    };
+    
     logger.info(`Circuit breaker initialized: ${name}`, 'CircuitBreaker', {
-      failureThreshold: config.failureThreshold,
-      timeout: config.timeout,
-      successThreshold: config.successThreshold
+      failureThreshold: this.config.failureThreshold,
+      timeout: this.config.timeout,
+      successThreshold: this.config.successThreshold
     });
   }
 
@@ -230,10 +237,10 @@ export class CircuitBreakerManager {
   private initializeDefaultConfigs(): void {
     // Edge Function Professional
     this.defaultConfigs.set('edge-function-professional', {
-      failureThreshold: 3,
-      timeout: 30000, // 30 seconds
+      failureThreshold: 5, // Less sensitive to prevent false opens
+      timeout: 60000, // 60 seconds - AI responses can take longer
       successThreshold: 2,
-      monitoringPeriod: 60000, // 1 minute
+      monitoringPeriod: 300000, // 5 minutes
       onStateChange: (state) => {
         logger.info(`Edge Function Professional circuit breaker: ${state}`, 'CircuitBreakerManager');
       }
@@ -241,21 +248,32 @@ export class CircuitBreakerManager {
 
     // Edge Function Legacy
     this.defaultConfigs.set('edge-function-legacy', {
-      failureThreshold: 5,
-      timeout: 60000, // 1 minute
-      successThreshold: 3,
-      monitoringPeriod: 120000, // 2 minutes
+      failureThreshold: 5, // Increased for stability
+      timeout: 60000, // 60 seconds for AI responses
+      successThreshold: 2, // Keep for faster recovery
+      monitoringPeriod: 300000, // 5 minutes
       onStateChange: (state) => {
-        logger.info(`Edge Function Legacy circuit breaker: ${state}`, 'CircuitBreakerManager');
+        logger.warn(`Edge Function Legacy circuit breaker: ${state}`, 'CircuitBreakerManager');
+      }
+    });
+
+    // Edge Function Analytics
+    this.defaultConfigs.set('edge-function-analytics', {
+      failureThreshold: 2,
+      timeout: 30000, // 30 seconds
+      successThreshold: 2,
+      monitoringPeriod: 90000, // 1.5 minutes
+      onStateChange: (state) => {
+        logger.info(`Edge Function Analytics circuit breaker: ${state}`, 'CircuitBreakerManager');
       }
     });
 
     // DeepSeek API
     this.defaultConfigs.set('deepseek-api', {
-      failureThreshold: 3,
-      timeout: 60000, // 1 minute
+      failureThreshold: 5, // More lenient for direct API calls
+      timeout: 90000, // 90 seconds - DeepSeek can be slow
       successThreshold: 2,
-      monitoringPeriod: 180000, // 3 minutes
+      monitoringPeriod: 300000, // 5 minutes
       onStateChange: (state) => {
         logger.info(`DeepSeek API circuit breaker: ${state}`, 'CircuitBreakerManager');
       }
@@ -291,6 +309,11 @@ export class CircuitBreakerManager {
     serviceName: string, 
     customConfig?: Partial<CircuitBreakerConfig>
   ): CircuitBreaker {
+    // Return a bypass circuit breaker that always allows calls
+    if (serviceName === 'bypass-circuit-breaker') {
+      return this.createBypassCircuitBreaker();
+    }
+    
     if (this.breakers.has(serviceName)) {
       return this.breakers.get(serviceName)!;
     }
@@ -299,6 +322,8 @@ export class CircuitBreakerManager {
     let serviceType = 'generic-api';
     if (serviceName.includes('edge-function-professional')) {
       serviceType = 'edge-function-professional';
+    } else if (serviceName.includes('edge-function-analytics')) {
+      serviceType = 'edge-function-analytics';
     } else if (serviceName.includes('edge-function') || serviceName.includes('ai-proxy')) {
       serviceType = 'edge-function-legacy';
     } else if (serviceName.includes('deepseek')) {
@@ -314,6 +339,33 @@ export class CircuitBreakerManager {
     this.breakers.set(serviceName, breaker);
 
     return breaker;
+  }
+
+  /**
+   * Create a bypass circuit breaker that always allows calls (for AI services)
+   */
+  private createBypassCircuitBreaker(): CircuitBreaker {
+    return {
+      execute: async <T>(fn: () => Promise<T>): Promise<T> => {
+        // Just execute the function directly without circuit breaker logic
+        return await fn();
+      },
+      getStats: () => ({
+        state: CircuitBreakerState.CLOSED,
+        failureCount: 0,
+        successCount: 0,
+        lastFailureTime: null,
+        totalRequests: 0,
+        totalFailures: 0,
+        totalSuccesses: 0,
+        uptime: 0,
+        errorRate: 0
+      }),
+      getState: () => CircuitBreakerState.CLOSED,
+      forceOpen: () => {},
+      forceClose: () => {},
+      isCallAllowed: () => true
+    } as CircuitBreaker;
   }
 
   /**
@@ -401,9 +453,84 @@ export class CircuitBreakerManager {
       overallHealth
     };
   }
+
+  /**
+   * Reset a specific circuit breaker by name
+   */
+  public resetCircuitBreaker(serviceName: string): boolean {
+    const breaker = this.breakers.get(serviceName);
+    if (breaker) {
+      breaker.forceClose();
+      logger.info(`Circuit breaker manually reset: ${serviceName}`, 'CircuitBreakerManager');
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Force reset all failing circuit breakers
+   */
+  public resetFailingCircuits(): void {
+    const failingCircuits = this.getOpenCircuits();
+    failingCircuits.forEach(serviceName => {
+      this.resetCircuitBreaker(serviceName);
+    });
+    logger.info(`Reset ${failingCircuits.length} failing circuit breakers`, 'CircuitBreakerManager');
+  }
+
+  /**
+   * Get circuit breaker by name (for manual management)
+   */
+  public getCircuitBreakerByName(serviceName: string): CircuitBreaker | undefined {
+    return this.breakers.get(serviceName);
+  }
 }
 
 // Export singleton instance
 export const circuitBreakerManager = new CircuitBreakerManager();
+
+// Development utilities - expose to window in development mode
+if (import.meta.env.DEV) {
+  (window as any).circuitBreakerManager = circuitBreakerManager;
+  (window as any).resetCircuitBreakers = () => {
+    circuitBreakerManager.resetAll();
+    console.log('All circuit breakers have been reset to closed state');
+  };
+  (window as any).resetFailingCircuitBreakers = () => {
+    circuitBreakerManager.resetFailingCircuits();
+    console.log('All failing circuit breakers have been reset');
+  };
+  (window as any).getCircuitBreakerStatus = () => {
+    const stats = circuitBreakerManager.getAllStats();
+    const summary = circuitBreakerManager.getHealthSummary();
+    console.table(stats);
+    console.log('Health Summary:', summary);
+    return { stats, summary };
+  };
+  (window as any).forceCircuitBreakerOpen = (serviceName: string) => {
+    const breaker = circuitBreakerManager.getCircuitBreakerByName(serviceName);
+    if (breaker) {
+      breaker.forceOpen();
+      console.log(`Circuit breaker ${serviceName} forced to OPEN state`);
+    } else {
+      console.log(`Circuit breaker ${serviceName} not found`);
+    }
+  };
+  (window as any).forceCircuitBreakerClosed = (serviceName: string) => {
+    const breaker = circuitBreakerManager.getCircuitBreakerByName(serviceName);
+    if (breaker) {
+      breaker.forceClose();
+      console.log(`Circuit breaker ${serviceName} forced to CLOSED state`);
+    } else {
+      console.log(`Circuit breaker ${serviceName} not found`);
+    }
+  };
+  
+  // Auto-reset any failing circuit breakers on page load in development
+  setTimeout(() => {
+    circuitBreakerManager.resetAll();
+    console.log('🔧 Development mode: All circuit breakers reset on startup');
+  }, 1000);
+}
 
 export default circuitBreakerManager;

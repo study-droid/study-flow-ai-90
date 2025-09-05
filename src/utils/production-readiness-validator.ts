@@ -3,17 +3,18 @@
  * Comprehensive validation system to ensure StudyFlow AI is ready for production
  */
 
-import { unifiedAIService } from '@/services/unified-ai-service';
+import { deepSeekService } from '@/lib/deepseek';
 import { productionMonitor } from '@/services/monitoring/production-monitor';
 import { circuitBreakerManager } from '@/services/reliability/circuit-breaker';
 import { logger } from '@/services/logging/logger';
+import type { UnknownRecord } from '@/types/common';
 
 export interface ValidationResult {
   category: string;
   test: string;
   status: 'pass' | 'fail' | 'warning';
   message: string;
-  details?: any;
+  details?: UnknownRecord;
   critical: boolean;
 }
 
@@ -71,9 +72,9 @@ export class ProductionReadinessValidator {
       const providers = await unifiedAIService.getAvailableProviders();
       this.addResult(category, 'AI Service Initialization', 'pass', 
         `AI service initialized with ${providers.length} providers`, { providers }, true);
-    } catch (error: any) {
+    } catch (error: unknown) {
       this.addResult(category, 'AI Service Initialization', 'fail', 
-        `AI service failed to initialize: ${error.message}`, { error }, true);
+        `AI service failed to initialize: ${(error as Error).message}`, { error }, true);
     }
 
     // Test 2: Service Configuration
@@ -81,9 +82,9 @@ export class ProductionReadinessValidator {
       const config = unifiedAIService.getServiceConfiguration();
       this.addResult(category, 'Service Configuration', 'pass',
         'Service configuration loaded successfully', { config }, false);
-    } catch (error: any) {
+    } catch (error: unknown) {
       this.addResult(category, 'Service Configuration', 'fail',
-        `Service configuration error: ${error.message}`, { error }, true);
+        `Service configuration error: ${(error as Error).message}`, { error }, true);
     }
 
     // Test 3: Production Readiness Check
@@ -94,9 +95,9 @@ export class ProductionReadinessValidator {
       
       this.addResult(category, 'Production Readiness', status,
         `System is ${readiness.overall}`, { readiness }, readiness.overall === 'not_ready');
-    } catch (error: any) {
+    } catch (error: unknown) {
       this.addResult(category, 'Production Readiness', 'fail',
-        `Production readiness check failed: ${error.message}`, { error }, true);
+        `Production readiness check failed: ${(error as Error).message}`, { error }, true);
     }
   }
 
@@ -115,9 +116,9 @@ export class ProductionReadinessValidator {
       this.addResult(category, 'Circuit Breakers', status,
         `Circuit breakers: ${circuitStatus.healthy}/${circuitStatus.total} healthy`, 
         { circuitStatus }, circuitStatus.overallHealth === 'unhealthy');
-    } catch (error: any) {
+    } catch (error: unknown) {
       this.addResult(category, 'Circuit Breakers', 'fail',
-        `Circuit breaker validation failed: ${error.message}`, { error }, true);
+        `Circuit breaker validation failed: ${(error as Error).message}`, { error }, true);
     }
 
     // Test 2: Fallback Mechanisms
@@ -126,9 +127,9 @@ export class ProductionReadinessValidator {
       const isAvailable = unifiedAIService.isServiceAvailable('edge-function-professional');
       this.addResult(category, 'Fallback Mechanisms', 'pass',
         'Fallback mechanisms are properly configured', { professionalAvailable: isAvailable }, false);
-    } catch (error: any) {
+    } catch (error: unknown) {
       this.addResult(category, 'Fallback Mechanisms', 'fail',
-        `Fallback mechanism test failed: ${error.message}`, { error }, false);
+        `Fallback mechanism test failed: ${(error as Error).message}`, { error }, false);
     }
 
     // Test 3: Error Recovery
@@ -152,14 +153,14 @@ export class ProductionReadinessValidator {
       this.addResult(category, 'Health Check Performance', status,
         `Health check completed in ${responseTime}ms`, 
         { responseTime, health }, responseTime > 10000);
-    } catch (error: any) {
+    } catch (error: unknown) {
       this.addResult(category, 'Health Check Performance', 'fail',
-        `Health check performance test failed: ${error.message}`, { error }, false);
+        `Health check performance test failed: ${(error as Error).message}`, { error }, false);
     }
 
     // Test 2: Memory Usage
-    if (typeof window !== 'undefined' && (window as any).performance?.memory) {
-      const memory = (window as any).performance.memory;
+    if (typeof window !== 'undefined' && (window as Window & { performance: Performance & { memory?: { usedJSHeapSize: number; totalJSHeapSize: number; jsHeapSizeLimit: number } } }).performance?.memory) {
+      const memory = (window as Window & { performance: Performance & { memory: { usedJSHeapSize: number; totalJSHeapSize: number; jsHeapSizeLimit: number } } }).performance.memory;
       const usedMB = Math.round(memory.usedJSHeapSize / 1048576);
       const totalMB = Math.round(memory.totalJSHeapSize / 1048576);
       
@@ -188,9 +189,9 @@ export class ProductionReadinessValidator {
       // This is a basic check - in production you'd verify actual auth
       this.addResult(category, 'Authentication Integration', 'pass',
         'Supabase authentication is integrated', { provider: 'supabase' }, true);
-    } catch (error: any) {
+    } catch (error: unknown) {
       this.addResult(category, 'Authentication Integration', 'fail',
-        `Authentication check failed: ${error.message}`, { error }, true);
+        `Authentication check failed: ${(error as Error).message}`, { error }, true);
     }
 
     // Test 2: API Security
@@ -223,9 +224,9 @@ export class ProductionReadinessValidator {
       this.addResult(category, 'Production Monitor', status,
         currentHealth ? 'Production monitor is active and collecting data' : 'Production monitor starting up',
         { active: !!currentHealth }, false);
-    } catch (error: any) {
+    } catch (error: unknown) {
       this.addResult(category, 'Production Monitor', 'fail',
-        `Production monitor validation failed: ${error.message}`, { error }, true);
+        `Production monitor validation failed: ${(error as Error).message}`, { error }, true);
     }
 
     // Test 2: Logging System
@@ -233,9 +234,9 @@ export class ProductionReadinessValidator {
       logger.info('Production readiness validation logging test', 'ProductionReadinessValidator');
       this.addResult(category, 'Logging System', 'pass',
         'Logging system is operational', { logLevels: ['info', 'warn', 'error', 'debug'] }, false);
-    } catch (error: any) {
+    } catch (error: unknown) {
       this.addResult(category, 'Logging System', 'fail',
-        `Logging system test failed: ${error.message}`, { error }, false);
+        `Logging system test failed: ${(error as Error).message}`, { error }, false);
     }
 
     // Test 3: Health Endpoints
@@ -285,9 +286,9 @@ export class ProductionReadinessValidator {
         this.addResult(category, 'Connection Health', 'warning',
           'Database health status not available', {}, false);
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       this.addResult(category, 'Connection Health', 'fail',
-        `Database health check failed: ${error.message}`, { error }, true);
+        `Database health check failed: ${(error as Error).message}`, { error }, true);
     }
 
     // Test 2: Schema Integrity
@@ -316,9 +317,9 @@ export class ProductionReadinessValidator {
       this.addResult(category, 'Provider Availability', status,
         `${availableCount}/${providers.length} AI providers available`,
         { providers }, availableCount === 0);
-    } catch (error: any) {
+    } catch (error: unknown) {
       this.addResult(category, 'Provider Availability', 'fail',
-        `Provider availability check failed: ${error.message}`, { error }, true);
+        `Provider availability check failed: ${(error as Error).message}`, { error }, true);
     }
 
     // Test 2: Professional Processing Pipeline

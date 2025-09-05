@@ -8,22 +8,22 @@ const enhancedButtonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary/90",
+        default: "bg-primary text-primary-foreground hover:bg-orange-hover hover:text-orange-hover-foreground transition-all duration-300",
         destructive:
-          "bg-destructive text-destructive-foreground hover:bg-destructive/90",
+          "bg-destructive text-destructive-foreground hover:bg-destructive/90 transition-all duration-300",
         outline:
-          "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
+          "border border-input bg-background hover:bg-orange-hover/10 hover:text-orange-hover hover:border-orange-hover/30 transition-all duration-300",
         secondary:
-          "bg-secondary text-secondary-foreground hover:bg-secondary/80",
-        ghost: "hover:bg-accent hover:text-accent-foreground",
-        link: "text-primary underline-offset-4 hover:underline",
-        // Enhanced variants
-        warm: "btn-warm hover:scale-105",
-        glow: "btn-glow hover:scale-105",
-        glass: "glass-card hover:bg-background/60 backdrop-blur-md",
-        gradient: "bg-gradient-to-r from-primary via-primary-glow to-primary text-primary-foreground hover:shadow-lg hover:shadow-primary/25 hover:scale-105",
-        success: "bg-accent text-accent-foreground hover:bg-accent/90 hover:shadow-lg hover:shadow-accent/25",
-        warning: "bg-warning text-warning-foreground hover:bg-warning/90 hover:shadow-lg hover:shadow-warning/25",
+          "bg-secondary text-secondary-foreground hover:bg-orange-hover/20 hover:text-orange-hover transition-all duration-300",
+        ghost: "hover:bg-orange-hover/10 hover:text-orange-hover transition-all duration-300",
+        link: "text-primary underline-offset-4 hover:underline hover:text-orange-hover transition-all duration-300",
+        // Enhanced variants with orange hover
+        warm: "btn-warm hover:bg-orange-hover hover:text-orange-hover-foreground hover:scale-105 transition-all duration-300",
+        glow: "btn-glow hover:bg-orange-hover hover:text-orange-hover-foreground hover:scale-105 transition-all duration-300",
+        glass: "glass-card hover:bg-orange-hover/20 hover:text-orange-hover backdrop-blur-md transition-all duration-300",
+        gradient: "bg-gradient-to-r from-primary via-primary-glow to-primary text-primary-foreground hover:bg-orange-hover hover:text-orange-hover-foreground hover:shadow-lg hover:shadow-orange-hover/25 hover:scale-105 transition-all duration-300",
+        success: "bg-accent text-accent-foreground hover:bg-orange-hover hover:text-orange-hover-foreground hover:shadow-lg hover:shadow-orange-hover/25 transition-all duration-300",
+        warning: "bg-warning text-warning-foreground hover:bg-orange-hover hover:text-orange-hover-foreground hover:shadow-lg hover:shadow-orange-hover/25 transition-all duration-300",
       },
       size: {
         default: "h-10 px-4 py-2",
@@ -36,6 +36,11 @@ const enhancedButtonVariants = cva(
         pulse: "animate-pulse",
         bounce: "hover:animate-bounce",
         float: "animate-float",
+        // New enhanced animations
+        shimmer: "relative overflow-hidden before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/10 before:to-transparent before:-skew-x-12 before:-translate-x-full hover:before:translate-x-full before:transition-transform before:duration-700 before:ease-out",
+        glow: "animate-pulse hover:animate-none hover:shadow-2xl",
+        rotate: "hover:rotate-3 transition-transform duration-300",
+        wiggle: "hover:animate-wiggle",
       }
     },
     defaultVariants: {

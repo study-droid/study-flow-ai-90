@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Circuit Breaker Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 800px; margin: 0 auto; }
+        .status { padding: 10px; margin: 10px 0; border-radius: 5px; }
+        .healthy { background-color: #d4edda; color: #155724; }
+        .degraded { background-color: #fff3cd; color: #856404; }
+        .unhealthy { background-color: #f8d7da; color: #721c24; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+        .reset-btn { background-color: #007bff; color: white; border: none; border-radius: 5px; }
+        .test-btn { background-color: #28a745; color: white; border: none; border-radius: 5px; }
+        .log { background-color: #f8f9fa; border: 1px solid #dee2e6; padding: 15px; margin: 10px 0; height: 300px; overflow-y: auto; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔄 Circuit Breaker Test & Reset Tool</h1>
+        
+        <div id="status" class="status">Loading status...</div>
+        
+        <div>
+            <button class="reset-btn" onclick="resetCircuitBreakers()">🔄 Reset All Circuit Breakers</button>
+            <button class="test-btn" onclick="testAITutor()">🧪 Test AI Tutor</button>
+            <button class="test-btn" onclick="checkStatus()">📊 Check Status</button>
+        </div>
+        
+        <div class="log" id="log"></div>
+        
+        <h2>📋 Instructions</h2>
+        <ol>
+            <li><strong>Check Current Status:</strong> Click "Check Status" to see circuit breaker health</li>
+            <li><strong>Reset Circuit Breakers:</strong> If any are OPEN, click "Reset All Circuit Breakers"</li>
+            <li><strong>Test AI Tutor:</strong> Click "Test AI Tutor" to simulate an AI request</li>
+            <li><strong>Monitor Logs:</strong> Watch the log area for detailed debugging output</li>
+        </ol>
+        
+        <h2>🔧 How It Works</h2>
+        <ul>
+            <li><strong>CLOSED:</strong> Circuit is healthy, requests pass through normally</li>
+            <li><strong>OPEN:</strong> Circuit detected failures, blocking requests for protection</li>
+            <li><strong>HALF_OPEN:</strong> Circuit is testing if service has recovered</li>
+        </ul>
+        
+        <h2>🚀 Fallback System</h2>
+        <p>When the edge function fails, the system automatically:</p>
+        <ol>
+            <li>Detects the failure via circuit breaker</li>
+            <li>Shows "⚠️ Using backup service..." message</li>
+            <li>Falls back to direct DeepSeek API calls</li>
+            <li>Resets the circuit breaker for next attempt</li>
+        </ol>
+    </div>
+
+    <script>
+        let logElement = document.getElementById('log');
+        let statusElement = document.getElementById('status');
+        
+        function log(message) {
+            const timestamp = new Date().toLocaleTimeString();
+            logElement.innerHTML += `[${timestamp}] ${message}\n`;
+            logElement.scrollTop = logElement.scrollHeight;
+        }
+        
+        function updateStatus(health) {
+            statusElement.className = 'status ' + health.overallHealth;
+            statusElement.innerHTML = `
+                <strong>Overall Health:</strong> ${health.overallHealth.toUpperCase()}<br>
+                <strong>Total Circuit Breakers:</strong> ${health.total}<br>
+                <strong>Healthy:</strong> ${health.healthy} | 
+                <strong>Degraded:</strong> ${health.degraded} | 
+                <strong>Failed:</strong> ${health.failed}
+            `;
+        }
+        
+        function resetCircuitBreakers() {
+            log('🔄 Resetting all circuit breakers...');
+            
+            // Access the circuit breaker manager from window (exposed in dev mode)
+            if (window.circuitBreakerManager) {
+                try {
+                    window.circuitBreakerManager.resetFailingCircuits();
+                    log('✅ Circuit breakers reset successfully');
+                    checkStatus();
+                } catch (error) {
+                    log('❌ Error resetting circuit breakers: ' + error.message);
+                }
+            } else {
+                log('⚠️ Circuit breaker manager not available. Make sure the main app is loaded.');
+            }
+        }
+        
+        function checkStatus() {
+            log('📊 Checking circuit breaker status...');
+            
+            if (window.circuitBreakerManager) {
+                try {
+                    const summary = window.circuitBreakerManager.getHealthSummary();
+                    const stats = window.circuitBreakerManager.getAllStats();
+                    
+                    updateStatus(summary);
+                    log(`📈 Health Summary: ${JSON.stringify(summary)}`);
+                    
+                    Object.entries(stats).forEach(([name, stat]) => {
+                        log(`🔧 ${name}: ${stat.state} (${stat.totalRequests} requests, ${stat.totalFailures} failures)`);
+                    });
+                } catch (error) {
+                    log('❌ Error checking status: ' + error.message);
+                }
+            } else {
+                log('⚠️ Circuit breaker manager not available. Load the main app first.');
+                statusElement.className = 'status degraded';
+                statusElement.innerHTML = 'Circuit breaker manager not loaded. Please open the main application first.';
+            }
+        }
+        
+        function testAITutor() {
+            log('🧪 Testing AI Tutor functionality...');
+            
+            // Open the main app in a new tab if not already open
+            const mainAppUrl = 'http://localhost:8084';
+            log(`🌐 Opening main application: ${mainAppUrl}`);
+            
+            window.open(mainAppUrl, '_blank');
+            
+            log('📝 Instructions:');
+            log('1. Go to the main app tab that just opened');
+            log('2. Navigate to the AI Tutor page');
+            log('3. Send a test message like "Explain photosynthesis"');
+            log('4. Watch for circuit breaker behavior and fallback messages');
+            log('5. Return here and click "Check Status" to see results');
+        }
+        
+        // Check status on load
+        setTimeout(checkStatus, 1000);
+        
+        // Auto-refresh status every 10 seconds
+        setInterval(checkStatus, 10000);
+    </script>
+</body>
+</html>

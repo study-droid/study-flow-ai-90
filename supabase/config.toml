@@ -17,3 +17,9 @@ port = 54323
 
 [functions.deepseek-ai-professional]
 verify_jwt = false
+
+[functions.deepseek-quote]
+verify_jwt = false
+
+[functions.deepseek-chat]
+verify_jwt = false

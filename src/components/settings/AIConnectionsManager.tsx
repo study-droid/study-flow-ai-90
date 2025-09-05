@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -55,11 +55,7 @@ export function AIConnectionsManager() {
 
   const { toast } = useToast();
 
-  useEffect(() => {
-    loadConnections();
-  }, []);
-
-  const loadConnections = async () => {
+  const loadConnections = useCallback(async () => {
     try {
       setIsLoading(true);
       const userConnections = await userAIConnectionsService.getUserConnections();
@@ -73,7 +69,11 @@ export function AIConnectionsManager() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [toast]);
+
+  useEffect(() => {
+    loadConnections();
+  }, [loadConnections]);
 
   const getProviderIcon = (provider: AIProvider) => {
     switch (provider) {

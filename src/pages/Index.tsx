@@ -27,6 +27,8 @@ import {
   Plus,
   Timer,
 } from "lucide-react";
+import { AITutorAvatar } from "@/components/ai-tutor/AITutorAvatar";
+import { ChatSheet } from "@/components/chat/ChatSheet";
 import { useNavigate } from "react-router-dom";
 import { startOfWeek, isWithinInterval, endOfWeek } from "date-fns";
 
@@ -66,7 +68,7 @@ export default function Index() {
           <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-3 sm:gap-4">
             <div className="flex-1">
               <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold mb-2 sm:mb-3">
-                Welcome back, <span className="study-flow-gradient-yellow bg-clip-text text-transparent">{displayName}!</span>
+                Welcome back, <span className="study-flow-gradient-yellow bg-clip-text text-transparent font-bold">{displayName}!</span>
               </h1>
               <p className="text-sm sm:text-base lg:text-lg text-muted-foreground">
                 Ready to crush your study goals today? You have {pendingTasks} tasks pending.
@@ -77,15 +79,26 @@ export default function Index() {
                 <Star className="h-3 w-3 sm:h-4 sm:w-4 animate-golden-glow" />
                 <span>{studyStreak}-day streak</span>
               </Badge>
-              <Button 
-                variant="default" 
-                size="default"
-                className="w-full sm:w-auto hover:scale-105 transition-transform duration-300 bg-gradient-to-r from-primary to-primary-glow hover:shadow-lg"
-                onClick={() => navigate('/study')}
-              >
-                <Brain className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
-                <span className="text-sm sm:text-base">Start Study Session</span>
-              </Button>
+              <div className="flex flex-col sm:flex-row w-full sm:w-auto gap-2">
+                <Button 
+                  variant="default"
+                  size="default"
+                  className="w-full sm:w-auto transition-all duration-300 bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-500 dark:from-purple-500 dark:via-blue-500 dark:to-cyan-400 text-white border-0 hover:shadow-lg hover:shadow-purple-500/25 dark:hover:shadow-purple-400/25 hover:scale-105 font-semibold"
+                  onClick={() => navigate('/ai-tutor')}
+                >
+                  <AITutorAvatar size="sm" className="mr-2" />
+                  <span className="text-sm sm:text-base">AI-Tutor</span>
+                </Button>
+                <Button 
+                  variant="default" 
+                  size="default"
+                  className="w-full sm:w-auto hover:scale-105 transition-transform duration-300 bg-gradient-to-r from-primary to-primary-glow hover:shadow-lg"
+                  onClick={() => navigate('/study')}
+                >
+                  <Timer className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
+                  <span className="text-sm sm:text-base">Start Study Session</span>
+                </Button>
+              </div>
             </div>
           </div>
         </div>
@@ -275,6 +288,9 @@ export default function Index() {
         </div>
 
       </div>
+
+      {/* AI Study Assistant Chat - Fixed floating button */}
+      <ChatSheet />
     </DashboardLayout>
   );
 }

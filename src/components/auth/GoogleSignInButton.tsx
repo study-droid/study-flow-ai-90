@@ -25,7 +25,7 @@ export const GoogleSignInButton: React.FC<GoogleSignInButtonProps> = ({
       disabled={isLoading}
       className={cn(
         "w-full relative",
-        variant === 'outline' && "bg-white hover:bg-gray-50 text-gray-900 border-gray-300 dark:bg-gray-900 dark:hover:bg-gray-800 dark:text-gray-100 dark:border-gray-700",
+        variant === 'outline' && "bg-gray-50 text-gray-700 font-medium border-gray-300 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600",
         className
       )}
     >

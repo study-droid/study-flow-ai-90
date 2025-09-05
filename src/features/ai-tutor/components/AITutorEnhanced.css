@@ -1,0 +1,1344 @@
+/* ============================================================================ */
+/* AI Tutor Enhanced - Modern Layout System                                    */
+/* ============================================================================ */
+
+/* Main Layout Container */
+.ai-tutor-layout {
+  @apply h-full flex flex-col bg-card border border-border rounded-lg overflow-hidden shadow-sm;
+}
+
+/* Header Section */
+.ai-tutor-header {
+  @apply flex-shrink-0 border-b border-border bg-background/95 backdrop-blur-sm;
+}
+
+.header-content {
+  @apply flex items-center justify-between p-4;
+}
+
+.header-left {
+  @apply flex items-center gap-3;
+}
+
+.header-actions {
+  @apply flex items-center gap-2;
+}
+
+/* Main Content Area */
+.ai-tutor-main {
+  @apply flex flex-1 min-h-0 overflow-hidden;
+}
+
+/* Chat Area */
+.ai-tutor-chat {
+  @apply flex flex-col flex-1 min-h-0 min-w-0;
+}
+
+/* Messages Container */
+.messages-container {
+  @apply flex-1 flex flex-col min-h-0 overflow-hidden;
+}
+
+.messages-scroll {
+  @apply flex-1 min-h-0;
+}
+
+.messages-content {
+  @apply h-full min-h-0;
+}
+
+.messages-list {
+  @apply flex flex-col gap-4 p-4 min-h-full;
+}
+
+/* Welcome Screen */
+.welcome-screen {
+  @apply flex items-center justify-center h-full p-8;
+}
+
+.welcome-content {
+  @apply text-center max-w-2xl mx-auto;
+}
+
+.welcome-icon {
+  @apply flex justify-center mb-6;
+}
+
+.welcome-title {
+  @apply text-2xl font-bold mb-3 text-foreground;
+}
+
+.welcome-description {
+  @apply text-muted-foreground mb-8 text-base leading-relaxed;
+}
+
+.quick-actions-grid {
+  @apply grid gap-3 w-full;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.quick-action-btn {
+  @apply transition-all duration-200 hover:scale-[1.02] hover:shadow-md;
+}
+
+/* Error Container */
+.error-container {
+  @apply flex justify-center p-2 border-t border-border bg-destructive/5;
+}
+
+/* Input Area */
+.input-area {
+  @apply flex-shrink-0 border-t border-border bg-background/95 backdrop-blur-sm;
+}
+
+.input-container {
+  @apply p-4;
+}
+
+.input-wrapper {
+  @apply flex items-end gap-3 p-3 bg-muted/30 rounded-lg border border-border focus-within:border-ring focus-within:ring-1 focus-within:ring-ring;
+}
+
+.input-field {
+  @apply flex-1 min-h-[40px] max-h-32 text-sm placeholder:text-muted-foreground;
+}
+
+.send-btn {
+  @apply h-8 w-8 p-0 shrink-0;
+}
+
+.input-footer {
+  @apply flex items-center justify-between mt-2 text-xs text-muted-foreground;
+}
+
+.input-hint {
+  @apply select-none;
+}
+
+.message-count {
+  @apply text-xs;
+}
+
+/* ============================================================================ */
+/* Chat History Panel                                                           */
+/* ============================================================================ */
+
+.chat-history-panel {
+  @apply w-80 flex-shrink-0 border-r border-border bg-muted/30 backdrop-blur-sm overflow-hidden;
+  @apply flex flex-col;
+}
+
+.history-header {
+  @apply flex items-center justify-between p-4 border-b border-border bg-background/50;
+  @apply gap-2;
+}
+
+.header-title {
+  @apply flex items-center gap-2 font-medium text-sm;
+  @apply min-w-0 flex-1 truncate;
+}
+
+.session-count {
+  @apply text-xs;
+}
+
+.close-btn {
+  @apply h-6 w-6 p-0;
+}
+
+.history-search {
+  @apply p-3 border-b border-border;
+}
+
+.history-actions {
+  @apply p-3 border-b border-border;
+}
+
+.new-session-btn {
+  @apply w-full justify-start;
+}
+
+.history-content {
+  @apply flex-1 min-h-0;
+}
+
+.empty-state {
+  @apply flex flex-col items-center justify-center h-full text-center p-8 gap-2;
+}
+
+.sessions-list {
+  @apply p-2;
+}
+
+.session-group {
+  @apply mb-4;
+}
+
+.group-header {
+  @apply flex items-center gap-2 px-3 py-2 text-xs font-medium text-muted-foreground sticky top-0 bg-background/95 backdrop-blur-sm border-b border-border/50;
+}
+
+.group-sessions {
+  @apply space-y-1 mt-1;
+}
+
+.session-item {
+  @apply relative flex items-start gap-3 p-3 pr-10 rounded-lg cursor-pointer transition-all duration-200;
+  @apply hover:bg-accent/50 hover:shadow-sm;
+}
+
+.session-item.active {
+  @apply bg-primary/10 border border-primary/20 shadow-sm;
+}
+
+.session-content {
+  @apply flex-1 min-w-0 overflow-hidden;
+}
+
+.session-title {
+  @apply font-medium text-sm text-foreground;
+  @apply overflow-hidden text-ellipsis;
+  word-wrap: break-word;
+  line-height: 1.4;
+}
+
+.session-meta {
+  @apply flex items-center justify-between mt-1 gap-2;
+}
+
+.session-info {
+  @apply flex items-center gap-1 text-xs text-muted-foreground truncate;
+  @apply min-w-0 flex-1;
+}
+
+.message-count {
+  @apply text-xs shrink-0;
+}
+
+.subject-badge {
+  @apply mt-2 text-xs truncate;
+  @apply max-w-full;
+}
+
+.delete-btn {
+  @apply h-6 w-6 p-0 absolute right-2 top-2 opacity-0 group-hover:opacity-100 transition-opacity;
+  @apply shrink-0;
+}
+
+.session-item:hover .delete-btn {
+  @apply opacity-100;
+}
+
+/* ============================================================================ */
+/* Message Bubbles                                                             */
+/* ============================================================================ */
+
+.message-bubble {
+  @apply flex flex-col gap-2 max-w-full;
+}
+
+.message-bubble-user {
+  @apply items-end;
+}
+
+.message-bubble-assistant {
+  @apply items-start;
+}
+
+.message-content {
+  @apply flex gap-3 max-w-full;
+}
+
+.message-bubble-user .message-content {
+  @apply flex-row-reverse;
+}
+
+.message-avatar {
+  @apply flex items-center justify-center w-8 h-8 rounded-full shrink-0 mt-1;
+}
+
+.message-avatar-user {
+  @apply bg-primary text-primary-foreground;
+}
+
+.message-avatar-assistant {
+  @apply bg-muted text-muted-foreground border border-border;
+}
+
+.message-body {
+  @apply flex flex-col gap-2 max-w-full min-w-0;
+}
+
+.message-body-user {
+  @apply items-end;
+}
+
+.message-body-assistant {
+  @apply items-start;
+}
+
+.message-body-error {
+  @apply items-start;
+}
+
+.message-text {
+  @apply relative max-w-full;
+}
+
+.message-body-user .message-text {
+  @apply bg-primary text-primary-foreground p-3 rounded-2xl rounded-br-md;
+  @apply max-w-md break-words;
+}
+
+.message-body-assistant .message-text {
+  @apply bg-muted/50 text-foreground p-4 rounded-2xl rounded-bl-md;
+  @apply max-w-2xl border border-border/50;
+}
+
+.message-body-error .message-text {
+  @apply bg-destructive/10 border border-destructive/20 text-destructive p-3 rounded-2xl rounded-bl-md;
+  @apply max-w-md;
+}
+
+.message-metadata {
+  @apply flex items-center gap-2 text-xs text-muted-foreground;
+}
+
+.message-timestamp {
+  @apply select-none;
+}
+
+.message-tokens, .message-model {
+  @apply text-xs;
+}
+
+.message-actions {
+  @apply flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity;
+}
+
+.message-bubble:hover .message-actions {
+  @apply opacity-100;
+}
+
+.action-btn {
+  @apply h-6 w-6 p-0 text-muted-foreground hover:text-foreground;
+}
+
+/* Message content styling */
+.message-text .prose {
+  @apply text-inherit max-w-none;
+}
+
+.message-text .prose p {
+  @apply text-inherit mb-2 last:mb-0;
+}
+
+.message-text .prose h1,
+.message-text .prose h2,
+.message-text .prose h3,
+.message-text .prose h4,
+.message-text .prose h5,
+.message-text .prose h6 {
+  @apply text-inherit font-semibold mt-4 mb-2 first:mt-0;
+}
+
+.message-text .prose ul,
+.message-text .prose ol {
+  @apply text-inherit my-2 pl-4;
+}
+
+.message-text .prose li {
+  @apply text-inherit mb-1;
+}
+
+.message-text .prose code {
+  @apply bg-background/80 text-foreground px-1.5 py-0.5 rounded text-sm font-mono border border-border/50;
+}
+
+.message-text .prose pre {
+  @apply bg-background/80 border border-border/50 rounded-lg p-4 my-4 overflow-x-auto;
+}
+
+.message-text .prose blockquote {
+  @apply border-l-4 border-border/50 pl-4 italic text-muted-foreground my-2;
+}
+
+/* ============================================================================ */
+/* Responsive Design                                                           */
+/* ============================================================================ */
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+  .ai-tutor-main {
+    @apply relative;
+  }
+
+  .chat-history-panel {
+    @apply fixed inset-y-0 left-0 z-50 w-80 transform -translate-x-full transition-transform duration-300;
+    @apply border-r border-border shadow-xl bg-background;
+  }
+
+  .chat-history-panel[data-open="true"] {
+    @apply translate-x-0;
+  }
+
+  .ai-tutor-chat {
+    @apply w-full;
+  }
+
+  .messages-list {
+    @apply p-3 gap-3;
+  }
+
+  .message-body-user .message-text,
+  .message-body-assistant .message-text {
+    @apply max-w-[85vw];
+  }
+
+  .quick-actions-grid {
+    grid-template-columns: 1fr;
+    @apply gap-2;
+  }
+
+  .welcome-content {
+    @apply px-4;
+  }
+
+  .welcome-title {
+    @apply text-xl;
+  }
+
+  .input-container {
+    @apply p-3;
+  }
+
+  .header-content {
+    @apply p-3;
+  }
+}
+
+/* Tablet Styles */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .chat-history-panel {
+    @apply w-64;
+  }
+
+  .quick-actions-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .message-body-user .message-text {
+    @apply max-w-sm;
+  }
+
+  .message-body-assistant .message-text {
+    @apply max-w-xl;
+  }
+}
+
+/* Desktop Styles */
+@media (min-width: 1025px) {
+  .quick-actions-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .message-body-user .message-text {
+    @apply max-w-md;
+  }
+
+  .message-body-assistant .message-text {
+    @apply max-w-2xl;
+  }
+}
+
+/* ============================================================================ */
+/* Animations & Transitions                                                    */
+/* ============================================================================ */
+
+@keyframes message-slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.message-bubble {
+  animation: message-slide-in 0.3s ease-out;
+}
+
+/* ============================================================================ */
+/* Modern AI Thinking Bubble Animations                                       */
+/* ============================================================================ */
+
+/* Main Thinking Bubble Container */
+.thinking-bubble-modern {
+  @apply relative flex flex-col gap-2 max-w-full;
+  animation: thinking-entrance 0.6s ease-out;
+  transform-origin: bottom left;
+}
+
+/* Entrance Animation */
+@keyframes thinking-entrance {
+  0% {
+    opacity: 0;
+    transform: scale(0.8) translateY(20px);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.05) translateY(-5px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Stage-specific Animations */
+.thinking-analyzing {
+  animation: thinking-entrance 0.6s ease-out, analyzing-pulse 2s ease-in-out infinite;
+}
+
+.thinking-reasoning {
+  animation: thinking-entrance 0.6s ease-out, reasoning-glow 1.5s ease-in-out infinite alternate;
+}
+
+.thinking-responding {
+  animation: thinking-entrance 0.6s ease-out, responding-shimmer 1s ease-in-out infinite;
+}
+
+@keyframes analyzing-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+}
+
+@keyframes reasoning-glow {
+  0% { filter: brightness(1) saturate(1); }
+  100% { filter: brightness(1.1) saturate(1.2); }
+}
+
+@keyframes responding-shimmer {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(2px); }
+}
+
+/* Ambient Particles */
+.thinking-particles {
+  @apply absolute inset-0 pointer-events-none overflow-hidden;
+  z-index: -1;
+}
+
+.thinking-particle {
+  @apply absolute opacity-20;
+  animation: particle-float 3s ease-in-out infinite;
+}
+
+@keyframes particle-float {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.6;
+  }
+  50% {
+    transform: translateY(-20px) rotate(180deg);
+    opacity: 0.8;
+  }
+  90% {
+    opacity: 0.3;
+  }
+}
+
+/* Modern Content Layout */
+.thinking-content-modern {
+  @apply flex gap-3 max-w-full;
+}
+
+/* Enhanced Avatar with Glow Effect */
+.thinking-avatar-modern {
+  @apply relative flex items-center justify-center w-10 h-10 rounded-full shrink-0 mt-1;
+  @apply bg-gradient-to-br from-background to-muted border-2;
+  animation: avatar-breathe 2s ease-in-out infinite;
+}
+
+@keyframes avatar-breathe {
+  0%, 100% { 
+    transform: scale(1);
+    box-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
+  }
+  50% { 
+    transform: scale(1.05);
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+  }
+}
+
+.avatar-glow {
+  @apply absolute inset-0 rounded-full blur-sm opacity-60;
+  @apply bg-gradient-to-br from-blue-400 to-purple-500;
+  animation: glow-pulse 2s ease-in-out infinite alternate;
+  z-index: -1;
+}
+
+@keyframes glow-pulse {
+  0% { 
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  100% { 
+    opacity: 0.6;
+    transform: scale(1.2);
+  }
+}
+
+.avatar-icon {
+  @apply relative z-10;
+  animation: icon-float 3s ease-in-out infinite;
+}
+
+@keyframes icon-float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  33% { transform: translateY(-2px) rotate(5deg); }
+  66% { transform: translateY(2px) rotate(-5deg); }
+}
+
+/* Enhanced Bubble Body */
+.thinking-body-modern {
+  @apply relative flex flex-col gap-3 p-4 rounded-2xl rounded-bl-md;
+  @apply bg-gradient-to-br from-background/95 to-muted/80;
+  @apply border border-border/50 backdrop-blur-sm shadow-lg;
+  @apply max-w-2xl;
+  animation: bubble-float 4s ease-in-out infinite;
+  transition: all 0.3s ease;
+}
+
+@keyframes bubble-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+.thinking-body-modern:hover {
+  @apply shadow-xl border-border;
+  transform: translateY(-2px);
+}
+
+/* Modern Header */
+.thinking-header-modern {
+  @apply flex items-center justify-between;
+}
+
+.thinking-stage-modern {
+  @apply flex items-center gap-2;
+}
+
+.stage-badge-modern {
+  @apply px-3 py-1.5 rounded-full border-2 font-medium text-sm;
+  @apply transition-all duration-300 ease-out;
+  animation: badge-shimmer 3s ease-in-out infinite;
+}
+
+@keyframes badge-shimmer {
+  0%, 100% { 
+    background-position: -200% center;
+  }
+  50% { 
+    background-position: 200% center;
+  }
+}
+
+.stage-indicator-modern {
+  @apply mr-2;
+}
+
+.stage-dots-modern {
+  @apply flex items-center gap-1;
+}
+
+.dot-modern {
+  @apply w-2 h-2 rounded-full bg-current;
+  animation: dot-bounce 1.2s ease-in-out infinite;
+}
+
+.dot-modern:nth-child(1) { animation-delay: 0s; }
+.dot-modern:nth-child(2) { animation-delay: 0.2s; }
+.dot-modern:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes dot-bounce {
+  0%, 60%, 100% {
+    transform: translateY(0) scale(1);
+    opacity: 0.7;
+  }
+  30% {
+    transform: translateY(-8px) scale(1.2);
+    opacity: 1;
+  }
+}
+
+.stage-label {
+  @apply font-medium;
+  animation: text-glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes text-glow {
+  0% { text-shadow: none; }
+  100% { text-shadow: 0 0 8px currentColor; }
+}
+
+/* Modern Controls */
+.thinking-controls-modern {
+  @apply flex items-center gap-1;
+}
+
+.control-btn-modern {
+  @apply h-6 w-6 p-0 transition-all duration-200;
+  @apply hover:scale-110 hover:bg-accent/80;
+}
+
+/* Enhanced Content */
+.thinking-text-modern {
+  @apply mt-2;
+}
+
+.thinking-reasoning-modern {
+  @apply max-h-32 overflow-hidden;
+  transition: max-height 0.3s ease-out;
+}
+
+.thinking-reasoning-collapsed-modern {
+  @apply max-h-16;
+}
+
+.thinking-content-text {
+  @apply text-sm text-muted-foreground leading-relaxed;
+  animation: text-appear 0.5s ease-out;
+}
+
+@keyframes text-appear {
+  0% { opacity: 0; transform: translateY(10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.thinking-preview {
+  @apply text-sm text-muted-foreground;
+  animation: typewriter 2s ease-out;
+  overflow: hidden;
+  white-space: nowrap;
+  border-right: 2px solid transparent;
+}
+
+@keyframes typewriter {
+  0% { 
+    width: 0;
+    border-right-color: currentColor;
+  }
+  90% { 
+    border-right-color: currentColor;
+  }
+  100% { 
+    width: 100%;
+    border-right-color: transparent;
+  }
+}
+
+/* Modern Placeholder */
+.thinking-placeholder-modern {
+  @apply flex items-center gap-2 text-sm text-muted-foreground;
+}
+
+.placeholder-text {
+  animation: pulse-text 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-text {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
+}
+
+/* Enhanced Bouncing Dots Animation */
+.thinking-dots-animated {
+  @apply flex gap-1.5 items-end;
+}
+
+.thinking-dots-animated span {
+  @apply w-2 h-2 bg-current rounded-full;
+  animation: bouncing-dots 1.2s ease-in-out infinite;
+  transform-origin: center bottom;
+}
+
+.thinking-dots-animated span:nth-child(1) { 
+  animation-delay: 0s; 
+  @apply bg-blue-500;
+}
+.thinking-dots-animated span:nth-child(2) { 
+  animation-delay: 0.15s; 
+  @apply bg-purple-500;
+}
+.thinking-dots-animated span:nth-child(3) { 
+  animation-delay: 0.3s; 
+  @apply bg-green-500;
+}
+
+@keyframes bouncing-dots {
+  0%, 70%, 100% {
+    transform: translateY(0) scale(1);
+    opacity: 0.6;
+  }
+  35% {
+    transform: translateY(-12px) scale(1.1);
+    opacity: 1;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+}
+
+/* Smooth bounce with elastic effect */
+@keyframes bouncing-dots-elastic {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translateY(-14px) scale(1.15);
+    opacity: 1;
+  }
+  60% {
+    transform: translateY(-8px) scale(1.05);
+    opacity: 0.9;
+  }
+  80% {
+    transform: translateY(-2px) scale(1.02);
+    opacity: 0.8;
+  }
+}
+
+/* Enhanced Progress Indicator with Smooth Animations */
+.thinking-progress-modern {
+  @apply flex items-center justify-between mt-4 pt-3;
+  @apply border-t border-border/30;
+}
+
+.progress-track {
+  @apply flex-1 h-2 bg-muted/30 rounded-full overflow-hidden mr-3;
+  position: relative;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.progress-bar-modern {
+  @apply h-full rounded-full transition-all duration-1000 ease-out;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(
+    90deg,
+    #3b82f6 0%,
+    #6366f1 25%,
+    #8b5cf6 50%,
+    #a855f7 75%,
+    #22c55e 100%
+  );
+  box-shadow: 
+    0 1px 3px rgba(59, 130, 246, 0.4),
+    inset 0 1px 1px rgba(255, 255, 255, 0.3);
+}
+
+/* Stage-specific progress widths with smooth transitions */
+.progress-analyzing { 
+  width: 28%; 
+  background: linear-gradient(90deg, #3b82f6 0%, #6366f1 100%);
+}
+.progress-reasoning { 
+  width: 72%; 
+  background: linear-gradient(90deg, #3b82f6 0%, #6366f1 30%, #8b5cf6 100%);
+}
+.progress-responding { 
+  width: 95%; 
+  background: linear-gradient(90deg, #3b82f6 0%, #6366f1 25%, #8b5cf6 50%, #a855f7 75%, #22c55e 100%);
+}
+
+/* Enhanced shimmer effect */
+.progress-shimmer {
+  @apply absolute inset-0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.4) 30%,
+    rgba(255, 255, 255, 0.6) 50%,
+    rgba(255, 255, 255, 0.4) 70%,
+    transparent 100%
+  );
+  animation: shimmer-enhanced 2.5s ease-in-out infinite;
+}
+
+/* Pulsing glow effect for progress bar */
+.progress-bar-modern::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  right: -1px;
+  bottom: -1px;
+  background: inherit;
+  border-radius: inherit;
+  filter: blur(3px);
+  opacity: 0.6;
+  z-index: -1;
+  animation: progress-glow 2s ease-in-out infinite alternate;
+}
+
+/* Enhanced keyframe animations */
+@keyframes shimmer-enhanced {
+  0% { 
+    transform: translateX(-100%) scaleX(1); 
+    opacity: 0;
+  }
+  50% { 
+    transform: translateX(0%) scaleX(1.2); 
+    opacity: 1;
+  }
+  100% { 
+    transform: translateX(100%) scaleX(1); 
+    opacity: 0;
+  }
+}
+
+@keyframes progress-glow {
+  0% { 
+    opacity: 0.4;
+    filter: blur(2px);
+  }
+  100% { 
+    opacity: 0.8;
+    filter: blur(4px);
+  }
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.progress-label {
+  @apply text-xs font-medium text-muted-foreground tabular-nums;
+  animation: counter-update 0.5s ease-out;
+}
+
+/* AI Facts Display Styling */
+.ai-fact-container {
+  @apply mt-3 p-3 bg-muted/20 rounded-lg border border-border/30;
+  @apply backdrop-blur-sm;
+  animation: fact-slide-in 0.5s ease-out;
+}
+
+.ai-fact-header {
+  @apply flex items-center gap-2 mb-2;
+}
+
+.ai-fact-icon {
+  @apply text-lg;
+  animation: fact-icon-pulse 2s ease-in-out infinite;
+}
+
+.ai-fact-title {
+  @apply text-sm font-semibold text-foreground/90;
+}
+
+.ai-fact-content {
+  @apply text-xs text-muted-foreground leading-relaxed;
+  @apply transition-all duration-500 ease-out;
+}
+
+.ai-fact-rotating {
+  animation: fact-rotate 0.3s ease-in-out;
+}
+
+/* AI Facts Animation Keyframes */
+@keyframes fact-slide-in {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fact-icon-pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+}
+
+@keyframes fact-rotate {
+  0% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  50% {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes counter-update {
+  0% { 
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  100% { 
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Ripple Effects */
+.thinking-ripple {
+  @apply absolute inset-0 pointer-events-none overflow-hidden rounded-2xl;
+}
+
+.ripple-circle {
+  @apply absolute w-full h-full border-2 border-current rounded-2xl;
+  @apply opacity-20;
+  animation: ripple-expand 3s ease-out infinite;
+}
+
+.ripple-circle:nth-child(1) { animation-delay: 0s; }
+.ripple-circle:nth-child(2) { animation-delay: 1s; }
+.ripple-circle:nth-child(3) { animation-delay: 2s; }
+
+@keyframes ripple-expand {
+  0% {
+    transform: scale(1);
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 0.1;
+  }
+  100% {
+    transform: scale(1.1);
+    opacity: 0;
+  }
+}
+
+/* Scroll Area Customization */
+.thinking-scroll-modern {
+  @apply max-h-32;
+}
+
+.thinking-scroll-modern [data-radix-scroll-area-scrollbar] {
+  @apply w-1.5;
+}
+
+.thinking-scroll-modern [data-radix-scroll-area-thumb] {
+  @apply bg-border/60 hover:bg-border/80 rounded-full;
+}
+
+/* Smooth scrolling */
+.messages-scroll [data-radix-scroll-area-viewport] {
+  @apply scroll-smooth;
+}
+
+/* Custom scrollbar for messages */
+.messages-scroll [data-radix-scroll-area-scrollbar] {
+  @apply w-2;
+}
+
+.messages-scroll [data-radix-scroll-area-thumb] {
+  @apply bg-border/60 hover:bg-border/80 rounded-full;
+}
+
+/* ============================================================================ */
+/* Responsive Design and Mobile Optimizations                                  */
+/* ============================================================================ */
+
+/* Mobile-specific thinking bubble adjustments */
+@media (max-width: 768px) {
+  .thinking-bubble-modern {
+    @apply mx-2;
+  }
+
+  .thinking-content-modern {
+    @apply gap-2;
+  }
+
+  .thinking-body-modern {
+    @apply p-3;
+  }
+
+  .ai-fact-container {
+    @apply p-2 mt-2;
+  }
+
+  .ai-fact-title {
+    @apply text-xs;
+  }
+
+  .ai-fact-content {
+    @apply text-xs leading-relaxed;
+  }
+
+  .thinking-progress-modern {
+    @apply mt-3 pt-2;
+  }
+
+  .progress-track {
+    @apply h-1.5;
+  }
+
+  /* Smaller dots for mobile */
+  .thinking-dots-animated span {
+    @apply w-1.5 h-1.5;
+  }
+
+  /* Reduced animation intensity on mobile */
+  @keyframes bouncing-dots {
+    0%, 70%, 100% {
+      transform: translateY(0) scale(1);
+      opacity: 0.6;
+    }
+    35% {
+      transform: translateY(-8px) scale(1.05);
+      opacity: 1;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+    }
+  }
+}
+
+/* Accessibility: Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .thinking-dots-animated span,
+  .progress-bar-modern,
+  .progress-shimmer,
+  .ai-fact-icon,
+  .thinking-particle,
+  .ripple-circle {
+    animation: none !important;
+  }
+
+  .thinking-dots-animated span {
+    @apply opacity-60;
+  }
+
+  .progress-bar-modern {
+    @apply transition-none;
+  }
+
+  .ai-fact-container {
+    @apply transition-none;
+  }
+
+  .ai-fact-rotating {
+    animation: none !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .ai-fact-container {
+    @apply border-2 border-solid border-foreground/50;
+    @apply bg-background;
+  }
+
+  .thinking-dots-animated span {
+    @apply bg-foreground;
+    opacity: 1;
+  }
+
+  .progress-bar-modern {
+    @apply bg-foreground;
+  }
+
+  .progress-track {
+    @apply bg-background border border-foreground/30;
+  }
+}
+
+/* Print styles */
+@media print {
+  .thinking-bubble-modern {
+    @apply break-inside-avoid;
+  }
+
+  .thinking-dots-animated,
+  .progress-shimmer,
+  .thinking-particles,
+  .thinking-ripple {
+    @apply hidden;
+  }
+
+  .ai-fact-container {
+    @apply border border-gray-400 bg-gray-50;
+  }
+}
+
+/* Focus states */
+.input-wrapper:focus-within {
+  @apply ring-1 ring-ring border-ring;
+}
+
+.quick-action-btn:focus-visible {
+  @apply ring-2 ring-ring ring-offset-2;
+}
+
+.session-item:focus-visible {
+  @apply ring-2 ring-ring ring-offset-2;
+}
+
+/* Loading states */
+.send-btn:disabled {
+  @apply opacity-50 cursor-not-allowed;
+}
+
+.input-field:disabled {
+  @apply opacity-50 cursor-not-allowed;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .message-body-user .message-text {
+    @apply border-2 border-primary;
+  }
+
+  .message-body-assistant .message-text {
+    @apply border-2 border-border;
+  }
+
+  .chat-history-panel {
+    @apply border-r-2;
+  }
+}
+
+/* ============================================================================ */
+/* Accessibility & Reduced Motion Support                                      */
+/* ============================================================================ */
+
+/* Reduced motion support for thinking bubble */
+@media (prefers-reduced-motion: reduce) {
+  .message-bubble,
+  .quick-action-btn,
+  .session-item {
+    animation: none;
+    @apply transition-none;
+  }
+
+  .chat-history-panel {
+    @apply transition-none;
+  }
+
+  /* Disable all thinking bubble animations */
+  .thinking-bubble-modern,
+  .thinking-analyzing,
+  .thinking-reasoning,
+  .thinking-responding,
+  .thinking-particle,
+  .avatar-glow,
+  .avatar-icon,
+  .thinking-body-modern,
+  .stage-badge-modern,
+  .dot-modern,
+  .stage-label,
+  .thinking-content-text,
+  .thinking-preview,
+  .placeholder-text,
+  .thinking-dots-animated span,
+  .progress-bar-modern,
+  .progress-shimmer,
+  .progress-label,
+  .ripple-circle {
+    animation: none !important;
+  }
+
+  /* Provide static alternatives */
+  .thinking-bubble-modern {
+    @apply opacity-100;
+    transform: none;
+  }
+
+  .thinking-avatar-modern {
+    transform: none;
+    box-shadow: 0 0 10px rgba(59, 130, 246, 0.2);
+  }
+
+  .thinking-body-modern {
+    transform: none;
+  }
+
+  .thinking-preview {
+    overflow: visible;
+    white-space: normal;
+    border-right: none;
+  }
+
+  .progress-bar-modern {
+    @apply transition-none;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .message-body-user .message-text {
+    @apply border-2 border-primary;
+  }
+
+  .message-body-assistant .message-text {
+    @apply border-2 border-border;
+  }
+
+  .chat-history-panel {
+    @apply border-r-2;
+  }
+
+  /* Enhanced contrast for thinking bubble */
+  .thinking-body-modern {
+    @apply border-2 border-border bg-background;
+    backdrop-filter: none;
+  }
+
+  .stage-badge-modern {
+    @apply border-2;
+  }
+
+  .thinking-avatar-modern {
+    @apply border-2;
+  }
+
+  .progress-bar-modern {
+    @apply bg-foreground;
+  }
+}
+
+/* Focus management for accessibility */
+.control-btn-modern:focus-visible {
+  @apply ring-2 ring-ring ring-offset-2 outline-none;
+}
+
+.stage-badge-modern:focus-visible {
+  @apply ring-2 ring-ring ring-offset-1 outline-none;
+}
+
+/* Screen reader support */
+.thinking-particle,
+.avatar-glow,
+.thinking-ripple,
+.progress-shimmer {
+  @apply sr-only;
+}
+
+/* Ensure proper semantics */
+.thinking-bubble-modern[role="status"] {
+  @apply sr-only;
+}
+
+.thinking-bubble-modern[aria-live="polite"] .stage-label {
+  /* Announce stage changes to screen readers */
+}

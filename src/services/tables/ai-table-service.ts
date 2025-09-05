@@ -13,6 +13,20 @@ import type {
   TableDataType,
   CellValue
 } from '@/types/table-types';
+import type {
+  AITableResult,
+  AITableConfig,
+  AITableColumnConfig,
+  AITableRowData,
+  AITableAnalysisResult,
+  TableGenerationResponse,
+  TableAnalysisResponse,
+  FormatterFunction,
+  ValidatorFunction,
+  AIFormatterConfig,
+  AIValidatorConfig,
+  AIProcessingContext
+} from '@/types/ai-table-service';
 
 /**
  * AI Table Generation Request
@@ -467,7 +481,7 @@ Return the sample data as an array of objects with proper formatting for each da
    * Process AI response for table generation
    */
   private async processAITableResponse(
-    aiResult: any, 
+    aiResult: AITableResult, 
     request: AITableRequest
   ): Promise<TableConfig> {
     try {
@@ -477,7 +491,7 @@ Return the sample data as an array of objects with proper formatting for each da
         : aiResult.content;
       
       // Build columns from AI response
-      const columns: TableColumn[] = aiConfig.columns?.map((col: any, index: number) => ({
+      const columns: TableColumn[] = aiConfig.columns?.map((col: AITableColumnConfig, index: number) => ({
         id: col.id || `col-${index}`,
         key: col.key || col.id || `col-${index}`,
         title: col.title || `Column ${index + 1}`,
@@ -496,7 +510,7 @@ Return the sample data as an array of objects with proper formatting for each da
       let data: TableRow[] = [];
       if (request.generateSampleData) {
         if (aiConfig.sampleData) {
-          data = aiConfig.sampleData.map((row: any, index: number) => ({
+          data = aiConfig.sampleData.map((row: AITableRowData, index: number) => ({
             id: row.id || index,
             data: row.data || row,
             selected: false
@@ -562,7 +576,7 @@ Return the sample data as an array of objects with proper formatting for each da
   /**
    * Process AI analysis response
    */
-  private processAIAnalysisResponse(aiResult: any, request: AITableAnalysisRequest): any {
+  private processAIAnalysisResponse(aiResult: AITableResult, request: AITableAnalysisRequest): AITableAnalysisResult {
     try {
       const analysis = typeof aiResult.content === 'string' 
         ? JSON.parse(aiResult.content) 
@@ -606,7 +620,7 @@ Return the sample data as an array of objects with proper formatting for each da
    * Process sample data response
    */
   private processSampleDataResponse(
-    aiResult: any, 
+    aiResult: AITableResult, 
     columns: TableColumn[], 
     rows: number
   ): TableRow[] {
@@ -615,7 +629,7 @@ Return the sample data as an array of objects with proper formatting for each da
         ? JSON.parse(aiResult.content) 
         : aiResult.content;
       
-      return sampleData.map((row: any, index: number) => ({
+      return sampleData.map((row: AITableRowData, index: number) => ({
         id: index,
         data: row,
         selected: false
@@ -630,7 +644,7 @@ Return the sample data as an array of objects with proper formatting for each da
   /**
    * Create formatter function from AI description
    */
-  private createFormatter(formatterConfig: any): (value: CellValue, row: TableRow) => string | React.ReactNode {
+  private createFormatter(formatterConfig: AIFormatterConfig): FormatterFunction {
     return (value: CellValue, row: TableRow) => {
       // Basic formatting based on AI configuration
       if (formatterConfig.type === 'currency') {
@@ -649,7 +663,7 @@ Return the sample data as an array of objects with proper formatting for each da
   /**
    * Create validator function from AI description
    */
-  private createValidator(validatorConfig: any): (value: CellValue) => string | null {
+  private createValidator(validatorConfig: AIValidatorConfig): ValidatorFunction {
     return (value: CellValue) => {
       if (validatorConfig.required && !value) {
         return 'This field is required';
@@ -744,7 +758,7 @@ Return the sample data as an array of objects with proper formatting for each da
   /**
    * Get fallback analysis
    */
-  private getFallbackAnalysis(request: AITableAnalysisRequest): any {
+  private getFallbackAnalysis(request: AITableAnalysisRequest): AITableAnalysisResult {
     return {
       structure: { score: 70, issues: [], recommendations: [] },
       dataQuality: { score: 75, completeness: 80, consistency: 75, accuracy: 70, issues: [] },

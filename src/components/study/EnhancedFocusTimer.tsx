@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -105,9 +105,9 @@ export const EnhancedFocusTimer: React.FC = () => {
 
       return () => clearInterval(timer);
     }
-  }, [session?.isActive, session?.isPaused, timeLeft]);
+  }, [session?.isActive, session?.isPaused, timeLeft, handleSessionComplete]);
 
-  const handleSessionComplete = () => {
+  const handleSessionComplete = useCallback(() => {
     if (soundEnabled) {
       // Play completion sound (would be implemented with audio)
     }
@@ -124,7 +124,7 @@ export const EnhancedFocusTimer: React.FC = () => {
       setSession(null);
       setTimeLeft(0);
     }
-  };
+  }, [soundEnabled, isBreak, selectedMode]);
 
   const startSession = () => {
     const mode = focusModes[selectedMode];

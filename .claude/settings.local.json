@@ -1,8 +1,10 @@
 {
   "permissions": {
     "allow": [
-      "Bash(find:*)"
+      "Read(/D:\\New_Projects\\study-flow-ai-59\\src\\ai_tutor\\core\\pipeline/**)",
+      "Read(/D:\\New_Projects\\study-flow-ai-59\\src/**)"
     ],
-    "deny": []
+    "deny": [],
+    "ask": []
   }
 }

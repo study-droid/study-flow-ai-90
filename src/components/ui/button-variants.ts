@@ -5,23 +5,24 @@ export const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary/90 study-flow-shadow-soft hover:study-flow-shadow-medium",
+        default: "bg-primary text-primary-foreground hover:bg-orange-hover hover:text-orange-hover-foreground study-flow-shadow-soft hover:study-flow-shadow-medium study-flow-transition",
         destructive:
-          "bg-destructive text-destructive-foreground hover:bg-destructive/90 study-flow-shadow-soft",
+          "bg-destructive text-destructive-foreground hover:bg-destructive/90 study-flow-shadow-soft study-flow-transition",
         outline:
-          "border border-input bg-background hover:bg-accent hover:text-accent-foreground study-flow-shadow-soft",
+          "border border-input bg-background hover:bg-orange-hover/10 hover:text-orange-hover hover:border-orange-hover/30 study-flow-shadow-soft study-flow-transition",
         secondary:
-          "bg-secondary text-secondary-foreground hover:bg-secondary/80 study-flow-shadow-soft",
-        ghost: "hover:bg-accent hover:text-accent-foreground",
-        link: "text-primary underline-offset-4 hover:underline",
-        // StudyFlow specific variants
-        gradient: "study-flow-gradient text-primary-foreground hover:scale-105 study-flow-shadow-medium hover:study-flow-shadow-strong study-flow-transition-bounce",
-        focus: "btn-focus text-white hover:scale-105 study-flow-shadow-soft hover:study-flow-shadow-medium study-flow-transition",
-        achievement: "bg-achievement text-achievement-foreground hover:bg-achievement/90 study-flow-shadow-soft hover:study-flow-shadow-medium",
-        progress: "bg-progress text-progress-foreground hover:bg-progress/90 study-flow-shadow-soft hover:study-flow-shadow-medium",
-        glass: "glass-card hover:bg-white/20 dark:hover:bg-black/40 backdrop-blur-md study-flow-shadow-soft",
-        glow: "bg-primary text-primary-foreground hover:bg-primary/90 study-flow-shadow-glow hover:animate-pulse-glow",
-        warm: "btn-warm hover:scale-105 study-flow-shadow-soft hover:study-flow-shadow-medium study-flow-transition",
+          "bg-secondary text-secondary-foreground hover:bg-orange-hover/20 hover:text-orange-hover study-flow-shadow-soft study-flow-transition",
+        ghost: "hover:bg-orange-hover/10 hover:text-orange-hover study-flow-transition",
+        link: "text-primary underline-offset-4 hover:underline hover:text-orange-hover study-flow-transition",
+        // StudyFlow specific variants with orange hover
+        gradient: "study-flow-gradient-bg text-primary-foreground hover:bg-orange-hover hover:text-orange-hover-foreground hover:scale-105 study-flow-shadow-medium hover:study-flow-shadow-strong study-flow-transition-bounce",
+        focus: "btn-focus text-white hover:bg-orange-hover hover:text-orange-hover-foreground hover:scale-105 study-flow-shadow-soft hover:study-flow-shadow-medium study-flow-transition",
+        achievement: "bg-achievement text-achievement-foreground hover:bg-orange-hover hover:text-orange-hover-foreground study-flow-shadow-soft hover:study-flow-shadow-medium study-flow-transition",
+        progress: "bg-progress text-progress-foreground hover:bg-orange-hover hover:text-orange-hover-foreground study-flow-shadow-soft hover:study-flow-shadow-medium study-flow-transition",
+        glass: "glass-card hover:bg-orange-hover/20 backdrop-blur-md study-flow-shadow-soft study-flow-transition",
+        glow: "bg-primary text-primary-foreground hover:bg-orange-hover hover:text-orange-hover-foreground study-flow-shadow-glow hover:animate-pulse-glow study-flow-transition",
+        warm: "btn-warm hover:bg-orange-hover hover:text-orange-hover-foreground hover:scale-105 study-flow-shadow-soft hover:study-flow-shadow-medium study-flow-transition",
+        light: "bg-gray-100 text-gray-700 font-medium hover:bg-orange-hover hover:text-orange-hover-foreground border border-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-orange-hover dark:hover:text-orange-hover-foreground dark:border-gray-600 study-flow-shadow-soft hover:study-flow-shadow-medium study-flow-transition",
       },
       size: {
         default: "min-h-[44px] h-11 px-4 py-2",

@@ -326,12 +326,12 @@ const Auth = () => {
                 <Button
                   type="submit"
                   className="w-full"
-                  variant="gradient"
+                  variant="light"
                   disabled={isLoading || !newPassword || !confirmPassword || newPassword !== confirmPassword}
                 >
                   {isLoading ? (
                     <div className="flex items-center gap-2">
-                      <div className="h-4 w-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                      <div className="h-4 w-4 border-2 border-gray-400/50 border-t-gray-600 rounded-full animate-spin" />
                       Updating Password...
                     </div>
                   ) : (
@@ -433,11 +433,11 @@ const Auth = () => {
                           size="sm"
                           onClick={handleResendConfirmation}
                           disabled={isResending}
-                          className="h-8 text-xs border-amber-300 text-amber-800 hover:bg-amber-100 dark:border-amber-600 dark:text-amber-200 dark:hover:bg-amber-900"
+                          className="h-8 text-xs border-gray-300 text-gray-700 font-medium hover:bg-gray-100 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-800"
                         >
                           {isResending ? (
                             <div className="flex items-center gap-1">
-                              <div className="h-3 w-3 border border-amber-600 border-t-transparent rounded-full animate-spin" />
+                              <div className="h-3 w-3 border border-gray-400 border-t-gray-600 rounded-full animate-spin" />
                               Sending...
                             </div>
                           ) : (
@@ -543,12 +543,12 @@ const Auth = () => {
                       <Button 
                         type="submit" 
                         className="w-full" 
-                        variant="gradient"
+                        variant="light"
                         disabled={isLoading}
                       >
                         {isLoading ? (
                           <div className="flex items-center gap-2">
-                            <div className="h-4 w-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                            <div className="h-4 w-4 border-2 border-gray-400/50 border-t-gray-600 rounded-full animate-spin" />
                             Signing in...
                           </div>
                         ) : (
@@ -630,12 +630,12 @@ const Auth = () => {
                       <Button 
                         type="submit" 
                         className="w-full" 
-                        variant="gradient"
+                        variant="light"
                         disabled={isLoading}
                       >
                         {isLoading ? (
                           <div className="flex items-center gap-2">
-                            <div className="h-4 w-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                            <div className="h-4 w-4 border-2 border-gray-400/50 border-t-gray-600 rounded-full animate-spin" />
                             Creating account...
                           </div>
                         ) : (
@@ -689,7 +689,7 @@ const Auth = () => {
                   <Button
                     type="button"
                     variant="outline"
-                    className="flex-1"
+                    className="flex-1 text-gray-700 font-medium border-gray-300 hover:bg-gray-50 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-800"
                     onClick={() => {
                       setShowPasswordReset(false);
                       setResetEmail('');
@@ -699,12 +699,13 @@ const Auth = () => {
                   </Button>
                   <Button
                     type="submit"
+                    variant="light"
                     className="flex-1"
                     disabled={isResettingPassword}
                   >
                     {isResettingPassword ? (
                       <div className="flex items-center gap-2">
-                        <div className="h-4 w-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                        <div className="h-4 w-4 border-2 border-gray-400/50 border-t-gray-600 rounded-full animate-spin" />
                         Sending...
                       </div>
                     ) : (

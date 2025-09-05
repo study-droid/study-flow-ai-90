@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useSecurity } from '@/hooks/useSecurity';
 import { useToast } from '@/hooks/use-toast';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -106,24 +106,22 @@ export const PerformanceMonitor: React.FC = () => {
     return () => {
       unsubscribe();
     };
-  }, []);
+  }, [getMetricTrend]);
   
   // Store previous values for trend calculation
-  const [previousValues, setPreviousValues] = useState<Record<string, number>>({});
+  const previousValuesRef = useRef<Record<string, number>>({});
   
-  const getMetricTrend = (name: string, value: number): 'up' | 'down' | 'stable' => {
-    const prev = previousValues[name];
+  const getMetricTrend = useCallback((name: string, value: number): 'up' | 'down' | 'stable' => {
+    const prev = previousValuesRef.current[name];
     if (prev === undefined) {
-      setPreviousValues(prev => ({ ...prev, [name]: value }));
+      previousValuesRef.current[name] = value;
       return 'stable';
     }
-    
     const diff = value - prev;
-    setPreviousValues(prev => ({ ...prev, [name]: value }));
-    
+    previousValuesRef.current[name] = value;
     if (Math.abs(diff) < 0.1) return 'stable';
     return diff > 0 ? 'up' : 'down';
-  };
+  }, []);
 
   const startMonitoring = () => {
     setIsMonitoring(true);

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { EnhancedCard, EnhancedCardContent, EnhancedCardHeader, EnhancedCardTitle } from "@/components/ui/enhanced-card";
 import { EnhancedButton } from "@/components/ui/enhanced-button";
@@ -167,9 +167,9 @@ export const EnhancedFocusSession = ({ className }: EnhancedFocusSessionProps) =
     }
 
     return () => clearInterval(interval);
-  }, [isActive, timeLeft, sessionType]);
+  }, [isActive, timeLeft, sessionType, handleSessionComplete]);
 
-  const handleSessionComplete = async () => {
+  const handleSessionComplete = useCallback(async () => {
     setIsActive(false);
     
     if (sessionType === "focus") {
@@ -220,7 +220,7 @@ export const EnhancedFocusSession = ({ className }: EnhancedFocusSessionProps) =
         duration: 5000
       });
     }
-  };
+  }, [sessionType, timerMode, totalCycles, currentCycle, focus, info, achievement, createSession, subject, sessionNotes, config]);
 
   const toggleTimer = () => {
     const newActiveState = !isActive;

@@ -48,6 +48,7 @@ class ProductionMonitor {
   private isMonitoring = false;
   private monitoringInterval?: NodeJS.Timeout;
   private readonly MONITORING_INTERVAL = 60000; // 1 minute
+  private readonly isDevelopment = import.meta.env.DEV || import.meta.env.NODE_ENV === 'development';
   private readonly METRICS_RETENTION = 24 * 60; // 24 hours
 
   constructor() {
@@ -121,6 +122,12 @@ class ProductionMonitor {
   public startMonitoring(): void {
     if (this.isMonitoring) {
       logger.warn('Monitoring already running', 'ProductionMonitor');
+      return;
+    }
+
+    // Skip intensive monitoring in development
+    if (this.isDevelopment) {
+      logger.info('Production monitoring disabled in development mode', 'ProductionMonitor');
       return;
     }
 
@@ -341,11 +348,23 @@ class ProductionMonitor {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 15000); // 15s timeout
 
+      const apiKey = import.meta.env.VITE_DEEPSEEK_API_KEY || '';
+      if (!apiKey) {
+        const responseTime = Date.now() - startTime;
+        return {
+          component: 'deepseek-api',
+          status: 'degraded',
+          responseTime,
+          error: 'DeepSeek API key not configured',
+          timestamp: new Date().toISOString()
+        };
+      }
+
       const response = await fetch('https://api.deepseek.com/v1/models', {
         method: 'GET',
         signal: controller.signal,
         headers: {
-          'Authorization': `Bearer sk-e4f1da719783415d84e3eee0e669b829`,
+          'Authorization': `Bearer ${apiKey}`,
           'Content-Type': 'application/json'
         }
       });
@@ -570,6 +589,15 @@ class ProductionMonitor {
    * Notify admin about system issues
    */
   private async notifyAdmin(component: HealthCheckResult, systemHealth: SystemHealth): Promise<void> {
+    // Reduce noise in development
+    if (this.isDevelopment) {
+      logger.debug(`Admin notification (dev mode): ${component.component}`, 'ProductionMonitor', { 
+        component: component.component, 
+        status: component.status 
+      });
+      return;
+    }
+    
     const alertData = {
       component: component.component,
       status: component.status,

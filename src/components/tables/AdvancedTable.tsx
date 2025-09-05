@@ -224,7 +224,7 @@ export const AdvancedTable: React.FC<AdvancedTableProps> = ({
     } else {
       announceToScreenReader(`Column ${column.title} sort removed`);
     }
-  }, [config, uiState.sorts]);
+  }, [config, uiState.sorts, updateUIState]);
 
   // Handle row selection
   const handleRowSelection = useCallback((rowId: string | number, selected: boolean) => {
@@ -251,7 +251,7 @@ export const AdvancedTable: React.FC<AdvancedTableProps> = ({
     announceToScreenReader(
       `Row ${selected ? 'selected' : 'deselected'}. ${newSelectedRows.size} rows selected`
     );
-  }, [config.selection, uiState.selectedRows]);
+  }, [config.selection, uiState.selectedRows, updateUIState]);
 
   // Handle pagination
   const handlePageChange = useCallback((page: number) => {
@@ -263,7 +263,7 @@ export const AdvancedTable: React.FC<AdvancedTableProps> = ({
     config.onPageChange?.(page, uiState.pageSize);
     
     announceToScreenReader(`Page ${page} loaded`);
-  }, [config, sortedData.length, uiState.pageSize]);
+  }, [config, sortedData.length, uiState.pageSize, updateUIState]);
 
   // Keyboard navigation
   const handleKeyDown = useCallback((event: React.KeyboardEvent) => {
@@ -326,7 +326,7 @@ export const AdvancedTable: React.FC<AdvancedTableProps> = ({
     } finally {
       updateUIState({ loading: false });
     }
-  }, [config.export, sortedData, visibleColumns, config.data]);
+  }, [config.export, sortedData, visibleColumns, config.data, updateUIState]);
 
   // Render table header
   const renderHeader = useCallback(() => (
@@ -398,7 +398,7 @@ export const AdvancedTable: React.FC<AdvancedTableProps> = ({
         })}
       </TableRow>
     </TableHeader>
-  ), [config, visibleColumns, uiState.sorts, uiState.selectedRows, paginatedData, handleSort]);
+  ), [config, visibleColumns, uiState.sorts, uiState.selectedRows, paginatedData, handleSort, updateUIState]);
 
   // Render table body
   const renderBody = useCallback(() => (
@@ -562,7 +562,7 @@ export const AdvancedTable: React.FC<AdvancedTableProps> = ({
         </div>
       </div>
     );
-  }, [config.pagination, sortedData.length, uiState.currentPage, uiState.pageSize, handlePageChange]);
+  }, [config, config.pagination, sortedData.length, uiState.currentPage, uiState.pageSize, handlePageChange, updateUIState]);
 
   return (
     <Card className={cn('w-full', className)}>
@@ -728,8 +728,72 @@ async function exportData(
   format: string, 
   filename?: string
 ) {
-  // Implementation of default export logic
-  // This would be similar to the export logic in TableBuilder
+  const safeName = (filename && filename.trim()) ? filename.trim() : 'table';
+
+  try {
+    switch (format) {
+      case 'csv': {
+        const headers = columns.map(col => col.title).join(',');
+        const rows = data.map(row =>
+          columns.map(col => JSON.stringify(row.data[col.key] ?? '')).join(',')
+        );
+        const csv = [headers, ...rows].join('\n');
+        const blob = new Blob([csv], { type: getMimeType('csv') });
+        downloadBlob(blob, `${safeName}.csv`);
+        break;
+      }
+      case 'json': {
+        const json = JSON.stringify({
+          columns: columns.map(c => ({ id: c.id, key: c.key, title: c.title, dataType: c.dataType })),
+          data: data.map(r => r.data)
+        }, null, 2);
+        const blob = new Blob([json], { type: getMimeType('json') });
+        downloadBlob(blob, `${safeName}.json`);
+        break;
+      }
+      case 'html': {
+        // Minimal styled HTML export
+        const styles = `
+          table { width: 100%; border-collapse: collapse; font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
+          th, td { padding: 8px 12px; border-bottom: 1px solid #e5e7eb; text-align: left; }
+          thead th { background: #f3f4f6; font-weight: 600; }
+          tr:nth-child(even) { background: #fafafa; }
+        `;
+        let html = '<!DOCTYPE html><html><head><meta charset="utf-8" />';
+        html += `<title>${safeName}</title><style>${styles}</style></head><body>`;
+        html += `<h1 style="font-size:20px;margin:0 0 12px 0;">${safeName}</h1>`;
+        html += '<table><thead><tr>';
+        html += columns.map(col => `<th>${String(col.title || '')}</th>`).join('');
+        html += '</tr></thead><tbody>';
+        html += data.map(row => {
+          const tds = columns.map(col => `<td>${String(row.data[col.key] ?? '')}</td>`).join('');
+          return `<tr>${tds}</tr>`;
+        }).join('');
+        html += '</tbody></table>';
+        html += `<div style="margin-top:12px;color:#6b7280;font-size:12px;">Exported ${new Date().toLocaleString()}</div>`;
+        html += '</body></html>';
+        const blob = new Blob([html], { type: getMimeType('html') });
+        downloadBlob(blob, `${safeName}.html`);
+        break;
+      }
+      default: {
+        const txt = 'Unsupported export format';
+        const blob = new Blob([txt], { type: 'text/plain' });
+        downloadBlob(blob, `${safeName}.txt`);
+      }
+    }
+  } catch (err) {
+    // If anything fails, fall back to a text dump to avoid silent failure
+    const fallback = 'Export failed';
+    const blob = new Blob([fallback], { type: 'text/plain' });
+    downloadBlob(blob, `${safeName}.txt`);
+  }
 }
 
 export default AdvancedTable;
+
+
+
+
+
+

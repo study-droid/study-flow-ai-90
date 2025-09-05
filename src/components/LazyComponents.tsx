@@ -110,35 +110,4 @@ export const LazyWrapper: React.FC<LazyWrapperProps> = ({
   </Suspense>
 );
 
-// Preload function for critical components
-export const preloadComponent = (
-  componentLoader: () => Promise<{ default: ComponentType<any> }>
-) => {
-  componentLoader();
-};
-
-// Preload critical components on idle
-export const preloadCriticalComponents = () => {
-  if ('requestIdleCallback' in window) {
-    requestIdleCallback(() => {
-      // Preload commonly used heavy components
-      import('@/pages/Analytics');
-      import('@/pages/Study');
-      import('@/pages/Tasks');
-    });
-  }
-};
-
-// Export helper for route-based code splitting
-export const createLazyRoute = (
-  importFn: () => Promise<{ default: ComponentType<any> }>,
-  fallback?: React.ReactNode
-) => {
-  const LazyComponent = lazy(importFn);
-  
-  return (props: any) => (
-    <Suspense fallback={fallback || <LoadingFallback />}>
-      <LazyComponent {...props} />
-    </Suspense>
-  );
-};
+// Non-component helpers moved to 'src/components/lazy-helpers.ts'

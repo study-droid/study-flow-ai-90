@@ -9,7 +9,7 @@ interface LogContext {
 
 export class SecureLogger {
   private static readonly SENSITIVE_PATTERNS = [
-    /Bearer\s+[A-Za-z0-9\-._~+\/]+=*/gi,  // Authorization tokens
+    /Bearer\s+[A-Za-z0-9\-._~+/]+=*/gi,  // Authorization tokens
     /sk-[A-Za-z0-9]{48}/gi,                // OpenAI API keys
     /AIza[A-Za-z0-9\-_]{35}/gi,            // Google API keys
     /supabase_[A-Za-z0-9\-_]+/gi,          // Supabase keys

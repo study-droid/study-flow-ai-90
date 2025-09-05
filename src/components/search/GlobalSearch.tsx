@@ -90,6 +90,13 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  // Handle result click
+  const handleResultClick = useCallback((result: SearchResult) => {
+    setQuery('');
+    setIsOpen(false);
+    navigate(result.route);
+  }, [navigate]);
+
   // Handle keyboard navigation
   const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
     if (!isOpen) return;
@@ -116,13 +123,7 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({
         inputRef.current?.blur();
         break;
     }
-  }, [isOpen, results, selectedIndex]);
-
-  const handleResultClick = (result: SearchResult) => {
-    setQuery('');
-    setIsOpen(false);
-    navigate(result.route);
-  };
+  }, [isOpen, results, selectedIndex, handleResultClick]);
 
   const handleSuggestionClick = (suggestion: string) => {
     setQuery(suggestion);

@@ -62,7 +62,7 @@ export const AIAnalytics: React.FC = () => {
   const [analytics, setAnalytics] = useState<AIAnalytics | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const generateAnalytics = async () => {
+  const generateAnalytics = React.useCallback(async () => {
     if (!user) return;
 
     setIsLoading(true);
@@ -87,13 +87,13 @@ export const AIAnalytics: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [user, toast]);
 
   useEffect(() => {
     if (user && !analytics) {
       generateAnalytics();
     }
-  }, [user]);
+  }, [user, analytics, generateAnalytics]);
 
   const getTrendIcon = (trend: string) => {
     switch (trend) {

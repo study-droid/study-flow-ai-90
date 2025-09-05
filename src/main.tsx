@@ -5,9 +5,14 @@ import { initializeSecurity } from './lib/enhanced-security'
 import { initializeTheme } from './lib/theme-init'
 import { debugAIService } from './services/ai-debug'
 import { logger } from '@/services/logging/logger';
+import { circuitBreakerManager } from '@/services/reliability/circuit-breaker';
 
 // Initialize theme immediately to prevent flash of unstyled content
 initializeTheme();
+
+// Reset circuit breakers immediately on app load to clear any persistent blocks
+circuitBreakerManager.resetFailingCircuits();
+logger.info('🔄 Circuit breakers reset on application startup', 'Main');
 
 // In development, remove any existing CSP meta tags that might block localhost
 if (import.meta.env.DEV) {

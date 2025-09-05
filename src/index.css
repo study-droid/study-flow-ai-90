@@ -36,6 +36,10 @@ All colors use HSL format for maximum flexibility and theming support
     --accent: 36 100% 50%;                     /* Accent Orange - CTAs & Highlights */
     --accent-foreground: 0 0% 100%;            /* White text on accent */
 
+    /* Orange Hover System - Light Mode */
+    --orange-hover: 36 100% 45%;               /* Darker Orange #E6870E - Standard hover */
+    --orange-hover-foreground: 0 0% 100%;      /* White text on orange hover */
+
     /* Status & State Colors */
     --destructive: 4 70% 50%;                  /* Alert Red #D32F2F - Urgency & Attention */
     --destructive-foreground: 0 0% 100%;       /* White text on destructive */
@@ -97,6 +101,13 @@ All colors use HSL format for maximum flexibility and theming support
     --shadow-creative: 0 0 24px hsl(var(--learning-creative) / 0.2);
     --shadow-success: 0 0 16px hsl(var(--success) / 0.3);
 
+    /* AI Thinking Interface Colors */
+    --ai-brand: 243 75% 59%;                       /* Blue #6366F1 - AI Primary */
+    --ai-brand-2: 262 83% 58%;                     /* Purple #A855F7 - AI Secondary */  
+    --ai-border: 215 28% 17%;                      /* Dark Border #314154 - AI Elements */
+    --ai-glow: 243 75% 79%;                        /* Light Blue - AI Glow effect */
+    --ai-gradient: linear-gradient(135deg, hsl(var(--ai-brand)), hsl(var(--ai-brand-2)));
+
     /* Animation Variables */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-bounce: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
@@ -149,6 +160,10 @@ All colors use HSL format for maximum flexibility and theming support
     --accent-foreground: 0 0% 100%;
     --destructive: 4 70% 50%;
     --destructive-foreground: 0 0% 100%;
+
+    /* Orange Hover System - Dark Mode */
+    --orange-hover: 36 100% 65%;               /* Lighter Orange #FFB347 - Dark mode hover */
+    --orange-hover-foreground: 0 0% 0%;        /* Black text on light orange hover */
 
     /* Muted Colors - Dark Mode */
     --muted: 217.2 32.6% 17.5%;                /* Dark muted */
@@ -403,6 +418,25 @@ All colors use HSL format for maximum flexibility and theming support
     }
   }
 
+  @keyframes ai-study-glow {
+    0%, 100% {
+      background-position: 0% 50%;
+      transform: scale(1);
+    }
+    25% {
+      background-position: 100% 50%;
+      transform: scale(1.02);
+    }
+    50% {
+      background-position: 200% 50%;
+      transform: scale(1.05);
+    }
+    75% {
+      background-position: 300% 50%;
+      transform: scale(1.02);
+    }
+  }
+
   /* AI Thinking Animations */
   @keyframes thinking-dot-1 {
     0%, 60%, 100% {
@@ -514,6 +548,42 @@ All colors use HSL format for maximum flexibility and theming support
     animation: slide-up 0.3s ease-out;
   }
 
+  /* AI Study Button Background Glow Effect */
+  .ai-study-btn-glow {
+    position: relative;
+    overflow: visible;
+  }
+
+  .ai-study-btn-glow::before {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: -4px;
+    right: -4px;
+    bottom: -4px;
+    background: linear-gradient(45deg, #3b82f6, #8b5cf6, #06b6d4, #8b5cf6, #3b82f6);
+    background-size: 400% 400%;
+    border-radius: 8px;
+    z-index: -1;
+    animation: ai-study-glow 4s ease-in-out infinite;
+    opacity: 0.5;
+    filter: blur(4px);
+  }
+
+  .ai-study-btn-glow::after {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    right: -1px;
+    bottom: -1px;
+    background: linear-gradient(45deg, rgba(59, 130, 246, 0.3), rgba(139, 92, 246, 0.3), rgba(6, 182, 212, 0.3));
+    border-radius: inherit;
+    z-index: -1;
+    animation: ai-study-glow 4s ease-in-out infinite reverse;
+    opacity: 0.8;
+  }
+
   /* AI Thinking Animation Classes */
   .animate-thinking-dot-1 {
     animation: thinking-dot-1 1.4s ease-in-out infinite;
@@ -535,8 +605,262 @@ All colors use HSL format for maximum flexibility and theming support
     animation: message-fade-in 0.3s ease-out;
   }
 
+  /* Enhanced AI Thinking Bubble Animations */
+  @keyframes shimmer {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(200%);
+    }
+  }
+  
+  @keyframes thinking-glow {
+    0%, 100% {
+      box-shadow: 0 0 20px rgba(124, 58, 237, 0.3);
+    }
+    50% {
+      box-shadow: 0 0 30px rgba(59, 130, 246, 0.4);
+    }
+  }
+  
+  @keyframes wiggle {
+    0%, 7% { transform: rotateZ(0); }
+    15% { transform: rotateZ(-15deg); }
+    20% { transform: rotateZ(10deg); }
+    25% { transform: rotateZ(-10deg); }
+    30% { transform: rotateZ(6deg); }
+    35% { transform: rotateZ(-4deg); }
+    40%, 100% { transform: rotateZ(0); }
+  }
+
+  .animate-wiggle {
+    animation: wiggle 0.8s ease-in-out;
+  }
+
+  @keyframes phase-transition {
+    0% {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes bubble-entrance {
+    0% {
+      opacity: 0;
+      transform: translateY(20px) scale(0.95);
+    }
+    50% {
+      transform: translateY(-5px) scale(1.02);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  @keyframes glow-pulse {
+    0%, 100% {
+      box-shadow: 
+        0 0 5px rgba(124, 58, 237, 0.3),
+        0 0 10px rgba(59, 130, 246, 0.2),
+        0 0 15px rgba(16, 185, 129, 0.1);
+    }
+    50% {
+      box-shadow: 
+        0 0 10px rgba(124, 58, 237, 0.5),
+        0 0 20px rgba(59, 130, 246, 0.4),
+        0 0 30px rgba(16, 185, 129, 0.3);
+    }
+  }
+
+  @keyframes progress-slide {
+    0% { transform: translateX(-120%) }
+    50% { transform: translateX(10%) }
+    100% { transform: translateX(120%) }
+  }
+
+  @keyframes stepper-activate {
+    0% {
+      transform: scale(0.8);
+      opacity: 0;
+    }
+    50% {
+      transform: scale(1.1);
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  .animate-shimmer {
+    animation: shimmer 2s ease-in-out infinite;
+  }
+  
+  .animate-thinking-glow {
+    animation: thinking-glow 3s ease-in-out infinite;
+  }
+  
+  .animate-phase-transition {
+    animation: phase-transition 0.3s ease-out;
+  }
+
+  .animate-bubble-entrance {
+    animation: bubble-entrance 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .animate-glow-pulse {
+    animation: glow-pulse 2.5s ease-in-out infinite;
+  }
+
+  .animate-progress-slide {
+    animation: progress-slide 1.4s ease-in-out infinite;
+  }
+
+  .animate-stepper-activate {
+    animation: stepper-activate 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  }
+
+  /* Enhanced Glassmorphism Effects */
+  .glass-thinking-bubble {
+    backdrop-filter: blur(16px) saturate(180%);
+    background: linear-gradient(135deg, 
+      rgba(255, 255, 255, 0.1) 0%, 
+      rgba(255, 255, 255, 0.05) 50%, 
+      rgba(255, 255, 255, 0.1) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 
+      0 8px 32px rgba(31, 38, 135, 0.37),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1),
+      inset 0 -1px 0 rgba(255, 255, 255, 0.05);
+  }
+
+  .dark .glass-thinking-bubble {
+    background: linear-gradient(135deg, 
+      rgba(0, 0, 0, 0.2) 0%, 
+      rgba(0, 0, 0, 0.1) 50%, 
+      rgba(0, 0, 0, 0.2) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 
+      0 8px 32px rgba(0, 0, 0, 0.37),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05),
+      inset 0 -1px 0 rgba(255, 255, 255, 0.02);
+  }
+
+  /* Accessibility and Performance */
+  @media (prefers-reduced-motion: reduce) {
+    .animate-shimmer,
+    .animate-thinking-glow,
+    .animate-phase-transition,
+    .animate-bubble-entrance,
+    .animate-glow-pulse,
+    .animate-progress-slide,
+    .animate-stepper-activate,
+    .animate-thinking-dot-1,
+    .animate-thinking-dot-2,
+    .animate-thinking-dot-3,
+    .animate-pulse,
+    .animate-ping {
+      animation: none !important;
+    }
+    
+    .glass-thinking-bubble {
+      transition: none !important;
+    }
+  }
+
   .animate-smooth-scroll {
     animation: smooth-scroll 0.3s ease-out;
+  }
+
+  /* Enhanced AI Thinking Bubble Animations */
+  @keyframes shimmer {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(200%);
+    }
+  }
+  
+  @keyframes thinking-glow {
+    0%, 100% {
+      box-shadow: 0 0 20px rgba(124, 58, 237, 0.3);
+    }
+    50% {
+      box-shadow: 0 0 30px rgba(59, 130, 246, 0.4);
+    }
+  }
+  
+  @keyframes phase-transition {
+    0% {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes bubble-appear {
+    0% {
+      opacity: 0;
+      transform: translateX(100%) scale(0.8);
+    }
+    100% {
+      opacity: 1;
+      transform: translateX(0) scale(1);
+    }
+  }
+
+  @keyframes progress-pulse {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.7;
+    }
+  }
+
+  @keyframes connection-indicator {
+    0%, 100% {
+      transform: scale(1);
+      opacity: 0.8;
+    }
+    50% {
+      transform: scale(1.2);
+      opacity: 1;
+    }
+  }
+  
+  .animate-shimmer {
+    animation: shimmer 2s ease-in-out infinite;
+  }
+  
+  .animate-thinking-glow {
+    animation: thinking-glow 3s ease-in-out infinite;
+  }
+  
+  .animate-phase-transition {
+    animation: phase-transition 0.3s ease-out;
+  }
+
+  .animate-bubble-appear {
+    animation: bubble-appear 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .animate-progress-pulse {
+    animation: progress-pulse 2s ease-in-out infinite;
+  }
+
+  .animate-connection-indicator {
+    animation: connection-indicator 1.5s ease-in-out infinite;
   }
 
   /* Learning-Environment Notification Styles */
@@ -618,25 +942,25 @@ All colors use HSL format for maximum flexibility and theming support
     @apply bg-gradient-to-br from-success/5 to-success/10 border-success/20 hover:border-success/40 transition-all duration-300;
   }
 
-  /* Learning-Optimized Button Styles */
+  /* Learning-Optimized Button Styles with Orange Hover System */
   .btn-warm {
-    @apply bg-gradient-to-r from-secondary to-warning text-foreground hover:from-warning hover:to-secondary transition-all duration-300 shadow-md hover:shadow-lg;
+    @apply bg-gradient-to-r from-secondary to-warning text-foreground hover:bg-orange-hover hover:text-orange-hover-foreground transition-all duration-300 shadow-md hover:shadow-lg;
   }
 
   .dark .btn-warm {
-    @apply from-secondary/80 to-warning/80 text-foreground;
+    @apply from-secondary/80 to-warning/80 text-foreground hover:bg-orange-hover hover:text-orange-hover-foreground;
   }
 
   .btn-focus {
-    @apply bg-gradient-to-r from-primary to-primary-glow text-primary-foreground hover:from-primary/90 hover:to-primary-glow/90 shadow-md hover:shadow-focus transition-all duration-300;
+    @apply bg-gradient-to-r from-primary to-primary-glow text-primary-foreground hover:bg-orange-hover hover:text-orange-hover-foreground shadow-md hover:shadow-focus transition-all duration-300;
   }
 
   .btn-creative {
-    @apply bg-gradient-to-r from-[hsl(var(--learning-creative))] to-primary text-white hover:from-[hsl(var(--learning-creative))]/90 hover:to-primary/90 shadow-md hover:shadow-creative transition-all duration-300;
+    @apply bg-gradient-to-r from-[hsl(var(--learning-creative))] to-primary text-white hover:bg-orange-hover hover:text-orange-hover-foreground shadow-md hover:shadow-creative transition-all duration-300;
   }
 
   .btn-success {
-    @apply bg-gradient-to-r from-success to-success/80 text-success-foreground hover:from-success/90 hover:to-success/70 shadow-md hover:shadow-success transition-all duration-300;
+    @apply bg-gradient-to-r from-success to-success/80 text-success-foreground hover:bg-orange-hover hover:text-orange-hover-foreground shadow-md hover:shadow-success transition-all duration-300;
   }
 
   .btn-pulse {
@@ -661,13 +985,13 @@ All colors use HSL format for maximum flexibility and theming support
     box-shadow: 0 10px 40px -10px hsl(var(--primary) / 0.3);
   }
 
-  /* Button Variants */
+  /* Button Variants with Orange Hover System */
   .btn-gradient {
-    @apply bg-gradient-to-r from-primary to-primary-glow text-primary-foreground hover:shadow-lg hover:shadow-primary/50 transition-all duration-300;
+    @apply bg-gradient-to-r from-primary to-primary-glow text-primary-foreground hover:bg-orange-hover hover:text-orange-hover-foreground hover:shadow-lg hover:shadow-orange-hover/50 transition-all duration-300;
   }
 
   .btn-soft {
-    @apply bg-primary/10 text-primary hover:bg-primary/20 border border-primary/20 hover:border-primary/30 transition-all duration-200;
+    @apply bg-primary/10 text-primary hover:bg-orange-hover/20 hover:text-orange-hover border border-primary/20 hover:border-orange-hover/30 transition-all duration-200;
   }
 
   /* Mobile-First Responsive Utilities */
@@ -770,6 +1094,73 @@ All colors use HSL format for maximum flexibility and theming support
     .hide-scrollbar-mobile::-webkit-scrollbar {
       display: none;
     }
+  }
+
+  /* Study Flow Gradient Classes */
+  .study-flow-gradient {
+    background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+
+  .study-flow-gradient-yellow {
+    background: linear-gradient(135deg, #fbbf24, #f59e0b, #d97706);
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+
+  /* StudyFlow Component Utility Classes */
+  /* These classes are referenced in button-variants.ts and other components */
+  
+  /* Transition System */
+  .study-flow-transition {
+    transition: var(--transition-smooth);
+  }
+
+  .study-flow-transition-bounce {
+    transition: var(--transition-bounce);
+  }
+
+  /* Shadow System */
+  .study-flow-shadow-soft {
+    box-shadow: var(--shadow-soft);
+  }
+
+  .study-flow-shadow-medium {
+    box-shadow: var(--shadow-medium);
+  }
+
+  .study-flow-shadow-strong {
+    box-shadow: var(--shadow-strong);
+  }
+
+  .study-flow-shadow-glow {
+    box-shadow: var(--shadow-focus);
+  }
+
+  /* Enhanced Gradient Background (non-text) */
+  .study-flow-gradient-bg {
+    background: var(--gradient-primary);
+  }
+
+  .study-flow-gradient-focus-bg {
+    background: var(--gradient-focus);
+  }
+
+  .study-flow-gradient-creative-bg {
+    background: var(--gradient-creative);
+  }
+
+  .study-flow-gradient-progress-bg {
+    background: var(--gradient-progress);
+  }
+
+  .study-flow-gradient-warm-bg {
+    background: var(--gradient-warm);
+  }
+
+  .study-flow-gradient-premium-bg {
+    background: var(--gradient-premium);
   }
 
 }
