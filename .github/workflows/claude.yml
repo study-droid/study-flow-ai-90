@@ -1,0 +1,38 @@
+name: Claude Code Actions
+
+on:
+  issues:
+    types: [opened, edited]
+  issue_comment:
+    types: [created, edited]
+  pull_request:
+    types: [opened, edited, synchronize]
+  pull_request_review_comment:
+    types: [created, edited]
+
+jobs:
+  claude:
+    runs-on: ubuntu-latest
+    if: github.actor != 'dependabot[bot]'
+    
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: write
+      
+    steps:
+    - name: Claude Code Action
+      uses: anthropics/claude-code-action@v1
+      with:
+        anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+        # Optional configuration
+        max_tokens: 4000
+        model: claude-3-5-sonnet-20241022
+        system_prompt: |
+          You are Claude, an AI assistant helping with code review, development, and technical questions.
+          Be helpful, accurate, and concise. Focus on:
+          - Code quality and best practices
+          - Security considerations
+          - Performance optimizations
+          - Bug identification and fixes
+          - Architecture suggestions
