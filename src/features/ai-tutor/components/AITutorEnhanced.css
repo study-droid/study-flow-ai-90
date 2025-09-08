@@ -376,6 +376,9 @@
   .chat-history-panel {
     @apply fixed inset-y-0 left-0 z-50 w-80 transform -translate-x-full transition-transform duration-300;
     @apply border-r border-border shadow-xl bg-background;
+    /* Enhanced mobile panel */
+    @apply backdrop-blur-md;
+    will-change: transform;
   }
 
   .chat-history-panel[data-open="true"] {
@@ -388,16 +391,35 @@
 
   .messages-list {
     @apply p-3 gap-3;
+    /* Better mobile spacing */
+    @apply pb-6;
   }
 
   .message-body-user .message-text,
   .message-body-assistant .message-text {
     @apply max-w-[85vw];
+    /* Better mobile text sizing */
+    @apply text-sm leading-relaxed;
+  }
+
+  .message-body-user .message-text {
+    @apply p-3 rounded-2xl rounded-br-lg;
+  }
+
+  .message-body-assistant .message-text {
+    @apply p-3 rounded-2xl rounded-bl-lg;
   }
 
   .quick-actions-grid {
     grid-template-columns: 1fr;
     @apply gap-2;
+  }
+
+  .quick-action-btn {
+    @apply p-3 text-left;
+    /* Enhanced touch targets */
+    @apply min-h-[56px] touch-manipulation;
+    @apply active:scale-[0.98] transition-transform duration-150;
   }
 
   .welcome-content {
@@ -410,10 +432,61 @@
 
   .input-container {
     @apply p-3;
+    /* Safe area for mobile keyboards */
+    @apply pb-6;
+  }
+
+  .input-wrapper {
+    @apply p-3;
+    /* Better mobile input styling */
+    @apply min-h-[48px];
+  }
+
+  .input-field {
+    @apply text-base; /* Prevents zoom on iOS */
+    @apply min-h-[40px];
+  }
+
+  .send-btn {
+    @apply h-10 w-10 min-h-[44px] min-w-[44px];
+    @apply active:scale-95 transition-transform duration-150;
   }
 
   .header-content {
     @apply p-3;
+    /* Safe area for notched devices */
+    @apply pt-4;
+  }
+
+  .header-actions {
+    @apply gap-1;
+  }
+
+  .header-actions button {
+    @apply min-h-[44px] min-w-[44px];
+    @apply active:scale-95 transition-transform duration-150;
+  }
+
+  /* Enhanced message actions for mobile */
+  .message-actions {
+    @apply opacity-100; /* Always visible on mobile */
+    @apply mt-2 justify-start;
+  }
+
+  .action-btn {
+    @apply h-8 w-8 min-h-[44px] min-w-[44px];
+    @apply active:scale-95 transition-transform duration-150;
+  }
+
+  /* Better error display on mobile */
+  .error-container {
+    @apply mx-3 mb-3;
+  }
+
+  /* Mobile-optimized thinking indicator */
+  .thinking-bubble-container {
+    @apply mx-3 p-3;
+    @apply max-w-[90vw];
   }
 }
 
@@ -425,6 +498,12 @@
 
   .quick-actions-grid {
     grid-template-columns: repeat(2, 1fr);
+    @apply gap-3;
+  }
+
+  .quick-action-btn {
+    @apply min-h-[52px];
+    @apply hover:scale-[1.02] active:scale-[0.98];
   }
 
   .message-body-user .message-text {
@@ -433,6 +512,19 @@
 
   .message-body-assistant .message-text {
     @apply max-w-xl;
+  }
+
+  .input-wrapper {
+    @apply p-3;
+  }
+
+  .send-btn {
+    @apply h-10 w-10;
+  }
+
+  /* Tablet-specific touch optimizations */
+  button, [role="button"] {
+    @apply min-h-[48px] min-w-[48px];
   }
 }
 
@@ -1181,6 +1273,295 @@
   }
 }
 
+/* ============================================================================ */
+/* Enhanced Mobile Responsiveness and Touch Optimizations                      */
+/* ============================================================================ */
+
+/* Mobile-first approach with progressive enhancement */
+@media (max-width: 480px) {
+  /* Extra small mobile devices */
+  .ai-tutor-layout {
+    @apply text-sm;
+  }
+
+  .header-content {
+    @apply p-2 gap-2;
+  }
+
+  .header-left h1 {
+    @apply text-base;
+  }
+
+  .messages-list {
+    @apply p-2 gap-2;
+  }
+
+  .message-body-user .message-text,
+  .message-body-assistant .message-text {
+    @apply max-w-[90vw] text-sm p-2;
+  }
+
+  .input-container {
+    @apply p-2;
+  }
+
+  .input-wrapper {
+    @apply p-2;
+  }
+
+  .quick-actions-grid {
+    @apply gap-1;
+  }
+
+  .quick-action-btn {
+    @apply p-2 text-sm min-h-[48px];
+  }
+}
+
+/* Landscape mobile orientation */
+@media (max-width: 768px) and (orientation: landscape) {
+  .ai-tutor-layout {
+    @apply h-screen;
+  }
+
+  .header-content {
+    @apply py-2;
+  }
+
+  .input-container {
+    @apply py-2;
+  }
+
+  .messages-list {
+    @apply py-2;
+  }
+
+  /* Optimize for landscape keyboard */
+  .input-wrapper {
+    @apply min-h-[40px];
+  }
+
+  .welcome-content {
+    @apply py-4;
+  }
+
+  .quick-actions-grid {
+    grid-template-columns: repeat(2, 1fr);
+    @apply gap-2;
+  }
+}
+
+/* Touch-specific optimizations */
+@media (pointer: coarse) {
+  /* Larger touch targets for coarse pointers (fingers) */
+  button, 
+  [role="button"], 
+  .action-btn,
+  .control-btn-modern {
+    @apply min-h-[44px] min-w-[44px];
+  }
+
+  /* Enhanced touch feedback */
+  .quick-action-btn,
+  .send-btn,
+  .session-item {
+    @apply active:scale-95 transition-transform duration-150;
+  }
+
+  /* Better spacing for touch */
+  .header-actions {
+    @apply gap-2;
+  }
+
+  .message-actions {
+    @apply gap-2;
+  }
+}
+
+/* Hover-capable devices */
+@media (hover: hover) {
+  .quick-action-btn:hover {
+    @apply scale-[1.02] shadow-md;
+  }
+
+  .session-item:hover {
+    @apply shadow-sm;
+  }
+
+  .message-actions {
+    @apply opacity-0 group-hover:opacity-100;
+  }
+}
+
+/* No hover capability (touch devices) */
+@media (hover: none) {
+  .message-actions {
+    @apply opacity-100; /* Always visible on touch devices */
+  }
+
+  .delete-btn {
+    @apply opacity-100; /* Always visible on touch devices */
+  }
+}
+
+/* High DPI displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .message-text .prose code {
+    @apply text-xs;
+  }
+
+  .thinking-dots-animated span {
+    @apply w-1.5 h-1.5;
+  }
+}
+
+/* Safe area support for notched devices */
+@supports (padding: max(0px)) {
+  .header-content {
+    padding-top: max(0.75rem, env(safe-area-inset-top));
+  }
+
+  .input-container {
+    padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
+  }
+
+  .messages-list {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+
+  .chat-history-panel {
+    padding-top: max(0, env(safe-area-inset-top));
+    padding-bottom: max(0, env(safe-area-inset-bottom));
+  }
+}
+
+/* Dark mode mobile optimizations */
+@media (prefers-color-scheme: dark) and (max-width: 768px) {
+  .message-body-user .message-text {
+    @apply bg-primary/90;
+  }
+
+  .message-body-assistant .message-text {
+    @apply bg-muted/80 border-border/30;
+  }
+
+  .input-wrapper {
+    @apply bg-muted/20 border-border/30;
+  }
+
+  .chat-history-panel {
+    @apply bg-background/95 backdrop-blur-md;
+  }
+}
+
+/* Performance optimizations for mobile */
+.ai-tutor-layout,
+.messages-container,
+.chat-history-panel {
+  /* Enable hardware acceleration */
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+.message-bubble {
+  /* Optimize animations */
+  will-change: transform, opacity;
+}
+
+.thinking-bubble-modern {
+  /* Optimize thinking bubble animations */
+  will-change: transform, opacity;
+}
+
+/* Gesture feedback */
+.swipe-feedback {
+  @apply fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2;
+  @apply bg-black/80 text-white px-4 py-2 rounded-lg z-50;
+  @apply pointer-events-none opacity-0 transition-opacity duration-200;
+}
+
+.swipe-feedback.show {
+  @apply opacity-100;
+}
+
+/* Mobile menu animations */
+.mobile-menu-enter {
+  @apply transform -translate-x-full;
+}
+
+.mobile-menu-enter-active {
+  @apply transform translate-x-0 transition-transform duration-300 ease-out;
+}
+
+.mobile-menu-exit {
+  @apply transform translate-x-0;
+}
+
+.mobile-menu-exit-active {
+  @apply transform -translate-x-full transition-transform duration-300 ease-in;
+}
+
+/* Keyboard aware adjustments */
+.keyboard-visible .input-area {
+  @apply pb-0;
+}
+
+.keyboard-visible .messages-container {
+  @apply pb-4;
+}
+
+/* Pull-to-refresh indicator */
+.pull-to-refresh-indicator {
+  @apply absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-full;
+  @apply bg-background border border-border rounded-full p-3 shadow-lg;
+  @apply transition-transform duration-300 ease-out;
+}
+
+.pull-to-refresh-indicator.active {
+  @apply transform -translate-x-1/2 translate-y-4;
+}
+
+/* Haptic feedback classes */
+.haptic-light {
+  /* Light haptic feedback - 25ms */
+}
+
+.haptic-medium {
+  /* Medium haptic feedback - 50ms */
+}
+
+.haptic-heavy {
+  /* Heavy haptic feedback - 100ms */
+}
+
+/* Accessibility improvements for mobile */
+@media (max-width: 768px) {
+  /* Larger focus indicators on mobile */
+  *:focus-visible {
+    @apply ring-2 ring-ring ring-offset-2 outline-none;
+  }
+
+  /* Better contrast for touch targets */
+  button:focus-visible,
+  [role="button"]:focus-visible {
+    @apply ring-2 ring-primary ring-offset-2;
+  }
+
+  /* Ensure text is readable */
+  .message-text {
+    @apply leading-relaxed;
+  }
+
+  /* Better spacing for readability */
+  .message-text .prose p {
+    @apply mb-3;
+  }
+
+  .message-text .prose li {
+    @apply mb-2;
+  }
+}
+
 /* Focus states */
 .input-wrapper:focus-within {
   @apply ring-1 ring-ring border-ring;
@@ -1216,6 +1597,16 @@
   .chat-history-panel {
     @apply border-r-2;
   }
+}
+
+/* ============================================================================ */
+/* Thinking Bubble Container                                                   */
+/* ============================================================================ */
+
+.thinking-bubble-container {
+  @apply bg-muted/50 text-foreground p-4 rounded-2xl rounded-bl-md;
+  @apply max-w-2xl border border-border/50;
+  animation: message-slide-in 0.3s ease-out;
 }
 
 /* ============================================================================ */
@@ -1341,4 +1732,340 @@
 
 .thinking-bubble-modern[aria-live="polite"] .stage-label {
   /* Announce stage changes to screen readers */
+}/*
+ ============================================================================ */
+/* Enhanced Integration Animations and Polish                                  */
+/* ============================================================================ */
+
+/* Smooth state transitions for sending/receiving */
+.ai-tutor-layout[data-animation-state="sending"] .input-wrapper {
+  @apply border-primary/50 ring-1 ring-primary/20;
+  animation: sending-pulse 0.6s ease-out;
+}
+
+.ai-tutor-layout[data-animation-state="receiving"] .messages-container {
+  animation: receiving-glow 1s ease-in-out;
+}
+
+@keyframes sending-pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+  100% { transform: scale(1); }
+}
+
+@keyframes receiving-glow {
+  0%, 100% { filter: brightness(1); }
+  50% { filter: brightness(1.05); }
+}
+
+/* Enhanced error state animations */
+.error-container {
+  animation: error-shake 0.5s ease-out, error-fade-in 0.3s ease-out;
+}
+
+@keyframes error-shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+@keyframes error-fade-in {
+  0% { opacity: 0; transform: translateY(-10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Service status indicator animations */
+.service-status-healthy {
+  animation: status-healthy-pulse 2s ease-in-out infinite;
+}
+
+.service-status-degraded {
+  animation: status-warning-blink 1s ease-in-out infinite;
+}
+
+.service-status-unhealthy {
+  animation: status-error-pulse 0.8s ease-in-out infinite;
+}
+
+@keyframes status-healthy-pulse {
+  0%, 100% { opacity: 0.8; }
+  50% { opacity: 1; }
+}
+
+@keyframes status-warning-blink {
+  0%, 50%, 100% { opacity: 1; }
+  25%, 75% { opacity: 0.6; }
+}
+
+@keyframes status-error-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.1); }
+}
+
+/* Offline indicator animations */
+.offline-indicator {
+  animation: offline-slide-in 0.4s ease-out;
+}
+
+@keyframes offline-slide-in {
+  0% { 
+    opacity: 0; 
+    transform: translateY(20px) scale(0.9); 
+  }
+  100% { 
+    opacity: 1; 
+    transform: translateY(0) scale(1); 
+  }
+}
+
+/* Performance dashboard modal animations */
+.performance-dashboard-modal {
+  animation: modal-fade-in 0.3s ease-out;
+}
+
+.performance-dashboard-content {
+  animation: modal-slide-up 0.4s ease-out;
+}
+
+@keyframes modal-fade-in {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@keyframes modal-slide-up {
+  0% { 
+    opacity: 0; 
+    transform: translateY(30px) scale(0.95); 
+  }
+  100% { 
+    opacity: 1; 
+    transform: translateY(0) scale(1); 
+  }
+}
+
+/* Enhanced haptic feedback visual cues */
+.haptic-feedback-active {
+  animation: haptic-bounce 0.15s ease-out;
+}
+
+@keyframes haptic-bounce {
+  0% { transform: scale(1); }
+  50% { transform: scale(0.95); }
+  100% { transform: scale(1); }
+}
+
+/* Accessibility focus enhancements */
+.focus-enhanced:focus-visible {
+  @apply outline-2 outline-offset-2 outline-primary;
+  animation: focus-pulse 0.3s ease-out;
+}
+
+@keyframes focus-pulse {
+  0% { outline-width: 0; }
+  100% { outline-width: 2px; }
+}
+
+/* High contrast mode enhancements */
+.high-contrast .ai-tutor-layout {
+  @apply border-2 border-foreground;
+}
+
+.high-contrast .message-bubble {
+  @apply border border-foreground/50;
+}
+
+.high-contrast .thinking-bubble-modern {
+  @apply border-2 border-foreground;
+}
+
+/* Reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .ai-tutor-layout[data-animation-state="sending"] .input-wrapper,
+  .ai-tutor-layout[data-animation-state="receiving"] .messages-container,
+  .error-container,
+  .service-status-healthy,
+  .service-status-degraded,
+  .service-status-unhealthy,
+  .offline-indicator,
+  .performance-dashboard-modal,
+  .performance-dashboard-content,
+  .haptic-feedback-active {
+    animation: none !important;
+  }
+  
+  /* Maintain visual feedback without animation */
+  .ai-tutor-layout[data-animation-state="sending"] .input-wrapper {
+    @apply border-primary/50 ring-1 ring-primary/20;
+  }
+  
+  .focus-enhanced:focus-visible {
+    @apply outline-2 outline-offset-2 outline-primary;
+    animation: none;
+  }
+}
+
+/* Enhanced mobile touch optimizations */
+@media (max-width: 768px) {
+  /* Larger touch targets */
+  .header-actions button {
+    @apply min-h-[48px] min-w-[48px] p-2;
+  }
+  
+  /* Better visual feedback for touch */
+  .quick-action-btn:active {
+    @apply bg-accent/80 scale-[0.98];
+  }
+  
+  .send-btn:active {
+    @apply scale-95;
+  }
+  
+  /* Enhanced error display for mobile */
+  .error-container {
+    @apply mx-2 rounded-lg;
+  }
+  
+  /* Mobile-optimized status indicators */
+  .service-status-indicator {
+    @apply text-xs;
+  }
+  
+  .offline-indicator {
+    @apply text-xs p-2;
+  }
+}
+
+/* Dark mode enhancements */
+@media (prefers-color-scheme: dark) {
+  .thinking-bubble-modern {
+    @apply shadow-2xl;
+  }
+  
+  .performance-dashboard-content {
+    @apply bg-background/95 backdrop-blur-md;
+  }
+  
+  .service-status-healthy {
+    filter: brightness(1.2);
+  }
+}
+
+/* Print optimizations */
+@media print {
+  .header-actions,
+  .input-area,
+  .error-container,
+  .offline-indicator,
+  .performance-dashboard-modal,
+  .service-status-indicator {
+    @apply hidden;
+  }
+  
+  .ai-tutor-layout {
+    @apply shadow-none border-gray-300;
+  }
+  
+  .message-bubble {
+    @apply break-inside-avoid;
+  }
+}
+
+/* Enhanced loading states */
+.loading-shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer-loading 2s ease-in-out infinite;
+}
+
+@keyframes shimmer-loading {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* Micro-interactions for better UX */
+.message-bubble:hover {
+  animation: message-hover 0.2s ease-out;
+}
+
+@keyframes message-hover {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-1px); }
+}
+
+/* Enhanced scroll indicators */
+.messages-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 20px;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+  pointer-events: none;
+  z-index: 10;
+}
+
+.messages-container::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 20px;
+  background: linear-gradient(
+    to top,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* Smooth transitions for all interactive elements */
+button,
+[role="button"],
+.session-item,
+.message-bubble,
+.input-wrapper {
+  @apply transition-all duration-200 ease-out;
+}
+
+/* Enhanced focus management */
+.ai-tutor-layout:focus-within .input-wrapper {
+  @apply ring-1 ring-primary/30;
+}
+
+/* Contextual animations based on user activity */
+.ai-tutor-layout[data-user-active="true"] {
+  animation: subtle-glow 3s ease-in-out infinite;
+}
+
+@keyframes subtle-glow {
+  0%, 100% { box-shadow: 0 0 0 rgba(59, 130, 246, 0); }
+  50% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.1); }
+}
+
+/* Performance optimizations */
+.ai-tutor-layout,
+.message-bubble,
+.thinking-bubble-modern {
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+/* GPU acceleration for smooth animations */
+.quick-action-btn,
+.send-btn,
+.session-item {
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }

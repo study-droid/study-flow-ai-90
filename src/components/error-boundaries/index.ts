@@ -5,4 +5,5 @@ export { withAITutorErrorBoundary } from './withAITutorErrorBoundary';
 export { withFeatureErrorBoundary } from './withFeatureErrorBoundary';
 export { withGlobalErrorBoundary } from './withGlobalErrorBoundary';
 export { default as StreamingErrorBoundary } from './StreamingErrorBoundary';
+export { DeepSeekErrorBoundary, withDeepSeekErrorBoundary } from './DeepSeekErrorBoundary';
 

@@ -1,363 +1,183 @@
-# StudyFlow AI - E2E Test Suite
+# Comprehensive Testing Suite
 
-## Overview
+This directory contains a comprehensive testing suite for the AI Integration and UI Fix project. The test suite covers all aspects of the application including unit tests, integration tests, accessibility tests, and performance tests.
 
-This directory contains the comprehensive end-to-end testing suite for StudyFlow AI, built with Playwright and designed to ensure application quality, performance, and security across all features and browsers.
+## Test Structure
 
-## 🏗️ Test Architecture
+### Unit Tests
+Located in `src/**/__tests__/` directories alongside the source code:
 
-### Test Structure
-```
-tests/
-├── config/           # Test environment configuration
-├── utils/            # Utilities, helpers, and page objects
-├── e2e/              # End-to-end test suites
-├── performance/      # Performance and load testing
-├── security/         # Security and vulnerability testing
-└── .auth/            # Authentication state storage
-```
+- **Enhanced Circuit Breaker Tests** (`src/services/reliability/__tests__/enhanced-circuit-breaker.test.ts`)
+  - Tests circuit breaker states (CLOSED, OPEN, HALF_OPEN)
+  - Validates exponential backoff functionality
+  - Verifies automatic recovery mechanisms
+  - Tests health monitoring and statistics
 
-### Key Components
+- **AI Provider Router Tests** (`src/services/ai/__tests__/ai-provider-router.test.ts`)
+  - Tests multi-provider management and selection
+  - Validates health monitoring and fallback chains
+  - Tests capability-based provider selection
+  - Verifies routing statistics and performance
 
-#### Configuration (`tests/config/`)
-- **global-setup.ts** - Test environment initialization, database setup, user creation
-- **global-teardown.ts** - Cleanup, reporting, and artifact management
-- **database-setup.ts** - Supabase test database management with fixtures
-- **user-setup.ts** - Test user creation and management
-- **mock-server.ts** - MSW mock server for AI services
+- **Performance Metrics Tests** (`src/services/monitoring/__tests__/performance-metrics.test.ts`)
+  - Tests metric collection and aggregation
+  - Validates API call tracking
+  - Tests memory management and cleanup
+  - Verifies performance monitoring accuracy
 
-#### Utilities (`tests/utils/`)
-- **test-helpers.ts** - Testing utility classes and common operations
-- **fixtures.ts** - Custom Playwright fixtures and test contexts
-- **page-objects.ts** - Page object model implementations
+- **Input Validator Tests** (`src/services/security/__tests__/input-validator.test.ts`)
+  - Tests input validation and sanitization
+  - Validates XSS prevention and security measures
+  - Tests schema validation with Zod
+  - Verifies audit logging for security events
 
-#### Test Suites (`tests/e2e/`)
-- **auth/** - Authentication, authorization, and security boundaries
-- **core/** - Dashboard, tasks, study sessions, and core functionality
-- **ai/** - AI Tutor, table generation, and recommendation systems
-- **advanced/** - Analytics, goals, flashcards, and advanced features
-- **accessibility/** - WCAG compliance and accessibility testing
-- **cross-browser/** - Multi-browser compatibility testing
+### Integration Tests
+Located in `tests/integration/`:
 
-## 🚀 Getting Started
+- **AI Service Integration Tests** (`tests/integration/ai-service-integration.test.ts`)
+  - End-to-end AI request flows
+  - Provider fallback scenarios
+  - Circuit breaker integration with real services
+  - Performance tracking integration
+  - Security validation throughout the flow
 
-### Prerequisites
+### Accessibility Tests
+Located in `tests/accessibility/`:
+
+- **AI Tutor Accessibility Tests** (`tests/accessibility/ai-tutor-accessibility.test.ts`)
+  - WCAG 2.1 compliance testing
+  - Screen reader compatibility
+  - Keyboard navigation support
+  - Focus management and ARIA labels
+  - Color contrast and visual accessibility
+  - Mobile accessibility features
+
+### Performance Tests
+Located in `tests/performance/`:
+
+- **AI Tutor Performance Tests** (`tests/performance/ai-tutor-performance.test.ts`)
+  - Component rendering performance
+  - Memory usage optimization
+  - API response time testing
+  - Concurrent request handling
+  - User interaction responsiveness
+  - Bundle size and loading performance
+
+## Test Configuration
+
+### Vitest Configuration
+- **Coverage**: V8 provider with comprehensive reporting
+- **Environment**: jsdom for React component testing
+- **Thresholds**: 
+  - Global: 70% branches, 80% functions/lines/statements
+  - Hooks: 85% branches, 90% functions/lines/statements
+  - Services: 85% branches, 90% functions/lines/statements
+  - Lib: 90% branches, 95% functions/lines/statements
+
+### Playwright Configuration
+- **Browsers**: Chromium, Firefox, WebKit
+- **Mobile**: Chrome Mobile, Safari Mobile, iPad
+- **Accessibility**: Automated accessibility testing with axe-playwright
+- **Performance**: Lighthouse integration for performance audits
+
+## Running Tests
+
+### Individual Test Suites
 ```bash
-# Install dependencies
-npm install
+# Unit tests
+npm run test:unit
 
-# Install Playwright browsers
-npx playwright install
-```
-
-### Environment Setup
-1. Copy `.env.test.example` to `.env.test`
-2. Configure test environment variables:
-   ```env
-   PLAYWRIGHT_BASE_URL=http://localhost:8080
-   TEST_SUPABASE_URL=http://localhost:54321
-   TEST_SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
-   TEST_USER_EMAIL=test@studyflow.ai
-   TEST_USER_PASSWORD=TestPassword123!
-   ```
-
-### Running Tests
-
-#### All Tests
-```bash
-npm run test:e2e
-```
-
-#### Specific Test Suites
-```bash
-# Authentication tests
-npx playwright test tests/e2e/auth
-
-# Core functionality tests
-npx playwright test tests/e2e/core
-
-# AI integration tests
-npx playwright test tests/e2e/ai
-
-# Advanced features tests
-npx playwright test tests/e2e/advanced
+# Integration tests  
+npm run test:integration
 
 # Accessibility tests
-npx playwright test tests/e2e/accessibility
-
-# Cross-browser tests
-npx playwright test tests/e2e/cross-browser
+npm run test:accessibility
 
 # Performance tests
-npx playwright test tests/performance
+npm run test:performance
 
 # Security tests
-npx playwright test tests/security
+npm run test:security
+
+# Coverage report
+npm run test:coverage
 ```
 
-#### Specific Browsers
+### Comprehensive Test Suite
 ```bash
-# Chrome only
-npx playwright test --project=chromium
-
-# Firefox only
-npx playwright test --project=firefox
-
-# Safari only
-npx playwright test --project=webkit
-
-# Mobile Chrome
-npx playwright test --project=Mobile-Chrome
+# Run all tests with reporting
+npm run test:comprehensive
 ```
 
-#### Debug Mode
-```bash
-# Run with UI
-npx playwright test --ui
+This runs the comprehensive test runner script that:
+1. Executes all test suites in sequence
+2. Generates detailed reports
+3. Provides summary statistics
+4. Creates JSON and HTML reports
 
-# Debug specific test
-npx playwright test --debug tests/e2e/auth/auth-flow.test.ts
+### Continuous Integration
+The test suite is designed for CI/CD environments with:
+- Parallel test execution
+- Retry mechanisms for flaky tests
+- Comprehensive reporting
+- Performance benchmarking
+- Security validation
 
-# Headed mode
-npx playwright test --headed
-```
+## Test Coverage
 
-## 🧪 Test Categories
+The test suite provides comprehensive coverage of:
 
-### 1. Authentication & Security (`tests/e2e/auth/`)
-- User registration and login flows
-- Session management and timeouts
-- Permission boundaries and role-based access
-- Password security and validation
-- OAuth integration testing
-- Protected route verification
+### Functional Testing
+- ✅ All service components and business logic
+- ✅ React components and hooks
+- ✅ API integrations and error handling
+- ✅ State management and data flow
 
-### 2. Core Functionality (`tests/e2e/core/`)
-- **Dashboard**: Widgets, navigation, responsive design
-- **Tasks**: CRUD operations, filtering, sorting, search
-- **Study Sessions**: Timer functionality, Pomodoro integration, progress tracking
+### Non-Functional Testing
+- ✅ Performance and scalability
+- ✅ Accessibility and usability
+- ✅ Security and input validation
+- ✅ Memory management and cleanup
 
-### 3. AI Integration (`tests/e2e/ai/`)
-- **AI Tutor**: Chat interface, streaming responses, context management
-- **Table Generation**: AI-powered creation, editing, export capabilities
-- **Recommendations**: Personalized suggestions, adaptive learning insights
+### Integration Testing
+- ✅ End-to-end user workflows
+- ✅ Service integration patterns
+- ✅ Error recovery scenarios
+- ✅ Cross-browser compatibility
 
-### 4. Advanced Features (`tests/e2e/advanced/`)
-- **Analytics**: Data visualization, reporting, performance metrics
-- **Goals**: Creation, tracking, achievement, progress analytics
-- **Flashcards**: Spaced repetition, study modes, multimedia support
+## Test Quality Standards
 
-### 5. Accessibility (`tests/e2e/accessibility/`)
-- WCAG 2.1 AA compliance testing
-- Keyboard navigation and focus management
-- Screen reader compatibility
-- Color contrast and visual accessibility
-- Mobile accessibility and touch targets
+### Code Coverage Requirements
+- **Unit Tests**: Minimum 90% coverage for critical services
+- **Integration Tests**: All major user flows covered
+- **Accessibility Tests**: WCAG 2.1 AA compliance
+- **Performance Tests**: Response time and memory benchmarks
 
-### 6. Cross-Browser Compatibility (`tests/e2e/cross-browser/`)
-- Chrome, Firefox, Safari, Edge testing
-- JavaScript API compatibility
-- CSS feature support validation
-- Performance across browsers
-- Mobile browser testing
+### Test Reliability
+- **Deterministic**: Tests use mocked dependencies and fake timers
+- **Isolated**: Each test runs independently with proper cleanup
+- **Fast**: Unit tests complete in under 10ms each
+- **Maintainable**: Clear test structure with descriptive names
 
-### 7. Performance Testing (`tests/performance/`)
-- Page load times and Core Web Vitals
-- Resource loading optimization
-- JavaScript execution performance
-- Memory usage and cleanup
-- Network performance and offline handling
+### Continuous Improvement
+- Regular test suite performance reviews
+- Coverage gap analysis and remediation
+- Test flakiness monitoring and fixes
+- Performance regression detection
 
-### 8. Security Testing (`tests/security/`)
-- XSS prevention and input sanitization
-- CSRF protection validation
-- Authentication security measures
-- Data protection and storage security
-- API security and rate limiting
+## Reporting
 
-## 🎯 Test Features
+### Test Results
+- **JSON Report**: `test-results/results.json`
+- **HTML Report**: `test-results/html/index.html`
+- **Coverage Report**: `coverage/index.html`
+- **Comprehensive Report**: `test-results/comprehensive-test-report.json`
 
-### Mock Server Integration
-- **MSW (Mock Service Worker)** for AI service simulation
-- Realistic response patterns and streaming simulation
-- Error scenario testing and network failure handling
-- Configurable response delays and rate limiting
+### Metrics Tracked
+- Test execution time and performance
+- Coverage percentages by module
+- Error rates and failure patterns
+- Performance benchmarks and trends
+- Accessibility compliance scores
 
-### Advanced Testing Patterns
-- **Streaming Response Testing** - Real-time AI chat validation
-- **Visual Regression Testing** - Screenshot comparison capabilities
-- **Performance Budgets** - Automated performance threshold enforcement
-- **Accessibility Auditing** - Integrated axe-core testing
-- **Cross-Device Testing** - Mobile, tablet, desktop viewports
-
-### Test Data Management
-- **Isolated Test Environment** - Separate database and user management
-- **Fixture Management** - Consistent test data setup and cleanup
-- **User State Management** - Pre-authenticated test contexts
-- **Database Seeding** - Realistic test data scenarios
-
-### Reporting and Monitoring
-- **HTML Reports** - Detailed test execution reports
-- **Screenshot Capture** - Automatic failure documentation
-- **Performance Metrics** - Load times, memory usage, network analysis
-- **Accessibility Reports** - WCAG compliance scoring
-- **CI/CD Integration** - Automated testing in GitHub Actions
-
-## 🔧 Configuration
-
-### Playwright Configuration (`playwright.config.ts`)
-- Multi-browser setup (Chrome, Firefox, Safari, Mobile)
-- Test timeouts and retry strategies
-- Base URL and global test settings
-- Reporter configuration and artifact handling
-
-### Environment Variables (`.env.test`)
-```env
-# Application URLs
-PLAYWRIGHT_BASE_URL=http://localhost:8080
-VITE_SUPABASE_URL=http://localhost:54321
-
-# Database Configuration
-TEST_SUPABASE_URL=http://localhost:54321
-TEST_SUPABASE_SERVICE_ROLE_KEY=your-service-key
-
-# AI Service Configuration
-VITE_DEEPSEEK_API_KEY=test-key
-MOCK_AI_RESPONSES=true
-
-# Test User Credentials
-TEST_USER_EMAIL=test@studyflow.ai
-TEST_USER_PASSWORD=TestPassword123!
-
-# Feature Flags
-ENABLE_AI_TUTOR_TESTS=true
-ENABLE_TABLE_GENERATION_TESTS=true
-ENABLE_PERFORMANCE_TESTS=true
-ENABLE_ACCESSIBILITY_TESTS=true
-
-# Performance Configuration
-TEST_TIMEOUT=60000
-PAGE_LOAD_TIMEOUT=30000
-TEST_RETRIES=2
-```
-
-## 📊 CI/CD Integration
-
-### GitHub Actions Workflow (`.github/workflows/e2e-tests.yml`)
-- **Automated Testing** on push and pull requests
-- **Matrix Strategy** for parallel test execution
-- **Lighthouse Integration** for performance auditing
-- **Security Scanning** with npm audit
-- **Artifact Management** for reports and screenshots
-- **Notification System** for test failures
-
-### Workflow Features
-- **Test Parallelization** - Multiple test suites running concurrently
-- **Browser Matrix** - Testing across different browsers
-- **Environment Management** - Supabase setup and configuration
-- **Report Generation** - HTML reports and performance metrics
-- **Failure Handling** - Screenshot capture and issue creation
-
-## 🎨 Best Practices
-
-### Test Organization
-- **Descriptive Test Names** - Clear, action-oriented descriptions
-- **Logical Grouping** - Related tests grouped in describe blocks
-- **Page Object Pattern** - Maintainable, reusable page interactions
-- **Test Data Isolation** - Independent test execution
-
-### Performance Optimization
-- **Parallel Execution** - Tests run concurrently when possible
-- **Smart Waits** - Efficient waiting strategies
-- **Resource Cleanup** - Memory and resource management
-- **Test Filtering** - Run only necessary tests during development
-
-### Maintenance
-- **Regular Updates** - Keep test selectors and expectations current
-- **Failure Analysis** - Review and fix flaky tests
-- **Coverage Monitoring** - Ensure comprehensive test coverage
-- **Performance Monitoring** - Track test execution times
-
-## 🛠️ Troubleshooting
-
-### Common Issues
-
-#### Test Failures
-```bash
-# Run specific failed test with debug
-npx playwright test --debug path/to/failed/test.ts
-
-# Generate trace for analysis
-npx playwright test --trace on
-
-# View test report
-npx playwright show-report
-```
-
-#### Environment Issues
-```bash
-# Reset test database
-npx supabase db reset
-
-# Restart Supabase
-npx supabase stop
-npx supabase start
-
-# Clear test authentication
-rm -rf tests/.auth/*.json
-```
-
-#### Performance Issues
-```bash
-# Run performance tests only
-npx playwright test tests/performance --reporter=html
-
-# Profile specific test
-npx playwright test --trace on tests/performance/performance.test.ts
-```
-
-### Debug Tools
-- **Playwright Inspector** - Step-by-step test debugging
-- **Trace Viewer** - Visual test execution analysis  
-- **Screenshot Comparison** - Visual regression debugging
-- **Network Tab** - Request/response analysis
-- **Console Logs** - Application error tracking
-
-## 📈 Metrics and Reporting
-
-### Performance Metrics
-- **Core Web Vitals** - LCP, FID, CLS measurements
-- **Page Load Times** - First paint, DOM ready, network idle
-- **Resource Analysis** - Bundle sizes, image optimization
-- **Memory Usage** - JavaScript heap size monitoring
-
-### Accessibility Metrics
-- **WCAG Compliance** - AA level requirement validation
-- **Color Contrast** - Automated contrast ratio checking
-- **Keyboard Navigation** - Tab order and focus management
-- **Screen Reader** - ARIA label and semantic markup validation
-
-### Test Execution Metrics
-- **Pass/Fail Rates** - Test reliability tracking
-- **Execution Times** - Performance optimization targets
-- **Flaky Test Detection** - Stability monitoring
-- **Coverage Analysis** - Feature and code coverage metrics
-
-## 🔮 Future Enhancements
-
-### Planned Features
-- **Visual Regression Testing** - Automated screenshot comparison
-- **API Contract Testing** - Schema validation and contract testing
-- **Load Testing** - Multi-user scenario testing
-- **Mobile Device Testing** - Real device cloud integration
-- **Internationalization Testing** - Multi-language support validation
-
-### Integration Opportunities
-- **Monitoring Integration** - Real user monitoring correlation
-- **Analytics Integration** - User behavior analysis
-- **Performance Budgets** - Automated performance enforcement
-- **Security Scanning** - Continuous vulnerability assessment
-
----
-
-For questions or issues, please refer to the [GitHub Issues](https://github.com/your-org/studyflow-ai/issues) or contact the development team.
+This comprehensive testing suite ensures the reliability, performance, accessibility, and security of the AI Integration and UI Fix implementation.

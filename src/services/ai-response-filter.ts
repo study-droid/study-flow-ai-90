@@ -45,7 +45,7 @@ export class AIResponseFilter {
         description: 'DeepSeek model reference'
       },
       { 
-        pattern: /\b(gpt-?[0-9\.]*|chatgpt|chat gpt)\b/gi, 
+        pattern: /\b(gpt-?[0-9.]*|chatgpt|chat gpt)\b/gi, 
         replacement: 'AI',
         description: 'GPT model reference'
       },

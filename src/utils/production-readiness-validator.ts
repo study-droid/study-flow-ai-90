@@ -4,6 +4,7 @@
  */
 
 import { deepSeekService } from '@/lib/deepseek';
+import { unifiedAIService } from '@/services/ai';
 import { productionMonitor } from '@/services/monitoring/production-monitor';
 import { circuitBreakerManager } from '@/services/reliability/circuit-breaker';
 import { logger } from '@/services/logging/logger';
@@ -310,13 +311,14 @@ export class ProductionReadinessValidator {
 
     // Test 1: Provider Availability
     try {
-      const providers = await unifiedAIService.getAvailableProviders();
-      const availableCount = providers.filter(p => p.available).length;
+      const providers = unifiedAIService.getAvailableProviders();
+      const healthStatuses = unifiedAIService.getServiceHealth().providers;
+      const availableCount = healthStatuses.filter(h => h.status === 'online' || h.status === 'degraded').length;
       
       const status = availableCount > 0 ? 'pass' : 'fail';
       this.addResult(category, 'Provider Availability', status,
         `${availableCount}/${providers.length} AI providers available`,
-        { providers }, availableCount === 0);
+        { providers: providers.map(p => ({ id: p.id, name: p.name, type: p.type })) }, availableCount === 0);
     } catch (error: unknown) {
       this.addResult(category, 'Provider Availability', 'fail',
         `Provider availability check failed: ${(error as Error).message}`, { error }, true);

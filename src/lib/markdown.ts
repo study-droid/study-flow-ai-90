@@ -18,14 +18,18 @@ export function tryParseJSON<T = any>(raw: string): T | null {
   // Strategy 1: Direct JSON parse
   try {
     return JSON.parse(raw.trim());
-  } catch {}
+  } catch (error) {
+    // Ignore JSON parse errors for strategy 1
+  }
 
   // Strategy 2: Extract largest JSON object with regex
   const jsonObjectMatch = raw.match(/\{[\s\S]*\}$/m);
   if (jsonObjectMatch) {
     try {
       return JSON.parse(jsonObjectMatch[0]);
-    } catch {}
+    } catch (error) {
+      // Ignore JSON parse errors for strategy 2
+    }
   }
 
   // Strategy 3: Find balanced braces approach
@@ -45,7 +49,9 @@ export function tryParseJSON<T = any>(raw: string): T | null {
         try {
           const candidate = raw.slice(start, i + 1);
           return JSON.parse(candidate);
-        } catch {}
+        } catch (error) {
+          // Ignore JSON parse errors for strategy 3
+        }
       }
     }
   }
@@ -63,7 +69,9 @@ export function tryParseJSON<T = any>(raw: string): T | null {
     for (const match of matches) {
       try {
         return JSON.parse(match[1]);
-      } catch {}
+      } catch (error) {
+        // Ignore JSON parse errors for strategy 4
+      }
     }
   }
 
@@ -77,7 +85,9 @@ export function tryParseJSON<T = any>(raw: string): T | null {
       .trim();
     
     return JSON.parse(cleaned);
-  } catch {}
+  } catch (error) {
+    // Ignore JSON parse errors for strategy 5
+  }
 
   return null;
 }

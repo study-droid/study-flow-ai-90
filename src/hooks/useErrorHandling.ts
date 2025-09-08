@@ -222,14 +222,10 @@ export const useErrorHandling = (
         variant: error.statusCode >= 500 ? 'destructive' : 'default',
         title: getErrorTitle(error),
         description: userMessage,
-        action: canRetry ? (
-          <button 
-            onClick={retry}
-            className="text-sm underline hover:no-underline"
-          >
-            Try Again
-          </button>
-        ) : undefined,
+        action: canRetry ? {
+          label: 'Try Again',
+          onClick: retry
+        } : undefined,
       });
     }
 

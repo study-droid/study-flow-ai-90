@@ -367,6 +367,29 @@ All colors use HSL format for maximum flexibility and theming support
     50% { transform: translateY(-10px); }
   }
 
+  /* Enhanced shadow utilities */
+  .shadow-3xl {
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 
+                0 0 0 1px rgba(255, 255, 255, 0.1);
+  }
+
+  /* Smooth bounce animation for sparkles */
+  @keyframes gentle-bounce {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-4px) rotate(180deg); }
+  }
+
+  .animate-gentle-bounce {
+    animation: gentle-bounce 2s ease-in-out infinite;
+  }
+
+  /* Glass morphism effect */
+  .glass-effect {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
   @keyframes pulse-glow {
     0%, 100% { 
       box-shadow: 0 0 20px hsl(var(--primary) / 0.3);
@@ -1056,6 +1079,51 @@ All colors use HSL format for maximum flexibility and theming support
       -webkit-overflow-scrolling: touch;
       scroll-behavior: smooth;
     }
+
+    /* Mobile-specific optimizations */
+    .mobile-optimized {
+      /* Prevent pull-to-refresh on mobile browsers */
+      overscroll-behavior: none;
+      /* Optimize rendering */
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .touch-device {
+      /* Optimize for touch interactions */
+      touch-action: manipulation;
+    }
+
+    .touch-device * {
+      /* Remove tap highlight on touch devices */
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Safe area support */
+    .mobile-ai-tutor-page {
+      padding-top: env(safe-area-inset-top);
+      padding-bottom: env(safe-area-inset-bottom);
+      padding-left: env(safe-area-inset-left);
+      padding-right: env(safe-area-inset-right);
+    }
+
+    /* Dynamic viewport height support */
+    .mobile-layout {
+      height: calc(var(--vh, 1vh) * 100);
+    }
+
+    /* Gesture support */
+    .swipe-area {
+      touch-action: pan-x pan-y;
+    }
+
+    /* Performance optimizations */
+    .mobile-optimized * {
+      /* Enable hardware acceleration for smoother animations */
+      -webkit-transform: translateZ(0);
+      transform: translateZ(0);
+    }
+    }
   }
 
   /* Tablet-specific adjustments */
@@ -1163,4 +1231,382 @@ All colors use HSL format for maximum flexibility and theming support
     background: var(--gradient-premium);
   }
 
+  /* Professional shadow utilities */
+  .shadow-inner-soft {
+    box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
+  }
+
+  .shadow-professional {
+    box-shadow: 
+      0 10px 25px -3px rgba(0, 0, 0, 0.1),
+      0 4px 6px -2px rgba(0, 0, 0, 0.05),
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
+  }
+
+  /* Grey gradient utilities */
+  .bg-gradient-grey-light {
+    background: linear-gradient(135deg, 
+      rgb(248, 250, 252) 0%, 
+      rgb(241, 245, 249) 50%, 
+      rgb(226, 232, 240) 100%);
+  }
+
+  .bg-gradient-grey-dark {
+    background: linear-gradient(135deg, 
+      rgb(30, 41, 59) 0%, 
+      rgb(51, 65, 85) 50%, 
+      rgb(71, 85, 105) 100%);
+  }
+
+  /* Static button base */
+  .btn-static {
+    transform: none !important;
+    animation: none !important;
+    transition: background-color 0.2s ease, 
+                border-color 0.2s ease, 
+                box-shadow 0.2s ease;
+  }
+
+  /* Enhanced image rendering */
+  .image-crisp {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+  }
+
+  .image-smooth {
+    image-rendering: auto;
+    image-rendering: smooth;
+  }
+
+  /* Prevent image distortion */
+  .aspect-square {
+    aspect-ratio: 1 / 1;
+  }
+
+  /* Perfect centering utility */
+  .center-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+/* ====
+======================================================================== */
+/* Mobile Responsiveness and Touch Optimization Enhancements                   */
+/* ============================================================================ */
+
+/* Enhanced mobile breakpoints */
+@media (max-width: 480px) {
+  /* Extra small mobile devices */
+  .mobile-ai-tutor-page {
+    font-size: 14px;
+  }
+
+  /* Smaller touch targets for very small screens */
+  button, [role="button"] {
+    min-height: 40px;
+    min-width: 40px;
+  }
+}
+
+@media (max-width: 320px) {
+  /* Very small mobile devices */
+  .mobile-ai-tutor-page {
+    font-size: 13px;
+  }
+
+  button, [role="button"] {
+    min-height: 36px;
+    min-width: 36px;
+  }
+}
+
+/* Landscape mobile optimization */
+@media (max-width: 768px) and (orientation: landscape) {
+  .mobile-ai-tutor-page {
+    /* Optimize for landscape keyboard */
+    --keyboard-height: 40vh;
+  }
+
+  .keyboard-visible {
+    height: calc(100vh - var(--keyboard-height, 0px));
+  }
+}
+
+/* High DPI mobile displays */
+@media (max-width: 768px) and (-webkit-min-device-pixel-ratio: 2) {
+  .mobile-ai-tutor-page {
+    /* Sharper text on high DPI mobile screens */
+    -webkit-font-smoothing: subpixel-antialiased;
+  }
+}
+
+/* Touch-specific interactions */
+@media (pointer: coarse) {
+  /* Larger touch targets for finger navigation */
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+    padding: 8px;
+  }
+
+  /* Enhanced touch feedback */
+  .touch-feedback:active {
+    transform: scale(0.95);
+    transition: transform 0.1s ease-out;
+  }
+
+  /* Better spacing for touch navigation */
+  .touch-nav {
+    gap: 12px;
+  }
+}
+
+/* Hover capability detection */
+@media (hover: none) {
+  /* Remove hover states on touch devices */
+  .hover-only {
+    display: none;
+  }
+
+  /* Always show interactive elements on touch devices */
+  .touch-always-visible {
+    opacity: 1 !important;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .mobile-ai-tutor-page * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .reduced-motion .thinking-dots-animated,
+  .reduced-motion .progress-shimmer,
+  .reduced-motion .bounce-animation {
+    animation: none !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .mobile-ai-tutor-page {
+    /* Enhanced contrast for better visibility */
+    --border-width: 2px;
+  }
+
+  .mobile-ai-tutor-page button,
+  .mobile-ai-tutor-page [role="button"] {
+    border-width: var(--border-width);
+  }
+}
+
+/* Dark mode mobile optimizations */
+@media (prefers-color-scheme: dark) and (max-width: 768px) {
+  .mobile-ai-tutor-page {
+    /* Darker background for better battery life on OLED screens */
+    background-color: #000000;
+  }
+
+  /* Reduce blue light for better night viewing */
+  .mobile-ai-tutor-page .text-blue-500 {
+    color: #60a5fa;
+  }
+
+  .mobile-ai-tutor-page .text-blue-600 {
+    color: #3b82f6;
+  }
+}
+
+/* Keyboard navigation support */
+.mobile-ai-tutor-page:focus-within {
+  /* Enhanced focus management */
+  outline: none;
+}
+
+.mobile-ai-tutor-page *:focus-visible {
+  /* Clear focus indicators */
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Performance optimizations */
+.mobile-ai-tutor-page {
+  /* Enable GPU acceleration */
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+.mobile-ai-tutor-page .animate-in,
+.mobile-ai-tutor-page .animate-out {
+  /* Optimize animations for mobile */
+  will-change: transform, opacity;
+}
+
+/* Gesture feedback */
+.gesture-feedback {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.gesture-feedback.show {
+  opacity: 1;
+}
+
+/* Haptic feedback classes */
+.haptic-light:active {
+  /* Visual feedback for light haptic */
+  filter: brightness(0.95);
+}
+
+.haptic-medium:active {
+  /* Visual feedback for medium haptic */
+  filter: brightness(0.9);
+  transform: scale(0.98);
+}
+
+.haptic-heavy:active {
+  /* Visual feedback for heavy haptic */
+  filter: brightness(0.85);
+  transform: scale(0.95);
+}
+
+/* Swipe gesture indicators */
+.swipe-hint {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 12px;
+  color: rgb(59, 130, 246);
+  z-index: 1000;
+  animation: swipe-hint-fade 3s ease-out forwards;
+}
+
+@keyframes swipe-hint-fade {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.9);
+  }
+  20% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  80% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.9);
+  }
+}
+
+/* Pull-to-refresh styling */
+.pull-to-refresh {
+  position: relative;
+  overflow: hidden;
+}
+
+.pull-to-refresh-indicator {
+  position: absolute;
+  top: -60px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.pull-to-refresh-indicator.active {
+  transform: translateX(-50%) translateY(80px);
+}
+
+.pull-to-refresh-spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #e5e7eb;
+  border-top: 2px solid #3b82f6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Virtual keyboard adjustments */
+.keyboard-visible .mobile-ai-tutor-page {
+  /* Adjust layout when virtual keyboard is visible */
+  height: calc(100vh - var(--keyboard-height, 0px));
+  transition: height 0.3s ease;
+}
+
+/* iOS Safari specific fixes */
+@supports (-webkit-touch-callout: none) {
+  .mobile-ai-tutor-page {
+    /* Fix for iOS Safari viewport issues */
+    min-height: -webkit-fill-available;
+  }
+
+  /* Prevent zoom on input focus */
+  input, textarea, select {
+    font-size: 16px !important;
+  }
+}
+
+/* Android Chrome specific fixes */
+@media screen and (max-width: 768px) {
+  .mobile-ai-tutor-page {
+    /* Fix for Android Chrome address bar */
+    height: calc(100vh - env(keyboard-inset-height, 0px));
+  }
+}
+
+/* Accessibility enhancements for mobile */
+@media (max-width: 768px) {
+  /* Larger text for better readability */
+  .accessibility-enhanced {
+    font-size: 16px;
+    line-height: 1.5;
+  }
+
+  /* Better color contrast */
+  .accessibility-enhanced .text-muted-foreground {
+    color: hsl(var(--foreground) / 0.8);
+  }
+
+  /* Larger interactive elements */
+  .accessibility-enhanced button,
+  .accessibility-enhanced [role="button"] {
+    min-height: 48px;
+    min-width: 48px;
+    font-size: 16px;
+  }
 }

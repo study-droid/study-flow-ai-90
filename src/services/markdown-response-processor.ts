@@ -435,7 +435,7 @@ export class MarkdownResponseProcessor {
     const textContent = content
       .replace(/```[\s\S]*?```/g, '') // Remove code blocks
       .replace(/`[^`]+`/g, '') // Remove inline code
-      .replace(/[#*_~`\[\]()]/g, '') // Remove markdown syntax
+      .replace(/[#*_~`[\]()]/g, '') // Remove markdown syntax
       .trim();
 
     return textContent.split(/\s+/).filter(word => word.length > 0).length;
@@ -465,7 +465,7 @@ export class MarkdownResponseProcessor {
   }
 
   private static hasMarkdownElements(content: string): boolean {
-    return /[#*_`\[\]|]/.test(content);
+    return /[#*_`[\]|]/.test(content);
   }
 
   private static hasIncompleteIndicators(content: string): boolean {

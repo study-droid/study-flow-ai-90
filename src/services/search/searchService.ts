@@ -177,7 +177,7 @@ class SearchService {
         .select('*');
       
       if (subjectsError) {
-        
+        console.error('Error fetching subjects for search index:', subjectsError);
       }
       
       if (subjects) {
@@ -203,7 +203,7 @@ class SearchService {
         .select('*');
       
       if (assignmentsError) {
-        
+        console.error('Error fetching assignments for search index:', assignmentsError);
       }
       
       if (assignments) {
@@ -230,7 +230,7 @@ class SearchService {
         .select('*');
       
       if (flashcardsError) {
-        
+        console.error('Error fetching flashcards for search index:', flashcardsError);
       }
       
       if (flashcards) {

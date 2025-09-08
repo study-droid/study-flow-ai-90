@@ -13,7 +13,8 @@ describe('utils', () => {
     });
 
     it('should handle conditional classes', () => {
-      expect(cn('class1', false && 'class2', 'class3')).toBe('class1 class3');
+      const condition = false;
+      expect(cn('class1', condition && 'class2', 'class3')).toBe('class1 class3');
     });
 
     it('should merge Tailwind classes correctly', () => {
@@ -34,11 +35,12 @@ describe('utils', () => {
     });
 
     it('should handle mixed input types', () => {
+      const showHidden = false;
       expect(cn(
         'base-class',
         { 'conditional-class': true },
         ['array-class-1', 'array-class-2'],
-        false && 'hidden-class',
+        showHidden && 'hidden-class',
         'final-class'
       )).toBe('base-class conditional-class array-class-1 array-class-2 final-class');
     });

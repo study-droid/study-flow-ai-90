@@ -240,7 +240,7 @@ export const useAchievements = () => {
           completed = progress >= template.maxProgress;
           break;
           
-        case 'pomodoro-master':
+        case 'pomodoro-master': {
           // Count actual Pomodoro sessions from focus timer (25-minute sessions)
           const pomodoroFocusSessions = focusSessions.filter(s => s?.duration_minutes === 25).length;
           // Also count study sessions that are 25 minutes (classic Pomodoro)
@@ -248,6 +248,7 @@ export const useAchievements = () => {
           progress = Math.max(pomodoroFocusSessions, pomodoroStudySessions);
           completed = progress >= template.maxProgress;
           break;
+        }
           
         case 'early-bird':
           // Count sessions started before 7 AM
@@ -267,12 +268,13 @@ export const useAchievements = () => {
           completed = progress >= template.maxProgress;
           break;
           
-        case 'marathon-session':
+        case 'marathon-session': {
           // Find longest session in hours
           const longestSession = Math.max(...sessions.map(s => s.duration / 60), 0);
           progress = Math.min(longestSession, template.maxProgress);
           completed = progress >= template.maxProgress;
           break;
+        }
           
         case 'task-master':
           progress = completedTasks.length;
@@ -349,7 +351,7 @@ export const useAchievements = () => {
 
     let streak = 0;
     const today = new Date();
-    let currentDate = new Date(today);
+    const currentDate = new Date(today);
     currentDate.setHours(0, 0, 0, 0);
 
     // Check consecutive days with completed tasks
@@ -388,7 +390,7 @@ export const useAchievements = () => {
 
     let streak = 0;
     const today = new Date();
-    let currentDate = new Date(today);
+    const currentDate = new Date(today);
     currentDate.setHours(0, 0, 0, 0);
 
     // Check consecutive days with Pomodoro sessions
@@ -423,7 +425,7 @@ export const useAchievements = () => {
 
     let streak = 0;
     const today = new Date();
-    let currentDate = new Date(today);
+    const currentDate = new Date(today);
     currentDate.setHours(0, 0, 0, 0);
 
     // Check consecutive days with early morning sessions

@@ -147,9 +147,8 @@ class PerformanceMonitorService {
    */
   private interceptSupabaseQueries() {
     const originalFrom = supabase.from;
-    const self = this;
     
-    // @ts-ignore - Intercepting for monitoring
+    // @ts-expect-error - Intercepting for monitoring purposes
     supabase.from = function(...args: unknown[]) {
       const startTime = performance.now();
       const result = originalFrom.apply(this, args);

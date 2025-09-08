@@ -30,7 +30,7 @@ export function useCalendarSync() {
         .not('due_date', 'is', null);
       
       if (tasksError) {
-        
+        console.error('Error fetching tasks for calendar sync:', tasksError);
       }
 
       if (tasks) {
@@ -52,7 +52,7 @@ export function useCalendarSync() {
         .eq('user_id', user.id);
       
       if (assignmentsError) {
-        
+        console.error('Error fetching assignments for calendar sync:', assignmentsError);
       }
 
       if (assignments) {
@@ -90,7 +90,7 @@ export function useCalendarSync() {
         .eq('user_id', user.id);
       
       if (quizzesError) {
-        
+        console.error('Error fetching quizzes for calendar sync:', quizzesError);
       }
 
       if (quizzes) {
@@ -113,7 +113,7 @@ export function useCalendarSync() {
         .is('deadline', 'not.null'); // Correct Supabase syntax for NOT NULL
       
       if (goalsError) {
-        
+        console.error('Error fetching goals for calendar sync:', goalsError);
       }
 
       if (goals) {
@@ -135,7 +135,7 @@ export function useCalendarSync() {
         .eq('user_id', user.id);
       
       if (flashcardError) {
-        
+        console.error('Error fetching flashcard sessions for calendar sync:', flashcardError);
       }
 
       if (flashcardSessions) {
@@ -157,7 +157,7 @@ export function useCalendarSync() {
         .eq('user_id', user.id);
       
       if (examsError) {
-        
+        console.error('Error fetching exams for calendar sync:', examsError);
       }
 
       if (exams) {

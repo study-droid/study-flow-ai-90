@@ -25,7 +25,7 @@ export async function debugAIService() {
           logger.error(`❌ Table ${table}:`, error.message, 'AiDebug');
           return { step: 'database', error: `Table ${table} error: ${error.message}` };
         } else {
-          
+          logger.info(`✅ Table ${table}: ${data?.length || 0} records`, 'AiDebug');
         }
       } catch (e) {
         logger.error(`❌ Table ${table}:`, e, 'AiDebug');

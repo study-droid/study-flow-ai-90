@@ -7,7 +7,7 @@ import { Brain, ChevronDown, ChevronUp, Eye, EyeOff, Sparkles, Zap, Lightbulb } 
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
-import { cn } from '@/shared/utils';
+import { cn } from '@/lib/utils';
 import { aiFactsService } from '../services/ai-facts.service';
 import type { AIFact } from '../types';
 
@@ -99,6 +99,7 @@ export function AIThinkingBubble({
     return () => clearInterval(interval);
   }, []);
 
+  // Early return prevents rendering when not visible
   if (!isVisible) return null;
 
   const StageIcon = stageIcons[stage];

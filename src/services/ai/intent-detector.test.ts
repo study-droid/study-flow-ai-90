@@ -31,7 +31,7 @@ function testIntentDetection() {
   console.log('========================');
 
   let passed = 0;
-  let total = testCases.length;
+  const total = testCases.length;
 
   testCases.forEach((testCase, index) => {
     const result = IntentDetector.detectIntent(testCase.input);

@@ -212,7 +212,7 @@ export class ResponseAnalytics {
     const { eventType, metadata } = event;
 
     switch (eventType) {
-      case 'response_generated':
+      case 'response_generated': {
         this.metrics.totalResponses++;
         
         // Update response type distribution
@@ -233,6 +233,7 @@ export class ResponseAnalytics {
         const hour = new Date().getHours();
         this.metrics.peakUsageHours[hour]++;
         break;
+      }
 
       case 'response_filtered':
         if (metadata.brandMentionsRemoved) {

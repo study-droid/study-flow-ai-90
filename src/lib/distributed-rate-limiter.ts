@@ -192,38 +192,17 @@ export class DistributedRateLimiter {
   }
   
   /**
-   * React hook for rate limiting
+   * Get rate limit status
    */
-  static useRateLimit(config?: RateLimitConfig) {
-    const [status, setStatus] = React.useState<RateLimitResult>({
-      allowed: true,
-      limit: this.DEFAULT_MAX_REQUESTS,
-      remaining: this.DEFAULT_MAX_REQUESTS,
-      resetAt: null,
-      retryAfter: 0
-    });
-    
-    const checkLimit = React.useCallback(async () => {
-      const result = await this.checkLimit(config);
-      setStatus(result);
-      return result;
-    }, [config]);
-    
-    const getStatus = React.useCallback(async () => {
-      const result = await this.getStatus(config);
-      setStatus(result);
-      return result;
-    }, [config]);
-    
-    React.useEffect(() => {
-      getStatus();
-    }, [getStatus]);
-    
-    return {
-      ...status,
-      checkLimit,
-      getStatus
-    };
+  static async getRateLimitStatus(config?: RateLimitConfig): Promise<RateLimitResult> {
+    return await this.getStatus(config);
+  }
+  
+  /**
+   * Check and update rate limit
+   */
+  static async checkRateLimit(config?: RateLimitConfig): Promise<RateLimitResult> {
+    return await this.checkLimit(config);
   }
   
   /**

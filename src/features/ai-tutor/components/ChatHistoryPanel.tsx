@@ -19,7 +19,7 @@ import {
   Check,
   X as XIcon
 } from 'lucide-react';
-import { cn } from '@/shared/utils';
+import { cn } from '@/lib/utils';
 import { formatDistanceToNow } from 'date-fns';
 import type { ChatSession } from '../types';
 

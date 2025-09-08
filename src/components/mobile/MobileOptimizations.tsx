@@ -1,5 +1,6 @@
 import React from 'react';
 import { cn } from '@/lib/utils';
+import { useViewport, useDeviceCapabilities, useKeyboardHeight } from './mobile-hooks';
 
 interface MobileOptimizedCardProps {
   children: React.ReactNode;
@@ -306,5 +307,360 @@ export const ResponsiveGrid: React.FC<ResponsiveGridProps> = ({
   );
 };
 
-// Mobile-specific breakpoint hook
-// Hooks moved to './mobile-hooks'
+// Enhanced mobile gesture support
+interface EnhancedSwipeCardProps {
+  children: React.ReactNode;
+  onSwipeLeft?: () => void;
+  onSwipeRight?: () => void;
+  onSwipeUp?: () => void;
+  onSwipeDown?: () => void;
+  onTap?: () => void;
+  onLongPress?: () => void;
+  className?: string;
+  disabled?: boolean;
+  swipeThreshold?: number;
+  longPressDelay?: number;
+}
+
+export const EnhancedSwipeCard: React.FC<EnhancedSwipeCardProps> = ({
+  children,
+  onSwipeLeft,
+  onSwipeRight,
+  onSwipeUp,
+  onSwipeDown,
+  onTap,
+  onLongPress,
+  className,
+  disabled = false,
+  swipeThreshold = 50,
+  longPressDelay = 500
+}) => {
+  const [touchStart, setTouchStart] = React.useState<{ x: number; y: number; time: number } | null>(null);
+  const [touchEnd, setTouchEnd] = React.useState<{ x: number; y: number } | null>(null);
+  const [isLongPressing, setIsLongPressing] = React.useState(false);
+  const longPressTimer = React.useRef<NodeJS.Timeout>();
+  const { supportsVibration } = useDeviceCapabilities();
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (disabled) return;
+    
+    const touch = e.touches[0];
+    setTouchEnd(null);
+    setTouchStart({ 
+      x: touch.clientX, 
+      y: touch.clientY, 
+      time: Date.now() 
+    });
+
+    // Start long press timer
+    if (onLongPress) {
+      longPressTimer.current = setTimeout(() => {
+        setIsLongPressing(true);
+        if (supportsVibration) {
+          navigator.vibrate(50); // Haptic feedback
+        }
+        onLongPress();
+      }, longPressDelay);
+    }
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (disabled) return;
+    
+    const touch = e.touches[0];
+    setTouchEnd({ x: touch.clientX, y: touch.clientY });
+
+    // Cancel long press if finger moves too much
+    if (touchStart && longPressTimer.current) {
+      const deltaX = Math.abs(touch.clientX - touchStart.x);
+      const deltaY = Math.abs(touch.clientY - touchStart.y);
+      
+      if (deltaX > 10 || deltaY > 10) {
+        clearTimeout(longPressTimer.current);
+        setIsLongPressing(false);
+      }
+    }
+  };
+
+  const handleTouchEnd = () => {
+    if (disabled) return;
+    
+    // Clear long press timer
+    if (longPressTimer.current) {
+      clearTimeout(longPressTimer.current);
+    }
+
+    if (!touchStart || !touchEnd || isLongPressing) {
+      setIsLongPressing(false);
+      return;
+    }
+
+    const deltaX = touchStart.x - touchEnd.x;
+    const deltaY = touchStart.y - touchEnd.y;
+    const deltaTime = Date.now() - touchStart.time;
+
+    // Check for tap (quick touch with minimal movement)
+    if (Math.abs(deltaX) < 10 && Math.abs(deltaY) < 10 && deltaTime < 200 && onTap) {
+      onTap();
+      return;
+    }
+
+    // Determine swipe direction
+    if (Math.abs(deltaX) > Math.abs(deltaY)) {
+      // Horizontal swipe
+      if (Math.abs(deltaX) > swipeThreshold) {
+        if (deltaX > 0 && onSwipeLeft) {
+          onSwipeLeft();
+        } else if (deltaX < 0 && onSwipeRight) {
+          onSwipeRight();
+        }
+      }
+    } else {
+      // Vertical swipe
+      if (Math.abs(deltaY) > swipeThreshold) {
+        if (deltaY > 0 && onSwipeUp) {
+          onSwipeUp();
+        } else if (deltaY < 0 && onSwipeDown) {
+          onSwipeDown();
+        }
+      }
+    }
+
+    setIsLongPressing(false);
+  };
+
+  return (
+    <div
+      className={cn(
+        "touch-manipulation select-none",
+        disabled && "pointer-events-none opacity-50",
+        className
+      )}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+    >
+      {children}
+    </div>
+  );
+};
+
+// Adaptive layout component that adjusts based on screen size and orientation
+interface AdaptiveLayoutProps {
+  children: React.ReactNode;
+  mobileLayout?: React.ReactNode;
+  tabletLayout?: React.ReactNode;
+  desktopLayout?: React.ReactNode;
+  className?: string;
+}
+
+export const AdaptiveLayout: React.FC<AdaptiveLayoutProps> = ({
+  children,
+  mobileLayout,
+  tabletLayout,
+  desktopLayout,
+  className
+}) => {
+  const { isMobile, isTablet, isDesktop } = useViewport();
+
+  const renderContent = () => {
+    if (isMobile && mobileLayout) return mobileLayout;
+    if (isTablet && tabletLayout) return tabletLayout;
+    if (isDesktop && desktopLayout) return desktopLayout;
+    return children;
+  };
+
+  return (
+    <div className={cn("adaptive-layout", className)}>
+      {renderContent()}
+    </div>
+  );
+};
+
+// Virtual keyboard aware container
+interface KeyboardAwareContainerProps {
+  children: React.ReactNode;
+  className?: string;
+  adjustForKeyboard?: boolean;
+}
+
+export const KeyboardAwareContainer: React.FC<KeyboardAwareContainerProps> = ({
+  children,
+  className,
+  adjustForKeyboard = true
+}) => {
+  const { keyboardHeight, isKeyboardVisible } = useKeyboardHeight();
+
+  return (
+    <div
+      className={cn(
+        "keyboard-aware-container transition-all duration-300",
+        className
+      )}
+      style={{
+        paddingBottom: adjustForKeyboard && isKeyboardVisible ? `${keyboardHeight}px` : undefined,
+        transform: adjustForKeyboard && isKeyboardVisible ? `translateY(-${keyboardHeight / 4}px)` : undefined,
+      }}
+    >
+      {children}
+    </div>
+  );
+};
+
+// Enhanced touch feedback button with haptic support
+interface HapticButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  children: React.ReactNode;
+  variant?: 'primary' | 'secondary' | 'ghost' | 'destructive';
+  size?: 'sm' | 'md' | 'lg';
+  hapticFeedback?: boolean;
+  pressAnimation?: 'scale' | 'brightness' | 'both';
+}
+
+export const HapticButton: React.FC<HapticButtonProps> = ({
+  children,
+  className,
+  variant = 'primary',
+  size = 'md',
+  hapticFeedback = true,
+  pressAnimation = 'both',
+  onClick,
+  ...props
+}) => {
+  const { supportsVibration } = useDeviceCapabilities();
+
+  const variants = {
+    primary: "bg-primary text-primary-foreground hover:bg-primary/90",
+    secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+    ghost: "hover:bg-accent hover:text-accent-foreground",
+    destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90"
+  };
+
+  const sizes = {
+    sm: "h-9 px-3 text-sm min-h-[44px]",
+    md: "h-11 px-4 py-2 min-h-[44px]",
+    lg: "h-14 px-6 text-lg min-h-[44px]"
+  };
+
+  const animations = {
+    scale: "active:scale-95",
+    brightness: "active:brightness-95",
+    both: "active:scale-95 active:brightness-95"
+  };
+
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (hapticFeedback && supportsVibration) {
+      navigator.vibrate(25); // Light haptic feedback
+    }
+    onClick?.(e);
+  };
+
+  return (
+    <button
+      className={cn(
+        // Base styles
+        "inline-flex items-center justify-center rounded-md font-medium",
+        "ring-offset-background transition-all duration-150 ease-out",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+        "disabled:pointer-events-none disabled:opacity-50",
+        
+        // Mobile optimizations
+        "touch-manipulation",
+        animations[pressAnimation],
+        "min-w-[44px]", // Minimum touch target size
+        
+        // Variant and size
+        variants[variant],
+        sizes[size],
+        className
+      )}
+      onClick={handleClick}
+      {...props}
+    >
+      {children}
+    </button>
+  );
+};
+
+// Optimized scroll container for mobile
+interface MobileScrollContainerProps {
+  children: React.ReactNode;
+  className?: string;
+  enablePullToRefresh?: boolean;
+  onRefresh?: () => Promise<void>;
+  showScrollIndicator?: boolean;
+}
+
+export const MobileScrollContainer: React.FC<MobileScrollContainerProps> = ({
+  children,
+  className,
+  enablePullToRefresh = false,
+  onRefresh,
+  showScrollIndicator = true
+}) => {
+  const scrollRef = React.useRef<HTMLDivElement>(null);
+  const [showTopShadow, setShowTopShadow] = React.useState(false);
+  const [showBottomShadow, setShowBottomShadow] = React.useState(false);
+
+  const handleScroll = React.useCallback(() => {
+    if (!scrollRef.current) return;
+
+    const { scrollTop, scrollHeight, clientHeight } = scrollRef.current;
+    setShowTopShadow(scrollTop > 0);
+    setShowBottomShadow(scrollTop < scrollHeight - clientHeight - 1);
+  }, []);
+
+  React.useEffect(() => {
+    const scrollElement = scrollRef.current;
+    if (!scrollElement) return;
+
+    scrollElement.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll(); // Initial check
+
+    return () => {
+      scrollElement.removeEventListener('scroll', handleScroll);
+    };
+  }, [handleScroll]);
+
+  const content = enablePullToRefresh && onRefresh ? (
+    <PullToRefresh onRefresh={onRefresh}>
+      {children}
+    </PullToRefresh>
+  ) : children;
+
+  return (
+    <div className={cn("relative", className)}>
+      {/* Scroll shadows */}
+      {showScrollIndicator && (
+        <>
+          <div
+            className={cn(
+              "absolute top-0 left-0 right-0 h-4 bg-gradient-to-b from-background to-transparent z-10 pointer-events-none transition-opacity duration-200",
+              showTopShadow ? "opacity-100" : "opacity-0"
+            )}
+          />
+          <div
+            className={cn(
+              "absolute bottom-0 left-0 right-0 h-4 bg-gradient-to-t from-background to-transparent z-10 pointer-events-none transition-opacity duration-200",
+              showBottomShadow ? "opacity-100" : "opacity-0"
+            )}
+          />
+        </>
+      )}
+      
+      <div
+        ref={scrollRef}
+        className={cn(
+          "overflow-y-auto custom-scrollbar",
+          "-webkit-overflow-scrolling: touch", // iOS momentum scrolling
+          "scroll-behavior: smooth"
+        )}
+        style={{
+          WebkitOverflowScrolling: 'touch',
+          scrollBehavior: 'smooth'
+        }}
+      >
+        {content}
+      </div>
+    </div>
+  );
+};

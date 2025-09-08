@@ -10,11 +10,19 @@ import { cn } from '@/lib/utils';
 import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { motivationalWordsService } from '../services/motivational-words.service';
+import { AIThinkingBubble } from './AIThinkingBubble';
 import type { ChatMessage } from '../types';
 
 interface MessageBubbleProps {
   message: ChatMessage;
   isLoading?: boolean;
+  isThinking?: boolean;
+  thinkingState?: {
+    isVisible: boolean;
+    content: string;
+    stage: 'analyzing' | 'reasoning' | 'responding';
+  };
   onFeedback?: (messageId: string, type: 'helpful' | 'not_helpful') => void;
   className?: string;
 }
@@ -22,11 +30,34 @@ interface MessageBubbleProps {
 export function MessageBubble({ 
   message, 
   isLoading = false, 
+  isThinking = false,
+  thinkingState,
   onFeedback, 
   className 
 }: MessageBubbleProps) {
+  // Debug logging
+  console.log('MessageBubble render:', {
+    messageId: message.id,
+    role: message.role,
+    hasContent: !!message.content,
+    isLoading,
+    isThinking,
+    thinkingStateVisible: thinkingState?.isVisible
+  });
+
+  // Enhanced thinking bubble visibility logic
+  const shouldShowThinking = (
+    (isLoading || isThinking || thinkingState?.isVisible) && 
+    message.role === 'assistant' && 
+    !message.content
+  );
+
+  // State hooks
   const [copied, setCopied] = useState(false);
   const [feedbackGiven, setFeedbackGiven] = useState<'helpful' | 'not_helpful' | null>(null);
+  const [motivationalWord] = useState(() => 
+    motivationalWordsService.getWordForMessageRole(message.role)
+  );
 
   const handleCopy = async () => {
     if (!message.content) return;
@@ -116,11 +147,12 @@ export function MessageBubble({
         )}>
           {/* Content */}
           <div className="message-text">
-            {isLoading && !message.content ? (
-              <div className="flex items-center gap-2 text-muted-foreground">
-                <Loader2 className="w-4 h-4 animate-spin" />
-                <span>Preparing response...</span>
-              </div>
+            {shouldShowThinking ? (
+              <AIThinkingBubble
+                content={thinkingState?.content || 'Working on your request...'}
+                stage={thinkingState?.stage || 'analyzing'}
+                isVisible={true}
+              />
             ) : message.type === 'error' ? (
               <div className="text-destructive">
                 <p className="font-medium">Error occurred</p>
@@ -165,11 +197,9 @@ export function MessageBubble({
               })}
             </span>
 
-            {message.metadata?.tokens && (
-              <Badge variant="secondary" className="message-tokens">
-                {message.metadata.tokens} tokens
-              </Badge>
-            )}
+            <Badge variant="secondary" className="message-tokens">
+              {motivationalWord}
+            </Badge>
 
             {message.metadata?.model && (
               <Badge variant="outline" className="message-model">

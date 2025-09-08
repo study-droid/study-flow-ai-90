@@ -421,7 +421,7 @@ class TablePerformanceOptimizer {
     
     return (...args: Parameters<T>) => {
       clearTimeout(timeoutId);
-      timeoutId = setTimeout(() => func.apply(null, args), delay);
+      timeoutId = setTimeout(() => func(...args), delay);
     };
   }
   
@@ -438,7 +438,7 @@ class TablePerformanceOptimizer {
       const now = Date.now();
       if (now - lastCall >= delay) {
         lastCall = now;
-        func.apply(null, args);
+        func(...args);
       }
     };
   }

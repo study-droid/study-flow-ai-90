@@ -28,6 +28,7 @@ import {
   Timer,
 } from "lucide-react";
 import { AITutorAvatar } from "@/components/ai-tutor/AITutorAvatar";
+import { NavigationTest } from "@/components/debug/NavigationTest";
 import { ChatSheet } from "@/components/chat/ChatSheet";
 import { useNavigate } from "react-router-dom";
 import { startOfWeek, isWithinInterval, endOfWeek } from "date-fns";
@@ -205,6 +206,9 @@ export default function Index() {
 
           {/* Right Column - Calendar & Quick Actions - Responsive */}
           <div className="space-y-3 sm:space-y-4 lg:space-y-6">
+            
+            {/* Navigation Test - Temporary Debug Component */}
+            <NavigationTest />
             
             {/* Calendar Widget */}
             <CalendarWidget />

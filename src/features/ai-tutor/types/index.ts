@@ -32,6 +32,12 @@ export interface MessageMetadata {
   temperature?: number;
   reasoning?: string;
   sources?: string[];
+  fallback?: boolean;
+  originalError?: string;
+  recoveryUsed?: boolean;
+  processingTime?: number;
+  retryCount?: number;
+  queuePosition?: number;
 }
 
 export interface AITutorState {
@@ -61,6 +67,26 @@ export interface ThinkingState {
   factRotation?: AIFact[];
 }
 
+// Enhanced thinking state with contextual intelligence
+export interface EnhancedThinkingState {
+  isVisible: boolean;
+  content: string;
+  stage: 'analyzing' | 'reasoning' | 'responding';
+  progress: number;
+  contextualMessage: string;
+  estimatedDuration: number;
+  currentFact?: AIFact;
+  factRotation?: AIFact[];
+  messageType: 'question' | 'explanation' | 'problem-solving' | 'creative' | 'factual' | 'conversational';
+  complexity: 'simple' | 'moderate' | 'complex' | 'advanced';
+  animations: {
+    primaryAnimation: string;
+    particleCount: number;
+    pulseIntensity: number;
+    colorScheme: string;
+  };
+}
+
 export interface AIFact {
   id: string;
   category: 'analyzing' | 'reasoning' | 'responding' | 'general';
@@ -76,6 +102,12 @@ export interface DeepSeekResponse {
     model: string;
     tokens: number;
     temperature: number;
+    fallback?: boolean;
+    originalError?: string;
+    recoveryUsed?: boolean;
+    processingTime?: number;
+    retryCount?: number;
+    queuePosition?: number;
   };
 }
 
@@ -86,7 +118,10 @@ export type ChatEventType =
   | 'thinking_start'
   | 'thinking_delta'
   | 'thinking_stop'
-  | 'error';
+  | 'error'
+  | 'queue_status'
+  | 'processing_start'
+  | 'retry_attempt';
 
 export interface ChatEvent {
   type: ChatEventType;

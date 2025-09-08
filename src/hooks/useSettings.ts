@@ -183,7 +183,7 @@ export const useSettings = () => {
           if (result.error) {
             logger.warn(`Failed to delete from ${tableName}:`, result.error.message, 'UseSettings');
           } else {
-            
+            logger.info(`Successfully deleted ${result.count || 0} records from ${tableName}`, 'UseSettings');
           }
         } catch (err) {
           logger.warn(`Table ${tableName} might not exist:`, err, 'UseSettings');
@@ -215,7 +215,7 @@ export const useSettings = () => {
       if (userSettingsDeleteResult.error) {
         logger.warn('Could not delete user_settings:', userSettingsDeleteResult.error, 'UseSettings');
       } else {
-        
+        logger.info('Successfully deleted user settings', 'UseSettings');
       }
 
       // Delete the profile completely to ensure complete reset
@@ -234,7 +234,7 @@ export const useSettings = () => {
       if (profileDeleteResult.error) {
         logger.error('Profile deletion error:', profileDeleteResult.error, 'UseSettings');
       } else {
-        
+        logger.info('Successfully deleted profile', 'UseSettings');
       }
 
       // Clear the settings state since everything has been deleted
