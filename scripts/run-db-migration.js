@@ -8,15 +8,22 @@ const { Client } = pg;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Database configuration
+// Database configuration from environment variables
 const DB_CONFIG = {
-  host: 'aws-0-us-east-1.pooler.supabase.com',
-  port: 5432,
-  database: 'postgres',
-  user: 'postgres.uuebhjidsaswvuexdcbb',
-  password: 'bLsjb7JoIM2u0hX5',
+  host: process.env.DB_HOST || 'aws-0-us-east-1.pooler.supabase.com',
+  port: process.env.DB_PORT || 5432,
+  database: process.env.DB_NAME || 'postgres',
+  user: process.env.DB_USER || 'postgres.uuebhjidsaswvuexdcbb',
+  password: process.env.DB_PASSWORD,
   ssl: { rejectUnauthorized: false }
 };
+
+// Validate required environment variables
+if (!DB_CONFIG.password) {
+  console.error('❌ Error: DB_PASSWORD environment variable is required');
+  console.log('Please set DB_PASSWORD before running this script');
+  process.exit(1);
+}
 
 // Read migration file
 const migrationPath = path.join(__dirname, '..', 'supabase', 'migrations', 'fix_profiles_user_id.sql');
