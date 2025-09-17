@@ -68,7 +68,7 @@ export const Header = ({ children, onMenuClick }: HeaderProps) => {
             <Menu className="h-5 w-5" />
           </Button>
           
-          <div className="font-semibold">StudyPal</div>
+          <div className="font-semibold">Study Teddy 🧸</div>
         </div>
 
         <div className="flex items-center gap-2">
