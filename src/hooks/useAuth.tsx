@@ -2,10 +2,10 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { getErrorMessage } from '@/types/errors';
-import { ambientAudioService } from '@/services/ambientAudioService';
-import { authRateLimiter } from '@/lib/rate-limiter';
-import { SecureLogger } from '@/lib/secure-logger';
+
+// import { ambientAudioService } from '@/services/ambientAudioService';
+// import { authRateLimiter } from '@/lib/rate-limiter';
+// import { SecureLogger } from '@/lib/secure-logger';
 
 interface AuthContextType {
   user: User | null;
@@ -32,7 +32,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
+      (_event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
         setLoading(false);
@@ -176,14 +176,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         });
       }
 
-      return { error };
+      return { error: error?.message };
     } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'An unexpected error occurred';
       toast({
         title: "Sign up failed",
-        description: "An unexpected error occurred",
+        description: message,
         variant: "destructive",
       });
-      return { error };
+      return { error: message };
     }
   };
 

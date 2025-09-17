@@ -1,4 +1,4 @@
-import type { TableConfig, TableRow, TableColumn } from '@/types/table-types';
+import type { TableConfig, TableRow } from '@/types/table-types';
 
 type Template = {
   id: string;
@@ -7,7 +7,7 @@ type Template = {
   config: TableConfig;
 };
 
-function makeRows(columns: TableColumn[], rows: Array<Record<string, any>>): TableRow[] {
+function makeRows(rows: Array<Record<string, any>>): TableRow[] {
   return rows.map((r, idx) => ({ id: idx, data: r, selected: false }));
 }
 
@@ -25,9 +25,7 @@ export const TABLE_TEMPLATES: Template[] = [
         { id: 'goal', key: 'goal', title: 'Goal', dataType: 'string', sortable: false, filterable: true, visible: true, align: 'left' },
         { id: 'status', key: 'status', title: 'Status', dataType: 'string', sortable: true, filterable: true, visible: true, align: 'left' },
       ],
-      data: makeRows(
-        [],
-        [
+      data: makeRows([
           { day: 'Mon', subject: 'Math', topic: 'Algebra', duration: 60, goal: 'Practice equations', status: 'Planned' },
           { day: 'Tue', subject: 'Physics', topic: 'Kinematics', duration: 45, goal: 'Read chapter 3', status: 'Planned' },
           { day: 'Wed', subject: 'History', topic: 'Revolution', duration: 40, goal: 'Summarize notes', status: 'Planned' },
@@ -54,10 +52,8 @@ export const TABLE_TEMPLATES: Template[] = [
         { id: 'priority', key: 'priority', title: 'Priority', dataType: 'string', sortable: true, filterable: true, visible: true, align: 'left' },
         { id: 'complete', key: 'complete', title: 'Complete', dataType: 'boolean', sortable: true, filterable: true, visible: true, align: 'left' },
       ],
-      data: makeRows(
-        [],
-        [
-          { title: 'Essay draft', subject: 'English', due: '2025-09-10', priority: 'High', complete: false },
+      data: makeRows([
+        { title: 'Essay draft', subject: 'English', due: '2025-09-10', priority: 'High', complete: false },
           { title: 'Lab report', subject: 'Chemistry', due: '2025-09-12', priority: 'Medium', complete: false },
           { title: 'Problem set', subject: 'Math', due: '2025-09-14', priority: 'High', complete: true },
         ]
@@ -83,10 +79,8 @@ export const TABLE_TEMPLATES: Template[] = [
         { id: 'progress', key: 'progress', title: 'Progress %', dataType: 'number', sortable: true, filterable: true, visible: true, align: 'right' },
         { id: 'notes', key: 'notes', title: 'Notes', dataType: 'string', sortable: false, filterable: true, visible: true, align: 'left' },
       ],
-      data: makeRows(
-        [],
-        [
-          { title: 'Atomic Habits', author: 'James Clear', pages: 280, progress: 25, notes: 'Great intro.' },
+      data: makeRows([
+        { title: 'Atomic Habits', author: 'James Clear', pages: 280, progress: 25, notes: 'Great intro.' },
           { title: 'Deep Work', author: 'Cal Newport', pages: 296, progress: 60, notes: 'Focus rituals.' },
           { title: 'Sapiens', author: 'Yuval N. Harari', pages: 498, progress: 10, notes: 'Big picture history.' },
         ]

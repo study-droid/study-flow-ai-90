@@ -18,7 +18,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from "@/hooks/useAuth";
 import { Sidebar } from './Sidebar';
-import { EnhancedChatSheet } from '@/components/chat/EnhancedChatSheet';
+
 
 interface HeaderProps {
   children?: React.ReactNode;
@@ -28,7 +28,7 @@ interface HeaderProps {
 export const Header = ({ children, onMenuClick }: HeaderProps) => {
   const { user, signOut } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isChatOpen, setIsChatOpen] = useState(false);
+  
   
   // Theme management simplified - always default to light theme
   const [isDark, setIsDark] = useState(() => {
@@ -79,7 +79,7 @@ export const Header = ({ children, onMenuClick }: HeaderProps) => {
           <Button 
             variant="ghost" 
             size="sm"
-            onClick={() => setIsChatOpen(true)}
+            disabled
           >
             <MessageSquare className="h-4 w-4" />
             <Badge variant="secondary" className="ml-1 text-xs">AI</Badge>
@@ -148,10 +148,7 @@ export const Header = ({ children, onMenuClick }: HeaderProps) => {
 
       {children}
 
-      <EnhancedChatSheet 
-        isOpen={isChatOpen} 
-        onOpenChange={setIsChatOpen}
-      />
+      {/* Chat functionality disabled for now */}
     </header>
   );
 };
