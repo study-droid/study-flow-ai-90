@@ -62,8 +62,14 @@ const queryClient = new QueryClient({
 const handleGlobalError = (error: Error, errorInfo: React.ErrorInfo) => {
   // Report to error monitoring service
   errorMonitoring.reportError(error, 'react-component', {
-    context: { feature: 'app-root' },
-    metadata: { componentStack: errorInfo.componentStack }
+    context: { 
+      source: 'react-component' as const,
+      feature: 'app-root',
+      url: window.location.href,
+      userAgent: navigator.userAgent,
+      viewport: `${window.innerWidth}x${window.innerHeight}`
+    },
+    metadata: { componentStack: errorInfo.componentStack || '' }
   });
 };
 

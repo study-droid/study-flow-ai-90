@@ -1,4 +1,4 @@
-import React, { Component, ErrorInfo, ReactNode } from 'react';
+import { Component, ErrorInfo, ReactNode } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { AlertTriangle, RefreshCcw, Home } from 'lucide-react';
@@ -27,7 +27,7 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    logger.error('ErrorBoundary caught an error:', error, errorInfo, 'ErrorBoundary');
+    logger.error('ErrorBoundary caught an error:', 'ErrorBoundary', { error: error.message, stack: error.stack });
     this.setState({
       error,
       errorInfo

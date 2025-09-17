@@ -2,7 +2,7 @@
  * Accessibility Provider - Manages accessibility settings and context
  */
 
-import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
 
 interface AccessibilitySettings {

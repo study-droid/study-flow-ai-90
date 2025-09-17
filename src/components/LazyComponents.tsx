@@ -40,19 +40,19 @@ export const LazyFlashcards = lazy(() =>
 
 export const LazyPerformance = lazy(() => 
   import('@/pages/Performance').then(module => ({
-    default: module.default
+    default: module.Performance
   }))
 );
 
 export const LazyAchievements = lazy(() => 
   import('@/pages/Achievements').then(module => ({
-    default: module.default
+    default: module.Achievements
   }))
 );
 
 export const LazyAIRecommendations = lazy(() => 
   import('@/pages/AIRecommendations').then(module => ({
-    default: module.default
+    default: module.AIRecommendations
   }))
 );
 
@@ -64,34 +64,34 @@ export const LazySettings = lazy(() =>
 
 export const LazyTimetable = lazy(() => 
   import('@/pages/Timetable').then(module => ({
-    default: module.default
+    default: module.Timetable
   }))
 );
 
 export const LazySecurity = lazy(() => 
   import('@/pages/Security').then(module => ({
-    default: module.default
+    default: module.Security
   }))
 );
 
-// Lazy load heavy components
-export const LazyPDFExport = lazy(() => 
-  import('@/components/export/PDFExport').then(module => ({
-    default: module.PDFExport
-  }))
-);
+// Note: These components are commented out as they don't exist yet
+// export const LazyPDFExport = lazy(() => 
+//   import('@/components/export/PDFExport').then(module => ({
+//     default: module.PDFExport
+//   }))
+// );
 
-export const LazyChartComponents = lazy(() => 
-  import('@/components/charts/ChartComponents').then(module => ({
-    default: module.ChartComponents
-  }))
-);
+// export const LazyChartComponents = lazy(() => 
+//   import('@/components/charts/ChartComponents').then(module => ({
+//     default: module.ChartComponents
+//   }))
+// );
 
-export const LazyRichTextEditor = lazy(() => 
-  import('@/components/editor/RichTextEditor').then(module => ({
-    default: module.RichTextEditor
-  }))
-);
+// export const LazyRichTextEditor = lazy(() => 
+//   import('@/components/editor/RichTextEditor').then(module => ({
+//     default: module.RichTextEditor
+//   }))
+// );
 
 // Wrapper component for lazy loading with custom fallback
 interface LazyWrapperProps {
