@@ -189,7 +189,7 @@ export class GlobalErrorBoundary extends Component<Props, State> {
         timestamp: this.state.timestamp || new Date().toISOString(),
         message: error.message,
         stack: error.stack || 'No stack trace available',
-        componentStack: errorInfo.componentStack,
+        componentStack: errorInfo.componentStack || 'No component stack available',
         userAgent: this.state.userAgent,
         url: window.location.href,
         userId: this.getCurrentUserId(),

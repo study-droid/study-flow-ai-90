@@ -44,7 +44,7 @@ export const Header = ({ onMenuClick }: HeaderProps = {}) => {
     if (savedTheme) {
       return savedTheme === 'dark';
     }
-    return settings?.theme === 'dark';
+    return false; // Default to light theme
   });
 
   // Apply theme on component mount and when theme changes
