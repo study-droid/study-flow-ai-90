@@ -8,50 +8,91 @@ All colors use HSL format for maximum flexibility and theming support
 */
 
 @layer base {
-  :root {
+  /* Teddy Orange Theme (Default) */
+  :root,
+  .teddy-orange {
     /* Core Study Teddy Brand Colors */
-    --background: 35 15% 97%;                  /* Warm Off-White - Teddy comfort */
-    --foreground: 24 9% 14%;                   /* Warm Dark Brown - Cozy & readable */
+    --background: 35 15% 97%;
+    --foreground: 24 9% 14%;
+    --card: 0 0% 100%;
+    --card-foreground: 24 9% 14%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 24 9% 14%;
+    --primary: 25 95% 53%;
+    --primary-foreground: 0 0% 100%;
+    --primary-glow: 25 100% 45%;
+    --secondary: 35 50% 95%;
+    --secondary-foreground: 24 9% 14%;
+    --success: 150 60% 45%;
+    --success-foreground: 0 0% 100%;
+    --warning: 35 85% 55%;
+    --warning-foreground: 0 0% 100%;
+    --accent: 205 100% 60%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 4 70% 50%;
+    --destructive-foreground: 0 0% 100%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 0 0% 46%;
+    --input: 210 40% 88%;
+    --border: 210 40% 88%;
+    --ring: 207 71% 37%;
+  }
 
-    /* Surface Colors - Warm & Inviting */
-    --card: 0 0% 100%;                         /* Pure White Cards */
-    --card-foreground: 24 9% 14%;              /* Warm text */
-    --popover: 0 0% 100%;                      /* White Popovers */
-    --popover-foreground: 24 9% 14%;           /* Warm text */
+  /* Ocean Blue Theme */
+  .ocean-blue {
+    --background: 210 40% 98%;
+    --foreground: 210 100% 5%;
+    --card: 210 40% 100%;
+    --card-foreground: 210 100% 5%;
+    --popover: 210 40% 100%;
+    --popover-foreground: 210 100% 5%;
+    --primary: 200 100% 45%;
+    --primary-foreground: 0 0% 100%;
+    --primary-glow: 190 100% 60%;
+    --secondary: 210 20% 95%;
+    --secondary-foreground: 210 100% 5%;
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 100%;
+    --warning: 45 93% 47%;
+    --warning-foreground: 0 0% 100%;
+    --accent: 195 100% 70%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
+    --muted: 210 20% 93%;
+    --muted-foreground: 210 15% 45%;
+    --input: 210 25% 88%;
+    --border: 210 25% 88%;
+    --ring: 200 100% 45%;
+  }
 
-    /* Primary Brand Colors - Teddy Bear Theme */
-    --primary: 25 95% 53%;                     /* Warm Honey Gold #F4A340 - Teddy fur */
-    --primary-foreground: 0 0% 100%;           /* White text on primary */
-    --primary-glow: 25 100% 45%;               /* Rich Amber #E6950D - Premium glow */
-    
-    /* Secondary Colors - Soft & Cuddly */
-    --secondary: 35 50% 95%;                   /* Soft Cream #FAF7F0 - Teddy belly */
-    --secondary-foreground: 24 9% 14%;         /* Warm text on secondary */
-
-    /* Study Teddy Personality Colors */
-    --success: 150 60% 45%;                    /* Forest Green #2E8B57 - Achievement & Growth */
-    --success-foreground: 0 0% 100%;           /* White text on success */
-    --warning: 35 85% 55%;                     /* Warm Orange #E67E22 - Gentle alerts */
-    --warning-foreground: 0 0% 100%;           /* White text on warning */
-    --accent: 205 100% 60%;                    /* Sky Blue #00BFFF - Friendly highlights */
-    --accent-foreground: 0 0% 100%;            /* White text on accent */
-
-    /* Orange Hover System - Light Mode */
-    --orange-hover: 36 100% 45%;               /* Darker Orange #E6870E - Standard hover */
-    --orange-hover-foreground: 0 0% 100%;      /* White text on orange hover */
-
-    /* Status & State Colors */
-    --destructive: 4 70% 50%;                  /* Alert Red #D32F2F - Urgency & Attention */
-    --destructive-foreground: 0 0% 100%;       /* White text on destructive */
-
-    /* Muted & Neutral Colors */
-    --muted: 210 40% 96%;                      /* Muted backgrounds */
-    --muted-foreground: 0 0% 46%;              /* Secondary Text #757575 - Readable hierarchy */
-
-    /* Form & Interactive Elements */
-    --input: 210 40% 88%;                      /* Input backgrounds */
-    --border: 210 40% 88%;                     /* Border color */
-    --ring: 207 71% 37%;                       /* Focus rings - Primary Blue */
+  /* Forest Green Theme */
+  .forest-green {
+    --background: 120 40% 98%;
+    --foreground: 120 100% 5%;
+    --card: 120 40% 100%;
+    --card-foreground: 120 100% 5%;
+    --popover: 120 40% 100%;
+    --popover-foreground: 120 100% 5%;
+    --primary: 140 65% 35%;
+    --primary-foreground: 0 0% 100%;
+    --primary-glow: 130 70% 45%;
+    --secondary: 120 20% 95%;
+    --secondary-foreground: 120 100% 5%;
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 100%;
+    --warning: 45 93% 47%;
+    --warning-foreground: 0 0% 100%;
+    --accent: 195 100% 70%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 120 40% 98%;
+    --muted: 120 20% 93%;
+    --muted-foreground: 120 15% 45%;
+    --input: 120 25% 88%;
+    --border: 120 25% 88%;
+    --ring: 140 65% 35%;
+  }
 
     /* Learning Zone Colors - Enhanced Focus & Creativity */
     --learning-focus: 207 71% 37%;             /* Primary Blue - Focus zone */
@@ -131,7 +172,9 @@ All colors use HSL format for maximum flexibility and theming support
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
-  .dark {
+/* Dark mode for Teddy Orange */
+.dark.teddy-orange,
+.dark {
     /* Core System Colors - Dark Mode Mindscape */
     --background: 222.2 84% 4.9%;              /* Dark background */
     --foreground: 210 40% 98%;                 /* Light text */
@@ -210,7 +253,6 @@ All colors use HSL format for maximum flexibility and theming support
     --sidebar-border: 215 25% 20%;
     --sidebar-ring: 275 100% 84%;
   }
-}
 
 @layer base {
   * {

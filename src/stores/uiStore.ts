@@ -5,6 +5,7 @@ import { immer } from 'zustand/middleware/immer';
 // UI State Management
 interface UIState {
   theme: 'light' | 'dark' | 'auto';
+  colorTheme: 'teddy-orange' | 'ocean-blue' | 'forest-green';
   sidebarCollapsed: boolean;
   sidebarOpen: boolean;
   currentPage: string;
@@ -39,6 +40,7 @@ interface UIState {
 interface UIActions {
   // Theme management
   setTheme: (theme: 'light' | 'dark' | 'auto') => void;
+  setColorTheme: (colorTheme: 'teddy-orange' | 'ocean-blue' | 'forest-green') => void;
   toggleTheme: () => void;
   
   // Sidebar management
@@ -73,6 +75,7 @@ export const useUIStore = create<UIState & UIActions>()(
     immer((set) => ({
       // Initial state
       theme: 'auto',
+      colorTheme: 'teddy-orange',
       sidebarCollapsed: false,
       sidebarOpen: false,
       currentPage: '/dashboard',
@@ -99,6 +102,10 @@ export const useUIStore = create<UIState & UIActions>()(
       // Actions
       setTheme: (theme) => set((state) => {
         state.theme = theme;
+      }),
+
+      setColorTheme: (colorTheme) => set((state) => {
+        state.colorTheme = colorTheme;
       }),
 
       toggleTheme: () => set((state) => {

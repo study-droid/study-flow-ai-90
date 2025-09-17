@@ -15,6 +15,7 @@ import { useAITutor } from "@/hooks/useAITutor";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { User, Bell, Palette, Target, Shield, Download, Trash2, Sparkles } from "lucide-react";
+import { ThemeSelector } from "@/components/theme/ThemeSelector";
 
 interface UserProfile {
   id: string;
@@ -434,6 +435,9 @@ const Settings = () => {
             </CardContent>
           </Card>
 
+          {/* Appearance Settings with Theme Selector */}
+          <ThemeSelector />
+          
           {/* Study Preferences */}
           <Card className="hover:shadow-lg transition-shadow">
             <CardHeader>
