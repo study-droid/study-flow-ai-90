@@ -87,7 +87,7 @@ export default defineConfig(({ mode }) => ({
           
           // AI and external services (conditionally include only if used)
           ...((() => {
-            const aiServices = [];
+            const aiServices: string[] = [];
             try {
               require.resolve('@anthropic-ai/sdk');
               aiServices.push('@anthropic-ai/sdk');
@@ -113,7 +113,7 @@ export default defineConfig(({ mode }) => ({
           'form-libs': ['react-hook-form', '@hookform/resolvers', 'zod']
         },
         chunkFileNames: (chunkInfo) => {
-          const facadeModuleId = chunkInfo.facadeModuleId ? chunkInfo.facadeModuleId.split('/').pop().replace('.tsx', '').replace('.ts', '') : 'chunk';
+          const facadeModuleId = chunkInfo.facadeModuleId ? chunkInfo.facadeModuleId.split('/').pop()?.replace('.tsx', '').replace('.ts', '') : 'chunk';
           return `js/${facadeModuleId}-[hash].js`;
         },
         entryFileNames: 'js/[name]-[hash].js',

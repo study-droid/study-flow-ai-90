@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useRef } from 'react';
+import React, { useEffect, useCallback, useRef } from 'react';
 import { usePerformanceMetrics } from '@/services/monitoring/performance-metrics';
 
 interface UsePerformanceMonitoringOptions {
@@ -216,6 +216,6 @@ export const withPerformanceMonitoring = <P extends object>(
       );
     }, [trackFeatureUsage]);
 
-    return <Component {...props} ref={ref} />;
+    return React.createElement(Component, { ...props, ref });
   });
 };
