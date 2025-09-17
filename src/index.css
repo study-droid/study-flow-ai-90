@@ -2,38 +2,38 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Mindscape Planner Color System - Evidence-Based Learning Environment Colors
-Designed for enhanced focus, motivation, and cognitive performance
+/* Study Teddy Brand System - Warm, Friendly, Professional Learning Environment
+Designed for comfort, engagement, and academic excellence
 All colors use HSL format for maximum flexibility and theming support
 */
 
 @layer base {
   :root {
-    /* Core System Colors - Mindscape Foundation */
-    --background: 0 0% 96%;                    /* Light Grey - Clean, minimalist */
-    --foreground: 0 0% 13%;                    /* Primary Text - High contrast */
+    /* Core Study Teddy Brand Colors */
+    --background: 35 15% 97%;                  /* Warm Off-White - Teddy comfort */
+    --foreground: 24 9% 14%;                   /* Warm Dark Brown - Cozy & readable */
 
-    /* Surface Colors */
-    --card: 0 0% 100%;                         /* White Cards */
-    --card-foreground: 0 0% 13%;               /* Primary Text */
+    /* Surface Colors - Warm & Inviting */
+    --card: 0 0% 100%;                         /* Pure White Cards */
+    --card-foreground: 24 9% 14%;              /* Warm text */
     --popover: 0 0% 100%;                      /* White Popovers */
-    --popover-foreground: 0 0% 13%;            /* Primary Text */
+    --popover-foreground: 24 9% 14%;           /* Warm text */
 
-    /* Primary Colors - Trust, Focus, Stability */
-    --primary: 207 71% 37%;                    /* Primary Blue #1976D2 - Focus & Trust */
-    --primary-foreground: 0 0% 98%;            /* White text on primary */
-    --primary-glow: 210 100% 20%;              /* Royal Blue #003366 - Premium/Authority */
+    /* Primary Brand Colors - Teddy Bear Theme */
+    --primary: 25 95% 53%;                     /* Warm Honey Gold #F4A340 - Teddy fur */
+    --primary-foreground: 0 0% 100%;           /* White text on primary */
+    --primary-glow: 25 100% 45%;               /* Rich Amber #E6950D - Premium glow */
     
-    /* Secondary Colors - Warmth, Comfort */
-    --secondary: 48 100% 93%;                  /* Warm Cream #FFF9C4 - Content areas */
-    --secondary-foreground: 0 0% 13%;          /* Primary text on secondary */
+    /* Secondary Colors - Soft & Cuddly */
+    --secondary: 35 50% 95%;                   /* Soft Cream #FAF7F0 - Teddy belly */
+    --secondary-foreground: 24 9% 14%;         /* Warm text on secondary */
 
-    /* Learning Psychology Colors */
-    --success: 122 39% 39%;                    /* Secondary Green #388E3C - Growth & Achievement */
+    /* Study Teddy Personality Colors */
+    --success: 150 60% 45%;                    /* Forest Green #2E8B57 - Achievement & Growth */
     --success-foreground: 0 0% 100%;           /* White text on success */
-    --warning: 36 100% 50%;                    /* Accent Orange #FF9800 - Energy & Motivation */
+    --warning: 35 85% 55%;                     /* Warm Orange #E67E22 - Gentle alerts */
     --warning-foreground: 0 0% 100%;           /* White text on warning */
-    --accent: 36 100% 50%;                     /* Accent Orange - CTAs & Highlights */
+    --accent: 205 100% 60%;                    /* Sky Blue #00BFFF - Friendly highlights */
     --accent-foreground: 0 0% 100%;            /* White text on accent */
 
     /* Orange Hover System - Light Mode */

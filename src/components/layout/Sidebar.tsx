@@ -66,10 +66,12 @@ export const Sidebar = ({ className, onNavigate, }: SidebarProps) => {
       {/* Header */}
       <div className="p-6 border-b">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-            <span className="text-primary-foreground font-bold text-sm">🧸</span>
+          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary via-primary-glow to-warning flex items-center justify-center shadow-md">
+            <span className="text-white font-bold text-sm filter drop-shadow-sm">🧸</span>
           </div>
-          <span className="font-semibold text-lg">Study Teddy</span>
+          <span className="font-heading font-semibold text-lg bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
+            Study Teddy
+          </span>
         </div>
       </div>
 

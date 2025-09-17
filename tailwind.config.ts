@@ -18,6 +18,12 @@ export default {
 			}
 		},
 		extend: {
+			fontFamily: {
+				sans: ['Plus Jakarta Sans', 'Inter', 'system-ui', 'sans-serif'],
+				heading: ['Fredoka', 'Plus Jakarta Sans', 'sans-serif'],
+				body: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'],
+				mono: ['Fira Code', 'Courier New', 'monospace'],
+			},
 			colors: {
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
