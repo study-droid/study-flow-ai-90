@@ -114,7 +114,7 @@ export const useDashboard = () => {
         .eq('status', 'completed')
         .gte('created_at', today);
 
-      const studyHoursToday = todaySessions?.reduce((total, session) => total + (session.duration || 0), 0) / 60 || 0;
+      const studyHoursToday = (todaySessions || []).reduce((total, session) => total + (session.duration || 0), 0) / 60;
 
       // Fetch weekly study progress
       const { data: weekSessions } = await supabase
@@ -124,14 +124,14 @@ export const useDashboard = () => {
         .eq('status', 'completed')
         .gte('created_at', weekStartStr);
 
-      const weeklyProgress = weekSessions?.reduce((total, session) => total + (session.duration || 0), 0) / 60 || 0;
+      const weeklyProgress = (weekSessions || []).reduce((total, session) => total + (session.duration || 0), 0) / 60;
 
       // Fetch study streak
       const { data: streakData } = await supabase
         .from('study_streaks')
         .select('current_streak')
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
 
       // Fetch AI sessions count
       const { data: aiSessionsData } = await supabase
@@ -169,8 +169,8 @@ export const useDashboard = () => {
         })) || [],
         studyGoals: studyGoals?.map(goal => ({
           title: goal.title,
-          progress: goal.target_value > 0 ? (goal.current_value / goal.target_value) * 100 : 0,
-          status: goal.status,
+          progress: goal.target_value > 0 ? ((goal.current_value || 0) / goal.target_value) * 100 : 0,
+          status: goal.status || 'active',
         })) || [],
       });
 
@@ -189,10 +189,10 @@ export const useDashboard = () => {
         .from('user_settings')
         .select('*')
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
 
-      if (settings && settings.dashboard_layout) {
-        setWidgets(settings.dashboard_layout);
+      if (settings && (settings as any).dashboard_layout) {
+        setWidgets((settings as any).dashboard_layout);
       }
     } catch (error) {
       console.error('Error loading widget layout:', error);
@@ -205,7 +205,7 @@ export const useDashboard = () => {
     try {
       await supabase
         .from('user_settings')
-        .update({ dashboard_layout: newWidgets })
+        .update({ dashboard_layout: newWidgets } as any)
         .eq('user_id', user.id);
       
       setWidgets(newWidgets);

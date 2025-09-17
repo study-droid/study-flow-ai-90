@@ -15,7 +15,6 @@ import {
   Eye,
   EyeOff,
   Move,
-  Settings,
 } from "lucide-react";
 import {
   DropdownMenu,

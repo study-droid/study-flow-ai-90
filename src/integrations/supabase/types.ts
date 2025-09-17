@@ -1156,6 +1156,7 @@ export type Database = {
           ai_suggestions_enabled: boolean | null
           created_at: string
           daily_goal_hours: number | null
+          dashboard_layout: Json | null
           email_notifications: boolean | null
           id: string
           notifications_enabled: boolean | null
@@ -1173,6 +1174,7 @@ export type Database = {
           ai_suggestions_enabled?: boolean | null
           created_at?: string
           daily_goal_hours?: number | null
+          dashboard_layout?: Json | null
           email_notifications?: boolean | null
           id?: string
           notifications_enabled?: boolean | null
@@ -1190,6 +1192,7 @@ export type Database = {
           ai_suggestions_enabled?: boolean | null
           created_at?: string
           daily_goal_hours?: number | null
+          dashboard_layout?: Json | null
           email_notifications?: boolean | null
           id?: string
           notifications_enabled?: boolean | null

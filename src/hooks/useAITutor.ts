@@ -44,7 +44,7 @@ export const useAITutor = () => {
 
       const newSession: AITutorSession = {
         id: data.id,
-        title: data.title,
+        title: data.title || 'Chat with Teddy',
         messages: [],
         created_at: new Date(data.created_at),
         updated_at: new Date(data.updated_at),
@@ -198,9 +198,10 @@ export const useAITutor = () => {
         .select('*')
         .eq('id', sessionId)
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
 
       if (sessionError) throw sessionError;
+      if (!sessionData) throw new Error('Session not found');
 
       // Load messages
       const { data: messagesData, error: messagesError } = await supabase
@@ -213,7 +214,7 @@ export const useAITutor = () => {
 
       const session: AITutorSession = {
         id: sessionData.id,
-        title: sessionData.title,
+        title: sessionData.title || 'Chat with Teddy',
         messages: messagesData.map(msg => ({
           id: msg.id,
           content: msg.content,

@@ -7,14 +7,14 @@ import { useDashboard } from "@/hooks/useDashboard";
 import { DashboardWidget } from "@/components/dashboard/DashboardWidget";
 import { 
   Calendar, 
+  TrendingUp,
+  Target,
   Play,
   Brain,
   Timer,
-  Settings,
   LogOut,
   LayoutGrid,
   RefreshCw,
-  Plus,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -157,174 +157,73 @@ const Dashboard = () => {
           </Card>
         </div>
 
-        {/* Stats Overview */}
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        {/* Customizable Widget Dashboard */}
+        {loading ? (
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            {[1, 2, 3, 4].map((i) => (
+              <Card key={i} className="animate-pulse">
+                <CardHeader>
+                  <div className="h-4 bg-muted rounded w-1/2"></div>
+                </CardHeader>
+                <CardContent>
+                  <div className="h-8 bg-muted rounded mb-2"></div>
+                  <div className="h-2 bg-muted rounded"></div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        ) : (
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            {widgets
+              .filter(widget => widget.visible)
+              .map(widget => (
+                <DashboardWidget
+                  key={widget.id}
+                  widget={widget}
+                  data={dashboardData}
+                  onToggleVisibility={toggleWidget}
+                  onUpdateSize={updateWidgetSize}
+                />
+              ))}
+          </div>
+        )}
+
+        {/* Quick Actions Footer */}
+        <div className="grid gap-6 md:grid-cols-2">
           <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Study Hours Today</CardTitle>
-              <Clock className="h-4 w-4 text-muted-foreground" />
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <TrendingUp className="h-5 w-5" />
+                Analytics
+              </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{studyTime}h</div>
-              <Progress value={progressPercentage} className="mt-2" />
-              <p className="text-xs text-muted-foreground mt-1">
-                {dailyGoal - studyTime}h remaining to reach daily goal
+              <p className="text-sm text-muted-foreground mb-4">
+                View your progress and insights
               </p>
+              <Button variant="outline" className="w-full" onClick={() => navigate('/analytics')}>
+                View Analytics
+              </Button>
             </CardContent>
           </Card>
 
           <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Weekly Goal</CardTitle>
-              <Target className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">18/20h</div>
-              <Progress value={90} className="mt-2" />
-              <p className="text-xs text-muted-foreground mt-1">
-                Almost there! Keep going! 🧸
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Study Streak</CardTitle>
-              <Award className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">7 days</div>
-              <p className="text-xs text-muted-foreground">
-                Amazing streak! Teddy is proud! 🏆
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">AI Sessions</CardTitle>
-              <Brain className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">12</div>
-              <p className="text-xs text-muted-foreground">
-                Questions answered this week
-              </p>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Main Content */}
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {/* Today's Goals */}
-          <Card className="lg:col-span-2">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Target className="h-5 w-5" />
-                Today's Study Goals
+                Study Goals
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">Complete Math Chapter 5</span>
-                  <Badge variant="secondary">In Progress</Badge>
-                </div>
-                <Progress value={75} className="h-2" />
-                <p className="text-xs text-muted-foreground">75% complete - Almost done!</p>
-              </div>
-              
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">Physics Lab Report</span>
-                  <Badge variant="outline">Pending</Badge>
-                </div>
-                <Progress value={25} className="h-2" />
-                <p className="text-xs text-muted-foreground">25% complete - Great start!</p>
-              </div>
-              
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">History Essay Draft</span>
-                  <Badge className="bg-green-500 hover:bg-green-600">Completed</Badge>
-                </div>
-                <Progress value={100} className="h-2" />
-                <p className="text-xs text-muted-foreground">🎉 Completed yesterday! Well done!</p>
-              </div>
+            <CardContent>
+              <p className="text-sm text-muted-foreground mb-4">
+                Set and track your learning objectives
+              </p>
+              <Button variant="outline" className="w-full" onClick={() => navigate('/settings')}>
+                Manage Goals
+              </Button>
             </CardContent>
           </Card>
-
-          {/* Quick Actions */}
-          <div className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <TrendingUp className="h-5 w-5" />
-                  Analytics
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground mb-4">
-                  View your progress and insights
-                </p>
-                <Button variant="outline" className="w-full" onClick={() => navigate('/analytics')}>
-                  View Analytics
-                </Button>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Settings className="h-5 w-5" />
-                  Settings
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground mb-4">
-                  Customize your experience
-                </p>
-                <Button variant="outline" className="w-full" onClick={() => navigate('/settings')}>
-                  Open Settings
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
         </div>
-
-        {/* Recent Activity */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <BookOpen className="h-5 w-5" />
-              Recent Activity with Teddy
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              <div className="p-3 border rounded-lg">
-                <p className="font-medium text-sm">🧸 Math Session</p>
-                <p className="text-xs text-muted-foreground">Completed algebra practice</p>
-                <p className="text-xs text-muted-foreground">2 hours ago</p>
-              </div>
-              <div className="p-3 border rounded-lg">
-                <p className="font-medium text-sm">🎯 Goal Achieved</p>
-                <p className="text-xs text-muted-foreground">History essay finished</p>
-                <p className="text-xs text-muted-foreground">Yesterday</p>
-              </div>
-              <div className="p-3 border rounded-lg">
-                <p className="font-medium text-sm">💡 AI Help</p>
-                <p className="text-xs text-muted-foreground">Physics concepts explained</p>
-                <p className="text-xs text-muted-foreground">3 hours ago</p>
-              </div>
-              <div className="p-3 border rounded-lg">
-                <p className="font-medium text-sm">🍅 Pomodoro</p>
-                <p className="text-xs text-muted-foreground">45-minute focus session</p>
-                <p className="text-xs text-muted-foreground">This morning</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
       </div>
     </DashboardLayout>
   );
