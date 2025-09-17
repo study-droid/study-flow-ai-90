@@ -1,10 +1,8 @@
 import { useEffect } from 'react';
 import { useUIStore } from '@/stores/uiStore';
-import { useAuth } from '@/hooks/useAuth';
 
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   const { theme, colorTheme, setTheme, setColorTheme } = useUIStore();
-  const { user } = useAuth();
 
   // Apply theme to document
   useEffect(() => {
@@ -33,19 +31,15 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, [theme, colorTheme]);
 
-  // Load user theme preferences
+  // Load theme preferences on mount
   useEffect(() => {
-    if (user) {
-      loadUserThemePreferences();
-    }
-  }, [user]);
+    loadUserThemePreferences();
+  }, []);
 
   // Save theme preferences when they change
   useEffect(() => {
-    if (user) {
-      saveUserThemePreferences();
-    }
-  }, [theme, colorTheme, user]);
+    saveUserThemePreferences();
+  }, [theme, colorTheme]);
 
   const loadUserThemePreferences = async () => {
     try {
