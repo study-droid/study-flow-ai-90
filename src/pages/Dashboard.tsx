@@ -1,30 +1,40 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
-import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
-import { useState } from "react";
+import { useDashboard } from "@/hooks/useDashboard";
+import { DashboardWidget } from "@/components/dashboard/DashboardWidget";
 import { 
   Calendar, 
-  Clock, 
-  TrendingUp, 
-  BookOpen, 
-  Target,
   Play,
   Brain,
   Timer,
   Settings,
   LogOut,
-  Award
+  LayoutGrid,
+  RefreshCw,
+  Plus,
 } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const Dashboard = () => {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
-  const [studyTime] = useState(2.5); // hours studied today
-  const [dailyGoal] = useState(4); // daily goal in hours
+  const { 
+    widgets, 
+    dashboardData, 
+    loading, 
+    toggleWidget, 
+    updateWidgetSize, 
+    resetToDefault, 
+    refreshData 
+  } = useDashboard();
 
   if (!user) {
     return (
@@ -44,8 +54,6 @@ const Dashboard = () => {
     );
   }
 
-  const progressPercentage = (studyTime / dailyGoal) * 100;
-
   return (
     <DashboardLayout>
       <div className="space-y-6">
@@ -61,6 +69,24 @@ const Dashboard = () => {
               <Play className="h-4 w-4" />
               Start Study
             </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="gap-2">
+                  <LayoutGrid className="h-4 w-4" />
+                  Dashboard
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={refreshData}>
+                  <RefreshCw className="h-4 w-4 mr-2" />
+                  Refresh Data
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={resetToDefault}>
+                  <LayoutGrid className="h-4 w-4 mr-2" />
+                  Reset Layout
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
             <Button onClick={signOut} variant="outline" className="gap-2">
               <LogOut className="h-4 w-4" />
               Sign Out

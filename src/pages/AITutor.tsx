@@ -1,30 +1,43 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
-import { Send, Brain, BookOpen, Lightbulb, HelpCircle } from "lucide-react";
-
-interface Message {
-  id: number;
-  text: string;
-  isUser: boolean;
-  timestamp: Date;
-}
+import { useAITutor } from "@/hooks/useAITutor";
+import { Send, Brain, BookOpen, Lightbulb, HelpCircle, RefreshCw } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 const AITutor = () => {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: 1,
-      text: "Hi there! I'm Teddy, your cuddly AI study companion! 🧸 I'm here to help you learn and understand any subject. What would you like to study today?",
-      isUser: false,
-      timestamp: new Date(),
-    },
-  ]);
+  const { toast } = useToast();
+  const {
+    currentSession,
+    messages,
+    isLoading,
+    error,
+    createSession,
+    sendMessage,
+    clearChat,
+  } = useAITutor();
   const [input, setInput] = useState("");
-  const [isTyping, setIsTyping] = useState(false);
+  const [selectedSubject, setSelectedSubject] = useState<string>("");
+
+  useEffect(() => {
+    if (!currentSession) {
+      createSession();
+    }
+  }, [currentSession, createSession]);
+
+  useEffect(() => {
+    if (error) {
+      toast({
+        title: "Error",
+        description: error,
+        variant: "destructive",
+      });
+    }
+  }, [error, toast]);
 
   const quickQuestions = [
     "Help me with math homework",
@@ -42,43 +55,45 @@ const AITutor = () => {
     { name: "Art", icon: "🎨", color: "bg-pink-100 text-pink-800" },
   ];
 
-  const handleSendMessage = () => {
-    if (!input.trim()) return;
+  const handleSendMessage = async () => {
+    if (!input.trim() || isLoading) return;
 
-    const userMessage: Message = {
-      id: messages.length + 1,
-      text: input,
-      isUser: true,
-      timestamp: new Date(),
-    };
-
-    setMessages(prev => [...prev, userMessage]);
+    await sendMessage(input, {
+      subject: selectedSubject || undefined,
+      difficulty: 'intermediate',
+    });
     setInput("");
-    setIsTyping(true);
-
-    // Simulate AI response
-    setTimeout(() => {
-      const aiResponse: Message = {
-        id: messages.length + 2,
-        text: `That's a great question! 🧸 Let me help you with that. I'd be happy to explain this concept step by step. Remember, there's no such thing as a silly question - I'm here to help you learn and grow!`,
-        isUser: false,
-        timestamp: new Date(),
-      };
-      setMessages(prev => [...prev, aiResponse]);
-      setIsTyping(false);
-    }, 1500);
   };
 
   const handleQuickQuestion = (question: string) => {
     setInput(question);
   };
 
+  const handleSubjectSelect = (subject: string) => {
+    setSelectedSubject(subject);
+    toast({
+      title: "Subject Selected",
+      description: `Now focusing on ${subject}. Your responses will be tailored to this subject!`,
+    });
+  };
+
   return (
     <DashboardLayout>
       <div className="h-[calc(100vh-8rem)] flex flex-col space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold text-primary mb-2">AI Tutor Teddy 🧸</h1>
-          <p className="text-muted-foreground">Your friendly study companion is here to help!</p>
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-bold text-primary mb-2">AI Tutor Teddy 🧸</h1>
+            <p className="text-muted-foreground">
+              Your friendly study companion powered by DeepSeek AI
+              {selectedSubject && ` - Currently focused on ${selectedSubject}`}
+            </p>
+          </div>
+          <div className="flex gap-2">
+            <Button onClick={clearChat} variant="outline" className="gap-2">
+              <RefreshCw className="h-4 w-4" />
+              New Chat
+            </Button>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 flex-1 min-h-0">
@@ -96,46 +111,41 @@ const AITutor = () => {
                   {messages.map((message) => (
                     <div
                       key={message.id}
-                      className={`flex ${message.isUser ? "justify-end" : "justify-start"}`}
+                      className={`flex ${message.role === 'user' ? "justify-end" : "justify-start"}`}
                     >
                       <div
                         className={`max-w-[70%] p-3 rounded-lg ${
-                          message.isUser
+                          message.role === 'user'
                             ? "bg-primary text-primary-foreground"
                             : "bg-secondary text-secondary-foreground"
                         }`}
                       >
-                        {!message.isUser && (
+                        {message.role === 'assistant' && (
                           <div className="flex items-center gap-2 mb-1">
                             <span className="text-lg">🧸</span>
                             <span className="font-medium text-sm">Teddy</span>
                           </div>
                         )}
-                        <p className="text-sm">{message.text}</p>
-                        <p className="text-xs opacity-70 mt-1">
-                          {message.timestamp.toLocaleTimeString([], {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          })}
-                        </p>
+                        {message.isTyping ? (
+                          <div className="flex gap-1 mt-1">
+                            <div className="w-2 h-2 bg-current rounded-full animate-bounce" />
+                            <div className="w-2 h-2 bg-current rounded-full animate-bounce delay-100" />
+                            <div className="w-2 h-2 bg-current rounded-full animate-bounce delay-200" />
+                          </div>
+                        ) : (
+                          <>
+                            <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                            <p className="text-xs opacity-70 mt-1">
+                              {message.timestamp.toLocaleTimeString([], {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })}
+                            </p>
+                          </>
+                        )}
                       </div>
                     </div>
                   ))}
-                  {isTyping && (
-                    <div className="flex justify-start">
-                      <div className="bg-secondary text-secondary-foreground p-3 rounded-lg">
-                        <div className="flex items-center gap-2">
-                          <span className="text-lg">🧸</span>
-                          <span className="font-medium text-sm">Teddy</span>
-                        </div>
-                        <div className="flex gap-1 mt-1">
-                          <div className="w-2 h-2 bg-current rounded-full animate-bounce" />
-                          <div className="w-2 h-2 bg-current rounded-full animate-bounce delay-100" />
-                          <div className="w-2 h-2 bg-current rounded-full animate-bounce delay-200" />
-                        </div>
-                      </div>
-                    </div>
-                  )}
                 </div>
               </ScrollArea>
               
@@ -147,7 +157,7 @@ const AITutor = () => {
                   onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
                   className="flex-1"
                 />
-                <Button onClick={handleSendMessage} disabled={!input.trim()}>
+                <Button onClick={handleSendMessage} disabled={!input.trim() || isLoading}>
                   <Send className="h-4 w-4" />
                 </Button>
               </div>
@@ -191,8 +201,11 @@ const AITutor = () => {
                 {subjects.map((subject) => (
                   <Badge
                     key={subject.name}
-                    variant="secondary"
-                    className={`w-full justify-start gap-2 py-2 cursor-pointer hover:opacity-80 ${subject.color}`}
+                    variant={selectedSubject === subject.name ? "default" : "secondary"}
+                    className={`w-full justify-start gap-2 py-2 cursor-pointer hover:opacity-80 ${
+                      selectedSubject === subject.name ? '' : subject.color
+                    }`}
+                    onClick={() => handleSubjectSelect(subject.name)}
                   >
                     <span>{subject.icon}</span>
                     <span className="text-xs">{subject.name}</span>
