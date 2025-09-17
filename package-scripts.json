@@ -1,0 +1,6 @@
+{
+  "scripts": {
+    "analyze": "vite build --mode analyze",
+    "bundle-analysis": "npm run analyze"
+  }
+}
