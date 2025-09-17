@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Target, Calendar, MoreHorizontal, CheckCircle, Pause, Trash2 } from 'lucide-react';
-import { format, formatDistanceToNow, isPast } from 'date-fns';
+import { formatDistanceToNow, isPast } from 'date-fns';
 import { StudyGoal, useStudyGoals } from '@/hooks/useStudyGoals';
 
 interface GoalCardProps {
@@ -15,7 +15,7 @@ export const GoalCard = ({ goal }: GoalCardProps) => {
   const { updateGoal, deleteGoal, getGoalProgress } = useStudyGoals();
   
   const progress = getGoalProgress(goal);
-  const isOverdue = isPast(new Date(goal.deadline)) && goal.status === 'active';
+  const isOverdue = goal.deadline ? isPast(new Date(goal.deadline)) && goal.status === 'active' : false;
   const isCompleted = goal.status === 'completed' || progress >= 100;
   
   const handleStatusChange = async (status: string) => {
@@ -107,13 +107,17 @@ export const GoalCard = ({ goal }: GoalCardProps) => {
             <div className="flex items-center gap-2 text-sm text-muted-foreground min-w-0">
               <Calendar className="h-4 w-4 flex-shrink-0" />
               <span className="truncate" title={
-                isPast(new Date(goal.deadline)) 
-                  ? `Deadline was ${formatDistanceToNow(new Date(goal.deadline))} ago`
-                  : `Due ${formatDistanceToNow(new Date(goal.deadline))} from now`
+                goal.deadline ? (
+                  isPast(new Date(goal.deadline)) 
+                    ? `Deadline was ${formatDistanceToNow(new Date(goal.deadline))} ago`
+                    : `Due ${formatDistanceToNow(new Date(goal.deadline))} from now`
+                ) : 'No deadline set'
               }>
-                {isPast(new Date(goal.deadline)) 
-                  ? `Deadline was ${formatDistanceToNow(new Date(goal.deadline))} ago`
-                  : `Due ${formatDistanceToNow(new Date(goal.deadline))} from now`
+                {goal.deadline ? (
+                  isPast(new Date(goal.deadline)) 
+                    ? `Deadline was ${formatDistanceToNow(new Date(goal.deadline))} ago`
+                    : `Due ${formatDistanceToNow(new Date(goal.deadline))} from now`
+                ) : 'No deadline set'
                 }
               </span>
             </div>
