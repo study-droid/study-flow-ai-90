@@ -2,9 +2,12 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { log } from '@/lib/config';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { analyticsService } from '@/services/analytics/analytics-service';
+import { exportService } from '@/services/export/export-service';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
+import { useAuth } from '@/hooks/useAuth';
+import { useToast } from '@/hooks/use-toast';
 import { 
   BarChart, 
   Bar, 
@@ -34,7 +37,8 @@ import {
   BookOpen,
   Activity,
   Download,
-  RefreshCw
+  RefreshCw,
+  Award
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -96,7 +100,13 @@ const AdvancedAnalyticsComponent: React.FC = () => {
       setMetrics(data.studyMetrics);
       setStudyHoursData(data.studyHoursData);
       setSubjectData(data.subjectData);
-      setFocusPatternData(data.focusPatternData);
+      // Transform FocusPattern[] to ChartData[]
+      const transformedFocusData = data.focusPatternData.map(pattern => ({
+        name: `${pattern.hour}:00`,
+        value: pattern.sessions,
+        focus: pattern.focus
+      }));
+      setFocusPatternData(transformedFocusData);
       setPerformanceRadarData(data.performanceData);
       setProductivityScore(data.productivityScore);
       setCompletionRate(data.completionRate);
@@ -388,7 +398,7 @@ const AdvancedAnalyticsComponent: React.FC = () => {
                         dataKey="value"
                         label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
                       >
-                        {subjectData.map((entry, index) => (
+                        {subjectData.map((_, index) => (
                           <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                         ))}
                       </Pie>
