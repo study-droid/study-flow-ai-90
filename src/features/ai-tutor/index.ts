@@ -3,7 +3,7 @@
  */
 
 // Components
-export { AITutorEnhanced } from './components/AITutorEnhanced';
+// Enhanced AI Tutor removed
 export { MessageBubble } from './components/MessageBubble';
 export { ChatHistoryPanel } from './components/ChatHistoryPanel';
 export { AIThinkingBubble } from './components/AIThinkingBubble';

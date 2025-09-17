@@ -10,11 +10,13 @@ import { requestQueueService, type QueueStatus } from '../services/request-queue
 interface QueueStatusIndicatorProps {
   className?: string;
   showDetails?: boolean;
+  compact?: boolean;
 }
 
 export const QueueStatusIndicator: React.FC<QueueStatusIndicatorProps> = ({
   className = '',
-  showDetails = false
+  showDetails = false,
+  compact = false
 }) => {
   const [status, setStatus] = useState<QueueStatus | null>(null);
   const [isVisible, setIsVisible] = useState(false);

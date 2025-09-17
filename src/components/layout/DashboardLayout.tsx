@@ -1,9 +1,7 @@
 import { Header } from "./Header";
 import { Sidebar } from "./Sidebar";
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Menu } from "lucide-react";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent } from "@/components/ui/sheet";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;

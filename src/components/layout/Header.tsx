@@ -20,7 +20,12 @@ import { useAuth } from "@/hooks/useAuth";
 import { Sidebar } from './Sidebar';
 import { EnhancedChatSheet } from '@/components/chat/EnhancedChatSheet';
 
-export const Header = () => {
+interface HeaderProps {
+  children?: React.ReactNode;
+  onMenuClick?: () => void;
+}
+
+export const Header = ({ children, onMenuClick }: HeaderProps) => {
   const { user, signOut } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
@@ -28,123 +33,73 @@ export const Header = () => {
   // Theme management simplified - always default to light theme
   const [isDark, setIsDark] = useState(() => {
     const savedTheme = localStorage.getItem('theme');
-    if (savedTheme) {
-      return savedTheme === 'dark';
-    }
-    return false; // Default to light theme
+    return savedTheme === 'dark';
   });
 
-  // Apply theme on component mount and when theme changes
   useEffect(() => {
-    const applyTheme = (theme: string) => {
-      if (theme === 'dark') {
-        document.documentElement.classList.add('dark');
-      } else {
-        document.documentElement.classList.remove('dark');
-      }
-    };
+    const root = window.document.documentElement;
+    root.classList.remove('light', 'dark');
+    root.classList.add(isDark ? 'dark' : 'light');
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+  }, [isDark]);
 
-    // Apply theme from localStorage immediately
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme) {
-      applyTheme(savedTheme);
-      setIsDark(savedTheme === 'dark');
-    } else {
-      // Use light theme as default
-      applyTheme('light');
-      setIsDark(false);
-    }
-  }, []);
-
-  const toggleTheme = async () => {
-    const newTheme = isDark ? 'light' : 'dark';
-    const newIsDark = !isDark;
-    
-    // Update UI immediately
-    setIsDark(newIsDark);
-    localStorage.setItem('theme', newTheme);
-    
-    // Apply theme to document
-    if (newIsDark) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-
-    // Update settings in background (simplified)
-    try {
-      // Just keep the theme change, don't update other settings
-      console.log('Theme changed to:', newTheme);
-    } catch (error) {
-      console.error('Failed to update theme:', error);
-    }
+  const toggleTheme = () => {
+    setIsDark(!isDark);
   };
 
   const handleSignOut = async () => {
-    await signOut();
+    try {
+      await signOut();
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
   };
 
   return (
-    <header className="h-16 border-b bg-card/95 backdrop-blur-sm sticky top-0 z-40">
-      <div className="flex h-full items-center justify-between px-4 lg:px-6">
-        {/* Mobile menu */}
-        <div className="flex items-center gap-3">
-          <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
-            <SheetTrigger asChild className="lg:hidden">
-              <Button variant="ghost" size="icon">
-                <Menu className="h-5 w-5" />
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="left" className="p-0 w-72">
-              <Sidebar />
-            </SheetContent>
-          </Sheet>
-
-          {/* Logo */}
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-sm">SF</span>
-            </div>
-            <span className="font-semibold text-lg hidden sm:block">Study Flow</span>
-          </div>
+    <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="container flex h-14 items-center justify-between">
+        <div className="flex items-center gap-4">
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="lg:hidden" 
+            onClick={onMenuClick}
+          >
+            <Menu className="h-5 w-5" />
+          </Button>
+          
+          <div className="font-semibold">StudyPal</div>
         </div>
 
-        {/* Right side actions */}
         <div className="flex items-center gap-2">
-          {/* AI Chat */}
-          <Sheet open={isChatOpen} onOpenChange={setIsChatOpen}>
-            <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="relative">
-                <MessageSquare className="h-5 w-5" />
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="right" className="w-full sm:w-96 p-0">
-              <EnhancedChatSheet />
-            </SheetContent>
-          </Sheet>
-
-          {/* Theme toggle */}
-          <Button variant="ghost" size="icon" onClick={toggleTheme}>
-            {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+          <Button variant="ghost" size="sm">
+            <Search className="h-4 w-4" />
+          </Button>
+          
+          <Button 
+            variant="ghost" 
+            size="sm"
+            onClick={() => setIsChatOpen(true)}
+          >
+            <MessageSquare className="h-4 w-4" />
+            <Badge variant="secondary" className="ml-1 text-xs">AI</Badge>
           </Button>
 
-          {/* Search */}
-          <Button variant="ghost" size="icon">
-            <Search className="h-5 w-5" />
+          <Button variant="ghost" size="sm">
+            <Bell className="h-4 w-4" />
           </Button>
 
-          {/* Notifications */}
-          <Button variant="ghost" size="icon" className="relative">
-            <Bell className="h-5 w-5" />
-            <Badge className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 text-xs">
-              3
-            </Badge>
+          <Button 
+            variant="ghost" 
+            size="sm"
+            onClick={toggleTheme}
+          >
+            {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
           </Button>
 
-          {/* User menu */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+              <Button variant="ghost" size="sm" className="relative h-8 w-8 rounded-full">
                 <Avatar className="h-8 w-8">
                   <AvatarFallback>
                     {user?.email?.charAt(0).toUpperCase() || 'U'}
@@ -152,34 +107,51 @@ export const Header = () => {
                 </Avatar>
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56" align="end" forceMount>
-              <div className="flex items-center justify-start gap-2 p-2">
-                <div className="flex flex-col space-y-1 leading-none">
-                  <p className="font-medium">{user?.email}</p>
-                </div>
-              </div>
-              <DropdownMenuSeparator />
+            <DropdownMenuContent className="w-56" align="end">
               <DropdownMenuItem>
                 <User className="mr-2 h-4 w-4" />
-                <span>Profile</span>
+                Profile
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <Settings className="mr-2 h-4 w-4" />
-                <span>Settings</span>
+                Settings
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <Palette className="mr-2 h-4 w-4" />
-                <span>Appearance</span>
+                Theme
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={handleSignOut}>
                 <LogOut className="mr-2 h-4 w-4" />
-                <span>Log out</span>
+                Sign Out
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+
+          {/* Mobile menu */}
+          <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="sm" className="md:hidden">
+                <Menu className="h-5 w-5" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left" className="p-0 w-[280px]">
+              <Sidebar 
+                className="border-0" 
+                onNavigate={() => setIsMobileMenuOpen(false)} 
+                isMobileSheet={true}
+              />
+            </SheetContent>
+          </Sheet>
         </div>
       </div>
+
+      {children}
+
+      <EnhancedChatSheet 
+        isOpen={isChatOpen} 
+        onOpenChange={setIsChatOpen}
+      />
     </header>
   );
 };

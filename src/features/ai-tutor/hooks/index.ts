@@ -4,7 +4,7 @@
  */
 
 export { useAITutor } from './useAITutor';
-export { useDeepSeekStreaming } from './useDeepSeekStreaming';
+// DeepSeek streaming removed
 
 // Error handling hooks
 export { 
