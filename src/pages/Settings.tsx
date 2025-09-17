@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
-import { Slider } from "@/components/ui/slider";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -18,31 +18,31 @@ import { User, Bell, Palette, Target, Shield, Download, Trash2, Sparkles } from 
 
 interface UserProfile {
   id: string;
-  email: string;
+  email?: string;
   first_name?: string;
   last_name?: string;
   full_name?: string;
   avatar_url?: string;
   timezone?: string;
   language?: string;
-  academic_level?: string;
+  academic_level?: 'elementary' | 'middle_school' | 'high_school' | 'undergraduate' | 'graduate' | 'professional';
   date_of_birth?: string;
 }
 
 interface UserSettings {
-  id: string;
-  user_id: string;
-  theme: string;
-  notifications_enabled: boolean;
-  email_notifications: boolean;
-  sound_enabled: boolean;
-  study_reminder_time: string;
-  daily_goal_hours: number;
-  pomodoro_enabled: boolean;
-  pomodoro_work_duration: number;
-  pomodoro_break_duration: number;
-  pomodoro_long_break_duration: number;
-  ai_suggestions_enabled: boolean;
+  id?: string;
+  user_id?: string;
+  theme?: string;
+  notifications_enabled?: boolean;
+  email_notifications?: boolean;
+  sound_enabled?: boolean;
+  study_reminder_time?: string;
+  daily_goal_hours?: number;
+  pomodoro_enabled?: boolean;
+  pomodoro_work_duration?: number;
+  pomodoro_break_duration?: number;
+  pomodoro_long_break_duration?: number;
+  ai_suggestions_enabled?: boolean;
 }
 
 const Settings = () => {
@@ -110,11 +110,33 @@ const Settings = () => {
       }
 
       if (profileData) {
-        setProfile(profileData);
+        setProfile({
+          email: profileData.email || undefined,
+          first_name: profileData.first_name || undefined,
+          last_name: profileData.last_name || undefined,
+          full_name: profileData.full_name || undefined,
+          avatar_url: profileData.avatar_url || undefined,
+          timezone: profileData.timezone || undefined,
+          language: profileData.language || undefined,
+          academic_level: profileData.academic_level || 'high_school',
+          date_of_birth: profileData.date_of_birth || undefined,
+        });
       }
 
       if (settingsData) {
-        setSettings(settingsData);
+        setSettings({
+          theme: settingsData.theme || 'system',
+          notifications_enabled: settingsData.notifications_enabled ?? true,
+          email_notifications: settingsData.email_notifications ?? true,
+          sound_enabled: settingsData.sound_enabled ?? true,
+          study_reminder_time: settingsData.study_reminder_time || '09:00',
+          daily_goal_hours: settingsData.daily_goal_hours ?? 4,
+          pomodoro_enabled: settingsData.pomodoro_enabled ?? true,
+          pomodoro_work_duration: settingsData.pomodoro_work_duration ?? 25,
+          pomodoro_break_duration: settingsData.pomodoro_break_duration ?? 5,
+          pomodoro_long_break_duration: settingsData.pomodoro_long_break_duration ?? 15,
+          ai_suggestions_enabled: settingsData.ai_suggestions_enabled ?? true,
+        });
       }
     } catch (error) {
       console.error('Error loading user data:', error);
@@ -132,14 +154,21 @@ const Settings = () => {
     if (!user) return;
 
     try {
+      const updateData = {
+        id: user.id,
+        email: user.email,
+        first_name: profile.first_name,
+        last_name: profile.last_name,
+        avatar_url: profile.avatar_url,
+        timezone: profile.timezone,
+        language: profile.language,
+        academic_level: profile.academic_level as 'elementary' | 'middle_school' | 'high_school' | 'undergraduate' | 'graduate' | 'professional',
+        date_of_birth: profile.date_of_birth,
+      };
+
       const { error } = await supabase
         .from('profiles')
-        .upsert({
-          id: user.id,
-          email: user.email,
-          ...profile,
-          full_name: `${profile.first_name || ''} ${profile.last_name || ''}`.trim(),
-        });
+        .upsert(updateData);
 
       if (error) throw error;
 
@@ -383,7 +412,7 @@ const Settings = () => {
                 <Label>Academic Level</Label>
                 <Select
                   value={profile.academic_level || "high_school"}
-                  onValueChange={(value) => setProfile({...profile, academic_level: value})}
+                  onValueChange={(value: 'elementary' | 'middle_school' | 'high_school' | 'undergraduate' | 'graduate' | 'professional') => setProfile({...profile, academic_level: value})}
                 >
                   <SelectTrigger>
                     <SelectValue />
