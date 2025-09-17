@@ -8,6 +8,7 @@ import { Suspense, lazy } from "react";
 import { PageLoader } from "@/components/ui/page-loader";
 
 const Index = lazy(() => import("./pages/Index"));
+const Auth = lazy(() => import("./pages/Auth"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Calendar = lazy(() => import("./pages/Calendar"));
 const Study = lazy(() => import("./pages/Study"));
@@ -38,6 +39,14 @@ function App() {
                 element={
                   <Suspense fallback={<PageLoader />}>
                     <Index />
+                  </Suspense>
+                }
+              />
+              <Route
+                path="/auth"
+                element={
+                  <Suspense fallback={<PageLoader />}>
+                    <Auth />
                   </Suspense>
                 }
               />
