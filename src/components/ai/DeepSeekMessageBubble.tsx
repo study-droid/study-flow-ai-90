@@ -1,107 +1,54 @@
 /**
  * DeepSeek Message Bubble Component
- * Specialized message bubble for DeepSeek responses using ProfessionalResponseRenderer
+ * Simplified message bubble for DeepSeek responses
  */
 
-import React, { useState, useMemo } from 'react';
-import { Bot, User, Copy, Check, ThumbsUp, ThumbsDown, Loader2, Brain } from 'lucide-react';
+import { useState, useMemo } from 'react';
+import { User, Copy, Check, ThumbsUp, ThumbsDown, Brain } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
 import { ProfessionalResponseRenderer } from '@/components/ai-tutor/ProfessionalResponseRenderer';
-import { AIThinkingBubble } from '@/features/ai-tutor/components/AIThinkingBubble';
-import { validateDeepSeekResponse } from '@/services/ai/deepseek-validator';
-import { MarkdownResponseProcessor } from '@/services/markdown-response-processor';
-import { motivationalWordsService } from '@/features/ai-tutor/services/motivational-words.service';
-import type { ChatMessage, ThinkingState } from '@/features/ai-tutor/types';
-import type { DeepSeekValidationResult } from '@/services/ai/deepseek-validator';
+
+interface ChatMessage {
+  id: string;
+  role: 'user' | 'assistant' | 'system';
+  content: string;
+  type?: 'text' | 'thinking' | 'error';
+  createdAt: Date;
+  sessionId: string;
+}
 
 interface DeepSeekMessageBubbleProps {
   message: ChatMessage;
   isLoading?: boolean;
   isThinking?: boolean;
-  thinkingState?: ThinkingState;
   onFeedback?: (messageId: string, type: 'helpful' | 'not_helpful') => void;
   className?: string;
   showMetrics?: boolean;
-  enableFallback?: boolean;
 }
 
 export function DeepSeekMessageBubble({
   message,
   isLoading = false,
   isThinking = false,
-  thinkingState,
   onFeedback,
   className,
-  showMetrics = false,
-  enableFallback = true
+  showMetrics = false
 }: DeepSeekMessageBubbleProps) {
-  // State management
   const [copied, setCopied] = useState(false);
   const [feedbackGiven, setFeedbackGiven] = useState<'helpful' | 'not_helpful' | null>(null);
-  const [showRawContent, setShowRawContent] = useState(false);
-  const [validationResult, setValidationResult] = useState<DeepSeekValidationResult | null>(null);
 
   // Get motivational word for the message
-  const motivationalWord = useMemo(() => 
-    motivationalWordsService.getWordForMessageRole(message.role),
-    [message.role]
-  );
-
-  // Process DeepSeek response with validation and markdown processing
-  const processedResponse = useMemo(() => {
-    if (message.role !== 'assistant' || !message.content) {
-      return null;
-    }
-
-    try {
-      // First, process the markdown content
-      const markdownProcessed = MarkdownResponseProcessor.processResponse(message.content);
-      
-      // Then validate the DeepSeek response
-      const validation = validateDeepSeekResponse(
-        message.content,
-        markdownProcessed,
-        {
-          strictMode: false,
-          requireEducationalContent: true,
-          allowFallbacks: enableFallback
-        }
-      );
-
-      // Store validation result for debugging/metrics
-      setValidationResult(validation);
-
-      return {
-        structured: validation.processedResponse,
-        validation,
-        markdownProcessed
-      };
-    } catch (error) {
-      console.error('DeepSeek response processing failed:', error);
-      
-      // Return fallback structure if processing fails
-      if (enableFallback) {
-        return {
-          structured: null,
-          validation: null,
-          markdownProcessed: null,
-          error: error instanceof Error ? error.message : 'Processing failed'
-        };
-      }
-      
-      return null;
-    }
-  }, [message.content, message.role, enableFallback]);
-
-  // Determine if we should show thinking bubble
-  const shouldShowThinking = (
-    (isLoading || isThinking || thinkingState?.isVisible) && 
-    message.role === 'assistant' && 
-    !message.content
-  );
+  const motivationalWord = useMemo(() => {
+    const words = {
+      user: ['Curious', 'Thoughtful', 'Engaged', 'Smart'],
+      assistant: ['Helpful', 'Insightful', 'Clear', 'Detailed']
+    };
+    const roleWords = words[message.role as 'user' | 'assistant'] || words.assistant;
+    return roleWords[Math.floor(Math.random() * roleWords.length)];
+  }, [message.role]);
 
   // Handle copy functionality
   const handleCopy = async () => {
@@ -122,10 +69,29 @@ export function DeepSeekMessageBubble({
     onFeedback?.(message.id, type);
   };
 
-  // Handle view toggle
-  const handleToggleView = () => {
-    setShowRawContent(!showRawContent);
-  };
+  // Show thinking state
+  if ((isLoading || isThinking) && message.role === 'assistant' && !message.content) {
+    return (
+      <div className={cn('flex gap-3 group justify-start', className)}>
+        <Avatar className="h-8 w-8 border border-border/50 flex-shrink-0">
+          <AvatarImage src="/ai_tutor.png" alt="DeepSeek AI" />
+          <AvatarFallback className="bg-gradient-to-br from-purple-500 to-blue-600 text-white">
+            <Brain className="h-4 w-4" />
+          </AvatarFallback>
+        </Avatar>
+        <div className="flex flex-col max-w-[85%] min-w-0 items-start">
+          <div className="rounded-2xl px-4 py-3 shadow-sm border bg-card border-border/50">
+            <div className="flex items-center gap-2">
+              <div className="animate-spin rounded-full w-4 h-4 border-2 border-primary border-t-transparent"></div>
+              <span className="text-sm text-muted-foreground">
+                Processing your request with DeepSeek AI...
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={cn(
@@ -157,65 +123,25 @@ export function DeepSeekMessageBubble({
           message.type === 'error' && 'bg-destructive/10 border-destructive/20'
         )}>
           {/* Content Rendering */}
-          {shouldShowThinking ? (
-            <AIThinkingBubble
-              content={thinkingState?.content || 'Processing your request with DeepSeek AI...'}
-              stage={thinkingState?.stage || 'analyzing'}
-              isVisible={true}
-            />
-          ) : message.type === 'error' ? (
+          {message.type === 'error' ? (
             <div className="text-destructive">
               <p className="font-medium">DeepSeek Error</p>
               <p className="text-sm opacity-90">{message.content}</p>
             </div>
-          ) : message.role === 'assistant' && processedResponse ? (
+          ) : message.role === 'assistant' ? (
             <div className="space-y-3">
-              {/* Professional Response Renderer for DeepSeek content */}
-              {processedResponse.structured && !showRawContent ? (
-                <ProfessionalResponseRenderer
-                  result={processedResponse.structured}
-                  color="purple" // DeepSeek brand color
-                  fallbackContent={message.content}
-                  showMetrics={showMetrics}
-                  className="deepseek-response"
-                />
-              ) : (
-                /* Fallback to simple markdown rendering */
-                <div className="prose prose-sm dark:prose-invert max-w-none">
-                  <div className="whitespace-pre-wrap font-mono text-sm bg-muted/30 p-3 rounded-lg">
-                    {message.content}
-                  </div>
-                </div>
-              )}
-
-              {/* Processing Status */}
-              {processedResponse.validation && (
-                <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                  <Badge 
-                    variant={processedResponse.validation.isValid ? "default" : "secondary"}
-                    className="text-xs"
-                  >
-                    {processedResponse.validation.isValid ? 'Validated' : 'Fallback'}
-                  </Badge>
-                  
-                  {processedResponse.validation.warnings.length > 0 && (
-                    <span className="text-amber-600">
-                      {processedResponse.validation.warnings.length} warning(s)
-                    </span>
-                  )}
-                  
-                  <span>
-                    {Math.round(processedResponse.validation.validationMetrics.processingTime)}ms
-                  </span>
-                </div>
-              )}
-
-              {/* Error Display */}
-              {processedResponse.error && (
-                <div className="text-xs text-destructive bg-destructive/10 p-2 rounded">
-                  Processing error: {processedResponse.error}
-                </div>
-              )}
+              {/* Use ProfessionalResponseRenderer for AI responses */}
+              <ProfessionalResponseRenderer
+                response={{
+                  content: message.content,
+                  metadata: {
+                    model_used: 'DeepSeek AI',
+                    processing_time: 1500
+                  }
+                }}
+                showMetadata={showMetrics}
+                className="deepseek-response"
+              />
             </div>
           ) : (
             /* User messages - simple text display */
@@ -226,7 +152,7 @@ export function DeepSeekMessageBubble({
         {/* Message Metadata */}
         <div className="flex items-center gap-2 mt-1 px-2">
           <span className="text-xs text-muted-foreground">
-            {new Date((message.createdAt as unknown) as string | Date).toLocaleTimeString([], {
+            {message.createdAt.toLocaleTimeString([], {
               hour: '2-digit',
               minute: '2-digit',
             })}
@@ -239,23 +165,6 @@ export function DeepSeekMessageBubble({
           {message.role === 'assistant' && (
             <Badge variant="outline" className="text-xs">
               DeepSeek AI
-            </Badge>
-          )}
-
-          {/* Quality Score */}
-          {processedResponse?.validation && showMetrics && (
-            <Badge 
-              variant="outline" 
-              className={cn(
-                "text-xs",
-                processedResponse.validation.qualityAssessment.overallScore >= 80 
-                  ? "text-green-600" 
-                  : processedResponse.validation.qualityAssessment.overallScore >= 60 
-                    ? "text-yellow-600" 
-                    : "text-red-600"
-              )}
-            >
-              {processedResponse.validation.qualityAssessment.overallScore}%
             </Badge>
           )}
         </div>
@@ -276,18 +185,6 @@ export function DeepSeekMessageBubble({
               <Copy className="w-3 h-3" />
             )}
           </Button>
-
-          {/* View Toggle (Assistant only) */}
-          {message.role === 'assistant' && processedResponse?.structured && (
-            <Button
-              size="sm"
-              variant="ghost"
-              className="h-8 px-2 text-xs"
-              onClick={handleToggleView}
-            >
-              {showRawContent ? 'Enhanced' : 'Raw'}
-            </Button>
-          )}
 
           {/* Feedback Buttons (Assistant only) */}
           {message.role === 'assistant' && onFeedback && message.content && (
