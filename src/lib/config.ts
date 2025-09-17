@@ -54,7 +54,7 @@ export const config: AppConfig = {
     anonKey: import.meta.env.VITE_SUPABASE_ANON_KEY,
   },
   app: {
-    name: import.meta.env.VITE_APP_NAME || 'StudyFlow AI',
+    name: import.meta.env.VITE_APP_NAME || 'Study Teddy',
     version: import.meta.env.VITE_APP_VERSION || '1.0.0',
     url: import.meta.env.VITE_APP_URL || 'http://localhost:5173',
   },

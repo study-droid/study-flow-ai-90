@@ -29,7 +29,7 @@ export const AITutorAvatar: React.FC<AITutorAvatarProps> = ({
   size = 'sm',
   className,
   fallback,
-  alt = 'AI Tutor'
+  alt = 'Study Teddy'
 }) => {
   const [imageError, setImageError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -75,18 +75,18 @@ export const AITutorAvatar: React.FC<AITutorAvatarProps> = ({
         </div>
       )}
       
-      {/* AI Tutor Image with enhanced visibility */}
+      {/* Teddy Tutor Image with warm, friendly styling */}
       <div className={cn(
         "w-full h-full flex items-center justify-center rounded-md",
-        // Light mode: elegant silver gradient with proper padding
-        "bg-gradient-to-br from-gray-200 via-gray-300 to-gray-400 p-1.5 shadow-md border border-gray-200",
-        // Dark mode: keep white background with padding
-        "dark:bg-white dark:from-white dark:via-white dark:to-white dark:p-0.5 dark:shadow-sm dark:border-gray-100",
-        "transition-all duration-200 hover:shadow-lg"
+        // Light mode: warm honey/brown gradient for teddy theme
+        "bg-gradient-to-br from-amber-100 via-orange-100 to-yellow-100 p-1.5 shadow-md border border-amber-200",
+        // Dark mode: soft warm background
+        "dark:bg-gradient-to-br dark:from-amber-900/20 dark:via-orange-900/20 dark:to-yellow-900/20 dark:p-0.5 dark:shadow-sm dark:border-amber-800/30",
+        "transition-all duration-200 hover:shadow-lg hover:scale-105"
       )}>
         <img
-          src="/ai_tutor.png"
-          alt={alt}
+          src="/teddy_tutor.png"
+          alt={alt || 'Study Teddy'}
           className={cn(
             "w-full h-full object-contain max-w-none", 
             isLoading ? "opacity-0" : "opacity-100",

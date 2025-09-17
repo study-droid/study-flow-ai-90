@@ -1,11 +1,11 @@
-# StudyFlow AI - Product Overview
+# Study Teddy - Product Overview
 
-StudyFlow AI is a comprehensive educational SaaS platform that combines traditional study management with AI-powered tutoring capabilities.
+Study Teddy is a comprehensive educational SaaS platform that combines traditional study management with a friendly AI teddy bear tutor.
 
 ## Core Product Features
 
 - **Task Management** - Assignment organization with priorities, due dates, and progress tracking
-- **AI Tutor** - Multi-provider AI integration (Gemini, Claude, OpenAI, DeepSeek) for personalized learning assistance
+- **Teddy Tutor** - Multi-provider AI integration with a friendly teddy bear personality for warm, encouraging tutoring
 - **Study Sessions** - Pomodoro timer with focus tracking and ambient sounds
 - **Flashcards** - Spaced repetition algorithm for effective memorization
 - **Analytics Dashboard** - Study pattern visualization and progress tracking
@@ -21,7 +21,7 @@ Students and learners who need structured study management combined with AI-powe
 ## Key Value Propositions
 
 1. **Unified Learning Platform** - All study tools in one place
-2. **AI-Enhanced Learning** - Personalized tutoring and recommendations
+2. **Teddy-Enhanced Learning** - Warm, encouraging AI tutoring with a friendly personality
 3. **Progress Tracking** - Comprehensive analytics and achievement system
 4. **Flexible Integration** - Support for multiple AI providers and external services
 5. **Security-First** - Enterprise-grade security with encrypted API key storage
