@@ -1,6 +1,6 @@
-# StudyFlow AI - Educational SaaS Platform
+# Study Teddy - Your Cuddly AI Study Companion
 
-A comprehensive study management platform with AI-powered tutoring, task management, and learning analytics.
+A warm and encouraging study platform featuring your friendly AI teddy bear tutor, task management, and learning analytics.
 
 ## Features
 
@@ -49,8 +49,8 @@ A comprehensive study management platform with AI-powered tutoring, task managem
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/study-flow-ai.git
-cd study-flow-ai
+git clone https://github.com/yourusername/study-teddy.git
+cd study-teddy
 ```
 
 2. Install dependencies:
@@ -262,7 +262,7 @@ This project is proprietary software. All rights reserved.
 
 ## Support
 
-For support, email support@studyflow.ai or open an issue on GitHub.
+For support, email support@studyteddy.ai or open an issue on GitHub.
 
 ## Acknowledgments
 

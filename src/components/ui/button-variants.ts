@@ -14,7 +14,7 @@ export const buttonVariants = cva(
           "bg-secondary text-secondary-foreground hover:bg-orange-hover/20 hover:text-orange-hover study-flow-shadow-soft study-flow-transition",
         ghost: "hover:bg-orange-hover/10 hover:text-orange-hover study-flow-transition",
         link: "text-primary underline-offset-4 hover:underline hover:text-orange-hover study-flow-transition",
-        // StudyFlow specific variants with orange hover
+        // Study Teddy specific variants with orange hover
         gradient: "study-flow-gradient-bg text-primary-foreground hover:bg-orange-hover hover:text-orange-hover-foreground hover:scale-105 study-flow-shadow-medium hover:study-flow-shadow-strong study-flow-transition-bounce",
         focus: "btn-focus text-white hover:bg-orange-hover hover:text-orange-hover-foreground hover:scale-105 study-flow-shadow-soft hover:study-flow-shadow-medium study-flow-transition",
         achievement: "bg-achievement text-achievement-foreground hover:bg-orange-hover hover:text-orange-hover-foreground study-flow-shadow-soft hover:study-flow-shadow-medium study-flow-transition",

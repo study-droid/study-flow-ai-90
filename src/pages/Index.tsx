@@ -10,7 +10,7 @@ export default function Index() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-background to-secondary/20">
         <div className="container mx-auto px-4 py-8">
-          <h1 className="text-4xl font-bold text-center mb-8">Welcome to StudyFlow</h1>
+          <h1 className="text-4xl font-bold text-center mb-8">Welcome to Study Teddy</h1>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             <Card>
@@ -92,10 +92,10 @@ export default function Index() {
     <div className="min-h-screen bg-gradient-to-br from-background to-secondary/20">
       <div className="container mx-auto px-4 py-16">
         <div className="text-center mb-16">
-          <h1 className="text-6xl font-bold text-primary mb-6">StudyFlow</h1>
+          <h1 className="text-6xl font-bold text-primary mb-6">Study Teddy 🧸</h1>
           <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Your AI-powered study companion. Organize your learning, track progress, 
-            and achieve your academic goals with intelligent insights.
+            Your cuddly AI study companion! Get warm encouragement, personalized tutoring, 
+            and friendly support to make learning fun and effective.
           </p>
           <div className="flex gap-4 justify-center">
             <Button size="lg" asChild>

@@ -310,7 +310,7 @@ export const ServerErrorFallback: React.FC<ErrorFallbackProps> = ({
   const handleReportIssue = () => {
     const subject = encodeURIComponent('Server Error Report');
     const body = encodeURIComponent(`Error ID: ${errorId}\nTime: ${new Date().toISOString()}\n\nPlease describe what you were doing when this error occurred:`);
-    window.open(`mailto:support@studyflow.ai?subject=${subject}&body=${body}`);
+    window.open(`mailto:support@studyteddy.ai?subject=${subject}&body=${body}`);
   };
 
   return (
