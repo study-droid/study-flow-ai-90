@@ -6,7 +6,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 // import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { BrowserRouter } from "react-router-dom";
+// import { BrowserRouter } from "react-router-dom";
 // Study Teddy fonts
 import '@fontsource/plus-jakarta-sans/400.css';
 import '@fontsource/plus-jakarta-sans/600.css';
@@ -25,11 +25,9 @@ root.render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
-        <BrowserRouter>
-          <App />
-          <Toaster />
-          {/* <ReactQueryDevtools /> */}
-        </BrowserRouter>
+        <App />
+        <Toaster />
+        {/* <ReactQueryDevtools /> */}
       </ThemeProvider>
     </QueryClientProvider>
   </StrictMode>
