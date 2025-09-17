@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
@@ -14,7 +14,7 @@ import {
   PlayCircle
 } from 'lucide-react';
 
-export const Dashboard = () => {
+const Dashboard = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -244,3 +244,5 @@ export const Dashboard = () => {
     </div>
   );
 };
+
+export default Dashboard;

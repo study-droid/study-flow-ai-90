@@ -51,36 +51,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const signIn = async (email: string, password: string) => {
     try {
-      // Check rate limit before attempting login
-      const rateLimitCheck = await authRateLimiter.checkLimit(email, 'login');
-      
-      if (!rateLimitCheck.allowed) {
-        const waitMinutes = Math.ceil((rateLimitCheck.waitTime || 60) / 60);
-        toast({
-          title: "Too many login attempts",
-          description: `Please wait ${waitMinutes} minute${waitMinutes > 1 ? 's' : ''} before trying again.`,
-          variant: "destructive",
-        });
-        return { error: `Rate limited. Wait ${waitMinutes} minutes.` };
-      }
-      
       const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
       if (error) {
-        // Record failed login attempt
-        const failureResult = await authRateLimiter.recordFailure(email, 'login');
-        
-        if (failureResult.shouldLockAccount) {
-          // Log potential account compromise
-          SecureLogger.warn('Multiple failed login attempts detected', {
-            email: email,
-            action: 'potential_account_lock'
-          });
-        }
-        
         if (error.message.includes('Email not confirmed')) {
           setNeedsEmailConfirmation(true);
           toast({
@@ -89,53 +65,34 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             variant: "destructive",
           });
         } else {
-          const attemptsStatus = authRateLimiter.getStatus(email, 'login');
-          const remainingAttempts = Math.max(0, 5 - attemptsStatus.attempts);
-          
           toast({
             title: "Sign in failed",
-            description: remainingAttempts > 0 
-              ? `${error.message} (${remainingAttempts} attempts remaining)`
-              : error.message,
+            description: error.message,
             variant: "destructive",
           });
         }
+        return { error: error.message };
       } else {
-        // Reset rate limit on successful login
-        authRateLimiter.recordSuccess(email, 'login');
         setNeedsEmailConfirmation(false);
         toast({
           title: "Welcome back!",
           description: "You have successfully signed in.",
         });
+        return { error: undefined };
       }
-
-      return { error };
     } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'An unexpected error occurred';
       toast({
         title: "Sign in failed",
-        description: "An unexpected error occurred",
+        description: message,
         variant: "destructive",
       });
-      return { error };
+      return { error: message };
     }
   };
 
   const signUp = async (email: string, password: string, displayName?: string) => {
     try {
-      // Check rate limit for signup
-      const rateLimitCheck = await authRateLimiter.checkLimit(email, 'signup');
-      
-      if (!rateLimitCheck.allowed) {
-        const waitMinutes = Math.ceil((rateLimitCheck.waitTime || 60) / 60);
-        toast({
-          title: "Too many signup attempts",
-          description: `Please wait ${waitMinutes} minute${waitMinutes > 1 ? 's' : ''} before trying again.`,
-          variant: "destructive",
-        });
-        return { error: `Rate limited. Wait ${waitMinutes} minutes.` };
-      }
-      
       const redirectUrl = `${window.location.origin}/`;
       
       const { error } = await supabase.auth.signUp({
@@ -150,9 +107,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       });
 
       if (error) {
-        // Record failed signup attempt
-        await authRateLimiter.recordFailure(email, 'signup');
-        
         if (error.message.includes('User already registered')) {
           toast({
             title: "Account exists",
@@ -166,17 +120,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             variant: "destructive",
           });
         }
+        return { error: error.message };
       } else {
-        // Reset rate limit on successful signup
-        authRateLimiter.recordSuccess(email, 'signup');
         setNeedsEmailConfirmation(true);
         toast({
           title: "Account created!",
           description: "Please check your email and click the confirmation link within 10 minutes to activate your account.",
         });
+        return { error: undefined };
       }
-
-      return { error: error?.message };
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : 'An unexpected error occurred';
       toast({
@@ -213,14 +165,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         });
       }
 
-      return { error };
+      return { error: error?.message };
     } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'An unexpected error occurred';
       toast({
         title: "Failed to resend",
-        description: "An unexpected error occurred",
+        description: message,
         variant: "destructive",
       });
-      return { error };
+      return { error: message };
     }
   };
 
@@ -261,9 +214,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const signOut = async () => {
     try {
-      // Stop all ambient sounds before signing out
-      ambientAudioService.stopAllSounds();
-      
       await supabase.auth.signOut();
       setNeedsEmailConfirmation(false);
       toast({
