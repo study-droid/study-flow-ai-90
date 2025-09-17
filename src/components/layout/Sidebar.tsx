@@ -23,7 +23,7 @@ export const Sidebar = ({ className, onNavigate, }: SidebarProps) => {
   const navigation = [
     {
       name: 'Dashboard',
-      href: '/',
+      href: '/dashboard',
       icon: Home,
     },
     {

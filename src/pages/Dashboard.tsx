@@ -159,8 +159,8 @@ const Dashboard = () => {
 
         {/* Customizable Widget Dashboard */}
         {loading ? (
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            {[1, 2, 3, 4].map((i) => (
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
               <Card key={i} className="animate-pulse">
                 <CardHeader>
                   <div className="h-4 bg-muted rounded w-1/2"></div>
@@ -173,9 +173,10 @@ const Dashboard = () => {
             ))}
           </div>
         ) : (
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 auto-rows-max">
             {widgets
               .filter(widget => widget.visible)
+              .sort((a, b) => a.position.y - b.position.y || a.position.x - b.position.x)
               .map(widget => (
                 <DashboardWidget
                   key={widget.id}

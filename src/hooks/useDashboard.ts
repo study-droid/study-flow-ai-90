@@ -4,7 +4,7 @@ import { useAuth } from './useAuth';
 
 export interface Widget {
   id: string;
-  type: 'study-hours' | 'weekly-goal' | 'study-streak' | 'ai-sessions' | 'calendar-preview' | 'quick-stats' | 'recent-activity' | 'goals-progress';
+  type: 'study-hours' | 'weekly-goal' | 'study-streak' | 'ai-sessions' | 'calendar-preview' | 'quick-stats' | 'recent-activity' | 'goals-progress' | 'tasks' | 'timer' | 'ai-tutor';
   title: string;
   size: 'sm' | 'md' | 'lg' | 'xl';
   position: { x: number; y: number };
@@ -56,11 +56,43 @@ const defaultWidgets: Widget[] = [
     visible: true,
   },
   {
+    id: 'calendar-preview',
+    type: 'calendar-preview',
+    title: 'Calendar',
+    size: 'lg',
+    position: { x: 0, y: 1 },
+    visible: true,
+  },
+  {
+    id: 'ai-tutor',
+    type: 'ai-tutor',
+    title: 'AI Tutor',
+    size: 'lg',
+    position: { x: 1, y: 1 },
+    visible: true,
+  },
+  {
+    id: 'tasks',
+    type: 'tasks',
+    title: 'Tasks',
+    size: 'lg',
+    position: { x: 0, y: 2 },
+    visible: true,
+  },
+  {
+    id: 'timer',
+    type: 'timer',
+    title: 'Quick Timer',
+    size: 'md',
+    position: { x: 1, y: 2 },
+    visible: true,
+  },
+  {
     id: 'goals-progress',
     type: 'goals-progress',
     title: "Today's Goals",
     size: 'lg',
-    position: { x: 0, y: 1 },
+    position: { x: 2, y: 1 },
     visible: true,
   },
   {
@@ -68,7 +100,7 @@ const defaultWidgets: Widget[] = [
     type: 'recent-activity',
     title: 'Recent Activity',
     size: 'xl',
-    position: { x: 0, y: 2 },
+    position: { x: 0, y: 3 },
     visible: true,
   },
 ];

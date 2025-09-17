@@ -2,6 +2,7 @@ import { Header } from "./Header";
 import { Sidebar } from "./Sidebar";
 import { useState } from "react";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
+import { FloatingAIButton } from "@/components/ai/FloatingAIButton";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -36,6 +37,9 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
           </div>
         </main>
       </div>
+      
+      {/* Floating AI Assistant */}
+      <FloatingAIButton />
     </div>
   );
 };
