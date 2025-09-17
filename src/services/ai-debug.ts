@@ -20,7 +20,7 @@ export async function debugAIService() {
     
     for (const table of requiredTables) {
       try {
-        const { error } = await supabase.from(table).select('*').limit(1);
+        const { data, error } = await supabase.from(table).select('*').limit(1);
         if (error) {
           logger.error(`❌ Table ${table}:`, error.message, 'AiDebug');
           return { step: 'database', error: `Table ${table} error: ${error.message}` };
