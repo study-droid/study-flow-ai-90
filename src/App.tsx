@@ -9,6 +9,12 @@ import { PageLoader } from "@/components/ui/page-loader";
 
 const Index = lazy(() => import("./pages/Index"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
+const Calendar = lazy(() => import("./pages/Calendar"));
+const Study = lazy(() => import("./pages/Study"));
+const Analytics = lazy(() => import("./pages/Analytics"));
+const AITutor = lazy(() => import("./pages/AITutor"));
+const Pomodoro = lazy(() => import("./pages/Pomodoro"));
+const Settings = lazy(() => import("./pages/Settings"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -40,6 +46,54 @@ function App() {
                 element={
                   <Suspense fallback={<PageLoader />}>
                     <Dashboard />
+                  </Suspense>
+                }
+              />
+              <Route
+                path="/calendar"
+                element={
+                  <Suspense fallback={<PageLoader />}>
+                    <Calendar />
+                  </Suspense>
+                }
+              />
+              <Route
+                path="/study"
+                element={
+                  <Suspense fallback={<PageLoader />}>
+                    <Study />
+                  </Suspense>
+                }
+              />
+              <Route
+                path="/analytics"
+                element={
+                  <Suspense fallback={<PageLoader />}>
+                    <Analytics />
+                  </Suspense>
+                }
+              />
+              <Route
+                path="/tutor"
+                element={
+                  <Suspense fallback={<PageLoader />}>
+                    <AITutor />
+                  </Suspense>
+                }
+              />
+              <Route
+                path="/pomodoro"
+                element={
+                  <Suspense fallback={<PageLoader />}>
+                    <Pomodoro />
+                  </Suspense>
+                }
+              />
+              <Route
+                path="/settings"
+                element={
+                  <Suspense fallback={<PageLoader />}>
+                    <Settings />
                   </Suspense>
                 }
               />
