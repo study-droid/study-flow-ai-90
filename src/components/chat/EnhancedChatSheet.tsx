@@ -2,30 +2,17 @@
  * Enhanced Chat Sheet Component - Simplified to remove errors
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { 
   Send, 
   Bot, 
-  Settings, 
-  MessageSquare, 
-  Zap, 
-  History, 
-  Trash2, 
-  Plus,
-  ChevronDown,
   Loader2,
-  AlertCircle,
-  CheckCircle,
-  Brain,
-  Sparkles,
-  MoreVertical
+  Brain
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import { SmartMessageBubble } from './SmartMessageBubble';
 import type { ChatMessage } from '@/features/ai-tutor/types';
@@ -41,7 +28,6 @@ export function EnhancedChatSheet({
   onOpenChange,
   className
 }: EnhancedChatSheetProps) {
-  const { user } = useAuth();
   const { toast } = useToast();
   
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -94,7 +80,7 @@ export function EnhancedChatSheet({
     }
   };
 
-  const handleFeedback = (messageId: string, type: 'helpful' | 'not_helpful') => {
+  const handleFeedback = (type: 'helpful' | 'not_helpful') => {
     toast({
       title: "Feedback Received",
       description: `Thank you for marking this response as ${type}`,
@@ -149,7 +135,7 @@ export function EnhancedChatSheet({
               message={message}
               isLoading={isLoading && message.role === 'assistant' && !message.content}
               isThinking={isThinking && message.role === 'assistant' && !message.content}
-              onFeedback={handleFeedback}
+              onFeedback={() => handleFeedback('helpful')}
               showMetrics={false}
               className="mb-4"
             />

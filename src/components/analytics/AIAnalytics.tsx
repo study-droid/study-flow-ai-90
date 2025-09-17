@@ -9,7 +9,6 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { 
   Brain, 
-  TrendingUp, 
   Target,
   Lightbulb,
   Clock,
