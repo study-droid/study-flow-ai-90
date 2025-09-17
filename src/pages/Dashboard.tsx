@@ -1,10 +1,9 @@
+import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
-import { useDashboard } from "@/hooks/useDashboard";
-import { DashboardWidget } from "@/components/dashboard/DashboardWidget";
 import { 
   Calendar, 
   TrendingUp,
@@ -13,28 +12,11 @@ import {
   Brain,
   Timer,
   LogOut,
-  LayoutGrid,
-  RefreshCw,
 } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 
-const Dashboard = () => {
+const Dashboard: React.FC = () => {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
-  const { 
-    widgets, 
-    dashboardData, 
-    loading, 
-    toggleWidget, 
-    updateWidgetSize, 
-    resetToDefault, 
-    refreshData 
-  } = useDashboard();
 
   if (!user) {
     return (
@@ -69,25 +51,7 @@ const Dashboard = () => {
               <Play className="h-4 w-4" />
               Start Study
             </Button>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="gap-2">
-                  <LayoutGrid className="h-4 w-4" />
-                  Dashboard
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={refreshData}>
-                  <RefreshCw className="h-4 w-4 mr-2" />
-                  Refresh Data
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={resetToDefault}>
-                  <LayoutGrid className="h-4 w-4 mr-2" />
-                  Reset Layout
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-            <Button onClick={signOut} variant="outline" className="gap-2">
+            <Button variant="outline" onClick={signOut} className="gap-2">
               <LogOut className="h-4 w-4" />
               Sign Out
             </Button>
@@ -95,114 +59,97 @@ const Dashboard = () => {
         </div>
 
         {/* Quick Access Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate('/calendar')}>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => navigate('/calendar')}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Calendar</CardTitle>
               <Calendar className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <p className="text-xs text-muted-foreground">
-                View your study schedule
-              </p>
-              <Button className="w-full mt-2" variant="outline" size="sm" onClick={() => navigate('/calendar')}>
-                Open Calendar
-              </Button>
+              <p className="text-xs text-muted-foreground">View your schedule</p>
             </CardContent>
           </Card>
 
-          <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate('/study')}>
+          <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => navigate('/study')}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Study Session</CardTitle>
-              <Play className="h-4 w-4 text-muted-foreground" />
+              <Brain className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <p className="text-xs text-muted-foreground">
-                Start a focused study session
-              </p>
-              <Button className="w-full mt-2" size="sm" onClick={() => navigate('/study')}>
-                Start Study
-              </Button>
+              <p className="text-xs text-muted-foreground">Start learning</p>
             </CardContent>
           </Card>
 
-          <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate('/tutor')}>
+          <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => navigate('/tutor')}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">AI Tutor</CardTitle>
               <Brain className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <p className="text-xs text-muted-foreground">
-                Get help from your AI tutor
-              </p>
-              <Button className="w-full mt-2" variant="outline" size="sm" onClick={() => navigate('/tutor')}>
-                Chat with Teddy
-              </Button>
+              <p className="text-xs text-muted-foreground">Get help from Teddy</p>
             </CardContent>
           </Card>
 
-          <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate('/pomodoro')}>
+          <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => navigate('/pomodoro')}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Pomodoro</CardTitle>
+              <CardTitle className="text-sm font-medium">Pomodoro Timer</CardTitle>
               <Timer className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <p className="text-xs text-muted-foreground">
-                Use the Pomodoro technique
-              </p>
-              <Button className="w-full mt-2" variant="outline" size="sm" onClick={() => navigate('/pomodoro')}>
-                Start Timer
-              </Button>
+              <p className="text-xs text-muted-foreground">Focus with timer</p>
             </CardContent>
           </Card>
         </div>
 
-        {/* Customizable Widget Dashboard */}
-        {loading ? (
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {[1, 2, 3, 4, 5, 6].map((i) => (
-              <Card key={i} className="animate-pulse">
-                <CardHeader>
-                  <div className="h-4 bg-muted rounded w-1/2"></div>
-                </CardHeader>
-                <CardContent>
-                  <div className="h-8 bg-muted rounded mb-2"></div>
-                  <div className="h-2 bg-muted rounded"></div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        ) : (
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 auto-rows-max">
-            {widgets
-              .filter(widget => widget.visible)
-              .sort((a, b) => a.position.y - b.position.y || a.position.x - b.position.x)
-              .map(widget => (
-                <DashboardWidget
-                  key={widget.id}
-                  widget={widget}
-                  data={dashboardData}
-                  onToggleVisibility={toggleWidget}
-                  onUpdateSize={updateWidgetSize}
-                />
-              ))}
-          </div>
-        )}
-
-        {/* Quick Actions Footer */}
-        <div className="grid gap-6 md:grid-cols-2">
+        {/* Study Stats */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <TrendingUp className="h-5 w-5" />
-                Analytics
-              </CardTitle>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Study Sessions</CardTitle>
+              <TrendingUp className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-muted-foreground mb-4">
-                View your progress and insights
-              </p>
-              <Button variant="outline" className="w-full" onClick={() => navigate('/analytics')}>
+              <div className="text-2xl font-bold">12</div>
+              <p className="text-xs text-muted-foreground">+2 from yesterday</p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Goals Completed</CardTitle>
+              <Target className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">8</div>
+              <p className="text-xs text-muted-foreground">+4 from last week</p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Study Time</CardTitle>
+              <Timer className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">45h</div>
+              <p className="text-xs text-muted-foreground">This month</p>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Additional Quick Actions */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Analytics</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              <p className="text-sm text-muted-foreground">Track your progress and insights</p>
+              <Button 
+                onClick={() => navigate('/analytics')} 
+                className="w-full"
+                variant="outline"
+              >
                 View Analytics
               </Button>
             </CardContent>
@@ -210,16 +157,15 @@ const Dashboard = () => {
 
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Target className="h-5 w-5" />
-                Study Goals
-              </CardTitle>
+              <CardTitle>Study Goals</CardTitle>
             </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground mb-4">
-                Set and track your learning objectives
-              </p>
-              <Button variant="outline" className="w-full" onClick={() => navigate('/settings')}>
+            <CardContent className="space-y-2">
+              <p className="text-sm text-muted-foreground">Set and track your learning goals</p>
+              <Button 
+                onClick={() => navigate('/settings')} 
+                className="w-full"
+                variant="outline"
+              >
                 Manage Goals
               </Button>
             </CardContent>
